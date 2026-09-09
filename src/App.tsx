@@ -13,6 +13,11 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { heIL } from "@mui/x-date-pickers/locales";
+import "dayjs/locale/he";
+import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
 
@@ -94,9 +99,19 @@ export const App = () => {
   return (
     <ThemeProvider theme={commandRoomTheme}>
       <CssBaseline />
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs}
+        adapterLocale="he"
+        localeText={
+          heIL.components.MuiLocalizationProvider.defaultProps.localeText
+        }
+      >
+        <BrowserRouter>
+          <AppFiltersProvider>
+            <AppRoutes />
+          </AppFiltersProvider>
+        </BrowserRouter>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };

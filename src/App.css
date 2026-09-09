@@ -1,6 +1,6 @@
 .development-screen {
   display: grid;
-  min-height: calc(100vh - 126px);
+  min-height: calc(100vh - 140px);
   place-items: center;
   padding: 24px;
 }
@@ -10,10 +10,4 @@
   color: #91a0b4;
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 600;
-}
-
-@media (max-width: 899px) {
-  .development-screen {
-    min-height: calc(100vh - 66px);
-  }
 }

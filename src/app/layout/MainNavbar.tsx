@@ -1,22 +1,16 @@
 import { useEffect, useState } from "react";
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Select,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import type { SvgIconComponent } from "@mui/icons-material";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MapIcon from "@mui/icons-material/Map";
-import MenuIcon from "@mui/icons-material/Menu";
 import PaidIcon from "@mui/icons-material/Paid";
 import ScheduleIcon from "@mui/icons-material/Schedule";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs, { type Dayjs } from "dayjs";
+import {
+  useAppFilters,
+  type DateRangeFilter,
+} from "../filters/AppFiltersContext";
 import logoUrl from "../../assets/logo.png";
 import "./MainNavbar.css";
 
@@ -90,23 +84,95 @@ const Brand = () => {
   );
 };
 
+const DateRangeControls = () => {
+  const { dateRange, setDateRange } = useAppFilters();
+
+  const updateDateRange = (
+    field: keyof DateRangeFilter,
+    value: Dayjs | null,
+  ) => {
+    if (!value?.isValid()) {
+      return;
+    }
+
+    const nextValue = value.format("YYYY-MM-DDTHH:mm");
+
+    if (field === "startDate" && nextValue > dateRange.endDate) {
+      setDateRange({ startDate: nextValue, endDate: nextValue });
+      return;
+    }
+
+    if (field === "endDate" && nextValue < dateRange.startDate) {
+      setDateRange({ startDate: nextValue, endDate: nextValue });
+      return;
+    }
+
+    setDateRange({ ...dateRange, [field]: nextValue });
+  };
+
+  return (
+    <Box className="navbar__date-range">
+      <Box className="navbar__date-control">
+        <Typography
+          component="label"
+          htmlFor="start-date-time"
+          className="navbar__date-label"
+        >
+          תאריך ושעת התחלה
+        </Typography>
+        <DateTimePicker
+          value={dayjs(dateRange.startDate)}
+          onChange={(value) => updateDateRange("startDate", value)}
+          maxDateTime={dayjs(dateRange.endDate)}
+          format="DD/MM/YYYY HH:mm"
+          ampm={false}
+          slotProps={{
+            textField: {
+              size: "small",
+              className: "navbar__date-field",
+              slotProps: {
+                htmlInput: { id: "start-date-time" },
+              },
+            },
+          }}
+        />
+      </Box>
+      <Box className="navbar__date-control">
+        <Typography
+          component="label"
+          htmlFor="end-date-time"
+          className="navbar__date-label"
+        >
+          תאריך ושעת סיום
+        </Typography>
+        <DateTimePicker
+          value={dayjs(dateRange.endDate)}
+          onChange={(value) => updateDateRange("endDate", value)}
+          minDateTime={dayjs(dateRange.startDate)}
+          format="DD/MM/YYYY HH:mm"
+          ampm={false}
+          slotProps={{
+            textField: {
+              size: "small",
+              className: "navbar__date-field",
+              slotProps: {
+                htmlInput: { id: "end-date-time" },
+              },
+            },
+          }}
+        />
+      </Box>
+    </Box>
+  );
+};
+
 const OperationalControls = () => (
   <Box className="navbar__controls">
     <Box className="navbar__time-label">
       <ScheduleIcon aria-hidden="true" className="navbar__time-icon" />
       טווח זמן
     </Box>
-    <Select
-      defaultValue="7d"
-      size="small"
-      IconComponent={KeyboardArrowDownIcon}
-      inputProps={{ "aria-label": "טווח זמן" }}
-      className="navbar__time-select"
-    >
-      <MenuItem value="24h">24 שעות</MenuItem>
-      <MenuItem value="7d">7 ימים</MenuItem>
-      <MenuItem value="30d">30 ימים</MenuItem>
-    </Select>
+    <DateRangeControls />
     <Box className="navbar__status">
       <Box aria-hidden="true" className="navbar__status-dot" />
       המערכות פעילות
@@ -118,10 +184,7 @@ export const MainNavbar = ({
   activeItemId = "investigation-map",
   onNavigate,
 }: MainNavbarProps) => {
-  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
-
   const handleNavigate = (itemId: NavigationItemId) => {
-    setMenuAnchor(null);
     onNavigate?.(itemId);
   };
 
@@ -135,35 +198,6 @@ export const MainNavbar = ({
       <Toolbar className="navbar__top">
         <Brand />
         <OperationalControls />
-
-        <IconButton
-          color="inherit"
-          aria-label="פתיחת תפריט ניווט"
-          aria-controls={menuAnchor ? "mobile-navigation" : undefined}
-          aria-expanded={Boolean(menuAnchor)}
-          onClick={(event) => setMenuAnchor(event.currentTarget)}
-          className="navbar__menu-button"
-        >
-          <MenuIcon aria-hidden="true" className="navbar__menu-icon" />
-        </IconButton>
-        <Menu
-          id="mobile-navigation"
-          anchorEl={menuAnchor}
-          open={Boolean(menuAnchor)}
-          onClose={() => setMenuAnchor(null)}
-          slotProps={{ paper: { className: "navbar__mobile-menu" } }}
-        >
-          {NAVIGATION_ITEMS.map(({ id, label, Icon: ItemIcon }) => (
-            <MenuItem
-              key={id}
-              selected={id === activeItemId}
-              onClick={() => handleNavigate(id)}
-            >
-              <ItemIcon aria-hidden="true" className="navbar__mobile-item-icon" />
-              {label}
-            </MenuItem>
-          ))}
-        </Menu>
       </Toolbar>
 
       <Toolbar

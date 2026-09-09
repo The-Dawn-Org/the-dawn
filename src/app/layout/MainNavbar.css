@@ -5,8 +5,8 @@
 }
 
 .navbar__top.MuiToolbar-root {
-  min-height: 64px;
-  padding-inline: 12px;
+  min-height: 82px;
+  padding-inline: 20px;
   gap: 16px;
 }
 
@@ -37,13 +37,13 @@
 }
 
 .navbar__title.MuiTypography-root {
-  font-size: 0.92rem;
+  font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.25;
 }
 
 .navbar__subtitle.MuiTypography-root {
-  display: none;
+  display: block;
   margin-top: 3px;
   color: #78899f;
   font-family: Consolas, "Courier New", monospace;
@@ -51,7 +51,7 @@
 }
 
 .navbar__controls {
-  display: none;
+  display: flex;
   align-items: center;
   gap: 12px;
   color: #77869b;
@@ -73,20 +73,45 @@
   font-size: 16px;
 }
 
-.navbar__time-select.MuiInputBase-root {
-  width: 174px;
+.navbar__date-range {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.navbar__date-control {
+  display: flex;
+  width: 220px;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.navbar__date-label.MuiTypography-root {
+  color: #9ca9b9;
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: right;
+}
+
+.navbar__date-field.MuiTextField-root {
+  width: 220px;
+}
+
+.navbar__date-field .MuiInputBase-root {
   height: 48px;
   color: #f4f5f2;
   background-color: #172317;
   border-radius: 9px;
 }
 
-.navbar__time-select .MuiOutlinedInput-notchedOutline {
+.navbar__date-field .MuiOutlinedInput-notchedOutline {
   border-color: #30452b;
 }
 
-.navbar__time-select .MuiSelect-icon {
-  color: #77869b;
+.navbar__date-field .MuiInputBase-input {
+  color-scheme: dark;
+  text-align: right;
 }
 
 .navbar__status {
@@ -101,26 +126,8 @@
   border-radius: 50%;
 }
 
-.navbar__menu-button.MuiIconButton-root {
-  border: 1px solid #30452b;
-  border-radius: 8px;
-}
-
-.navbar__menu-icon.MuiSvgIcon-root {
-  font-size: 23px;
-}
-
-.navbar__mobile-menu.MuiPaper-root {
-  min-width: 220px;
-}
-
-.navbar__mobile-item-icon.MuiSvgIcon-root {
-  margin-left: 10px;
-  font-size: 18px;
-}
-
 .navbar__navigation.MuiToolbar-root {
-  display: none;
+  display: flex;
   min-height: 58px;
   padding-inline: 20px;
   gap: 8px;
@@ -157,35 +164,4 @@
 
 .navbar__navigation-item--active.MuiButton-root:hover {
   background-color: #3b512f;
-}
-
-@media (min-width: 600px) {
-  .navbar__title.MuiTypography-root {
-    font-size: 1.2rem;
-  }
-
-  .navbar__subtitle.MuiTypography-root {
-    display: block;
-  }
-}
-
-@media (min-width: 900px) {
-  .navbar__top.MuiToolbar-root {
-    min-height: 66px;
-    padding-inline: 20px;
-  }
-
-  .navbar__menu-button.MuiIconButton-root {
-    display: none;
-  }
-
-  .navbar__navigation.MuiToolbar-root {
-    display: flex;
-  }
-}
-
-@media (min-width: 1200px) {
-  .navbar__controls {
-    display: flex;
-  }
 }
