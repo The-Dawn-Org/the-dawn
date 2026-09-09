@@ -1,7 +1,7 @@
 [
   {
     "launcherId": 0,
-    "launcherType": { "launcherTypeId": 0, "name": "Iron Dome Battery", "reloadTime": 15 },
+    "launcherType": { "launcherTypeId": 0, "name": "כיפת ברזל", "reloadTime": 15 },
     "location": { "lat": 32.0853, "lng": 34.7818 },
     "asl": 45,
     "agl": 0,
@@ -10,7 +10,7 @@
   },
   {
     "launcherId": 1,
-    "launcherType": { "launcherTypeId": 1, "name": "Patriot Launcher", "reloadTime": 30 },
+    "launcherType": { "launcherTypeId": 1, "name": "מערך יהלום", "reloadTime": 30 },
     "location": { "lat": 31.7683, "lng": 35.2137 },
     "asl": 780,
     "agl": 0,
@@ -19,7 +19,7 @@
   },
   {
     "launcherId": 2,
-    "launcherType": { "launcherTypeId": 2, "name": "David's Sling Launcher", "reloadTime": 25 },
+    "launcherType": { "launcherTypeId": 2, "name": "קלע דוד", "reloadTime": 25 },
     "location": { "lat": 32.7940, "lng": 34.9896 },
     "asl": 30,
     "agl": 0,
@@ -28,7 +28,7 @@
   },
   {
     "launcherId": 3,
-    "launcherType": { "launcherTypeId": 3, "name": "Arrow-3 Battery", "reloadTime": 45 },
+    "launcherType": { "launcherTypeId": 3, "name": "חץ-3 בטרייה", "reloadTime": 45 },
     "location": { "lat": 29.5581, "lng": 34.9482 },
     "asl": 15,
     "agl": 0,

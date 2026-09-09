@@ -11,4 +11,5 @@ export interface Event {
   eventStatus: string;
   attackingBody: string;
   drone: Pick<DroneType, "type" | "price">;
+  droneInjuryCount: number;
 }
