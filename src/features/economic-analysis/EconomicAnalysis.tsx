@@ -6,13 +6,14 @@ import RadarIcon from "@mui/icons-material/Radar";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionChart";
 import { GraphContainer } from "./GraphContainer";
-import { DroneDashboardChart } from "./CostDrownToInterceptor/CostDrownToInterceptor";
-import { getCostBySystem } from "./economicAnalysis.service";
-import type { CostBySystemItem } from "./economicAnalysis.types";
+import { DrownsToInterceptor } from "./DrownToInterceptor/DrownToInterceptor";
+import { getCostBySystem, getDrownToInterceptor } from "./economicAnalysis.service";
+import type { CostBySystemItem, DrownToInterceptorType } from "./economicAnalysis.types";
 
 export const EconomicAnalysis = () => {
   const { dateRange } = useAppFilters();
   const [expenses, setExpenses] = useState<CostBySystemItem[]>([]);
+  const [drownToInterceptor, setDrownToInterceptor] = useState<DrownToInterceptorType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -27,6 +28,17 @@ export const EconomicAnalysis = () => {
       .catch((error: unknown) => {
         if (!axios.isCancel(error)) {
           setErrorMessage("לא ניתן לטעון את נתוני העלות");
+        }
+      })
+      .finally(() => setIsLoading(false));
+
+    getDrownToInterceptor(dateRange
+      // , abortController.signal
+      )
+      .then((nextDrownToInterceptor) => setDrownToInterceptor(nextDrownToInterceptor))
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setErrorMessage("לא ניתן לטעון נתוני הרחפים ומחירי המיירטים.");
         }
       })
       .finally(() => setIsLoading(false));
@@ -59,7 +71,17 @@ export const EconomicAnalysis = () => {
         title="יחס עלות אסימטרי"
         subtitle="עלות מיירט מול שווי רחפן"
       >
-        <DroneDashboardChart />
+        {isLoading ? (
+          <Box className="economic-graph__loading">
+            <CircularProgress size={28} />
+          </Box>
+        ) : errorMessage ? (
+          <Box className="economic-graph__empty">
+            <Typography>{errorMessage}</Typography>
+          </Box>
+        ) : (
+          <DrownsToInterceptor data={drownToInterceptor} />
+        )}
       </GraphContainer>
     </Box>
   );

@@ -3,8 +3,8 @@ export interface CostBySystemItem {
   cost: number;
 }
 
-export interface DorwnToExpens {
+export interface DrownToInterceptorType {
   date: Date;
-  droneIntercepted: number;
-  totalCost: number;
+  dronesTotalCost: number;
+  interceptorsTotalCost: number;
 }

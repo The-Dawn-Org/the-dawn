@@ -1,16 +1,17 @@
 import { ChartsContainer } from "@mui/x-charts/ChartsContainer";
 import { BarPlot } from "@mui/x-charts/BarChart";
-import {
-  LinePlot,
-  LineHighlightPlot,
-  MarkPlot,
-} from "@mui/x-charts/LineChart";
+import { LinePlot, LineHighlightPlot, MarkPlot } from "@mui/x-charts/LineChart";
 import { ChartsXAxis } from "@mui/x-charts/ChartsXAxis";
 import { ChartsYAxis } from "@mui/x-charts/ChartsYAxis";
 import { ChartsTooltip } from "@mui/x-charts/ChartsTooltip";
 import { ChartsGrid } from "@mui/x-charts/ChartsGrid";
 import { ChartsAxisHighlight } from "@mui/x-charts/ChartsAxisHighlight";
-import type { DorwnToExpens } from "../economicAnalysis.types";
+import type { DrownToInterceptorType } from "../economicAnalysis.types";
+import { Box, Typography } from "@mui/material";
+
+interface DrownsToInterceptorProps {
+  data: DrownToInterceptorType[]
+}
 
 const days = [
   "יום א׳",
@@ -22,54 +23,30 @@ const days = [
   "שבת׳",
 ];
 
-const data: DorwnToExpens[] = [
-  {
-    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 6),
-    droneIntercepted: 17,
-    totalCost: 25000,
-  },
-  {
-    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 5),
-    droneIntercepted: 25,
-    totalCost: 47000,
-  },
-  {
-    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 4),
-    droneIntercepted: 31,
-    totalCost: 43000,
-  },
-  {
-    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 3),
-    droneIntercepted: 27,
-    totalCost: 63000,
-  },
-  {
-    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2),
-    droneIntercepted: 21,
-    totalCost: 29000,
-  },
-  {
-    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
-    droneIntercepted: 21,
-    totalCost: 40000,
-  },
-  {
-    date: new Date(new Date().getTime()),
-    droneIntercepted: 0,
-    totalCost: 0,
-  },
-];
-
 const CARD_BORDER = "#2c3a26";
 const GOLD = "#e0b04a";
 const RED = "#c0392b";
 const TEXT_MUTED = "#8a9482";
 
-export const DroneDashboardChart = () => {
-  const costs = data.map(({ totalCost }) => totalCost);
-  const intercepted = data.map(({ droneIntercepted }) => droneIntercepted);
+export const DrownsToInterceptor = (
+  {
+    data,
+  }: DrownsToInterceptorProps
+) => {
+  if (data.length === 0) {
+    return (
+      <Box className="economic-graph__empty">
+        <Typography>לא נמצאו נתונים לטווח שנבחר</Typography>
+      </Box>
+    );
+  }
 
-  const dayLabels = data.map(({ date }) => days[date.getDay()]);
+  const droneCost = data.map(({ dronesTotalCost }) => dronesTotalCost);
+  const interceptCost = data.map(({ interceptorsTotalCost }) => interceptorsTotalCost);
+
+  console.log(data);
+
+  const dayLabels = data.map(({ date }) => days[new Date(date).getDay()]);
 
   return (
     <div className="drone-interceptor-chart" dir="rtl">
@@ -77,15 +54,21 @@ export const DroneDashboardChart = () => {
         height={320}
         series={[
           {
-            type: "bar",
-            data: costs,
+            type: "line",
+            data: droneCost,
             yAxisId: "costAxis",
             color: GOLD,
             label: "עלות מיירט (K$)",
+            curve: "linear",
+            showMark: true,
+
+            highlightScope: {
+              highlight: "item",
+            },
           },
           {
             type: "line",
-            data: intercepted,
+            data: interceptCost,
             yAxisId: "countAxis",
             color: RED,
             label: "רחפנים מיורטים",
@@ -118,7 +101,7 @@ export const DroneDashboardChart = () => {
             position: "right",
             scaleType: "linear",
             min: 0,
-            max: 80000,
+            max: 1000000,
             valueFormatter: (value) => `$${value / 1000}K`,
             tickLabelStyle: {
               fill: TEXT_MUTED,
@@ -130,7 +113,7 @@ export const DroneDashboardChart = () => {
             position: "left",
             scaleType: "linear",
             min: 0,
-            max: 32,
+            max: 1000000,
             tickLabelStyle: {
               fill: TEXT_MUTED,
               fontSize: 11,
@@ -168,17 +151,15 @@ export const DroneDashboardChart = () => {
         }}
       >
         <ChartsGrid horizontal vertical={false} />
+
         <BarPlot />
         <LinePlot />
         <LineHighlightPlot />
         <MarkPlot />
-        <ChartsAxisHighlight
-          x="line"
-          y="none"
-        />
+
+        <ChartsAxisHighlight x="line" y="none" />
         <ChartsXAxis axisId="days" />
         <ChartsYAxis axisId="costAxis" />
-        <ChartsYAxis axisId="countAxis" />
         <ChartsTooltip trigger="axis" />
       </ChartsContainer>
 
