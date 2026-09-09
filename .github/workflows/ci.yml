@@ -19,5 +19,5 @@ jobs:
             -- ref main \
             -f environment=dev
         env:
-          GH_TOKEN: ${{ vars.INFRA_TOKEN }}
+          GH_TOKEN: ${{ secrets.INFRA_TOKEN }}
           
