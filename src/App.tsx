@@ -1,59 +1,117 @@
 import {
-  ThemeProvider,
-  createTheme,
-  CssBaseline,
-  Container,
-  Typography,
   Box,
-  AppBar,
-  Toolbar,
-  Button,
+  CssBaseline,
+  ThemeProvider,
+  Typography,
+  createTheme,
 } from "@mui/material";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { heIL } from "@mui/x-date-pickers/locales";
+import "dayjs/locale/he";
+import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
+import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
+import "./App.css";
 
-const darkTheme = createTheme({
+const SCREEN_PATHS: Record<NavigationItemId, string> = {
+  "investigation-map": "/investigation-map",
+  "operational-performance": "/operational-performance",
+  "economic-analysis": "/economic-analysis",
+};
+
+const PATH_SCREEN_IDS = Object.fromEntries(
+  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId]),
+) as Record<string, NavigationItemId>;
+
+const commandRoomTheme = createTheme({
+  direction: "rtl",
   palette: {
     mode: "dark",
+    primary: {
+      main: "#d5a62f",
+    },
+    background: {
+      default: "#0c140d",
+      paper: "#121d13",
+    },
+  },
+  typography: {
+    fontFamily: '"Heebo", "Segoe UI", sans-serif',
   },
 });
 
+const UnderDevelopmentScreen = () => (
+  <Box component="main" className="development-screen">
+    <Typography component="h1" className="development-screen__title">
+      בפיתוח
+    </Typography>
+  </Box>
+);
+
+const AppRoutes = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const activeScreenId =
+    PATH_SCREEN_IDS[location.pathname] ?? "investigation-map";
+
+  const handleNavigate = (screenId: NavigationItemId) => {
+    navigate(SCREEN_PATHS[screenId]);
+  };
+
+  return (
+    <>
+      <MainNavbar activeItemId={activeScreenId} onNavigate={handleNavigate} />
+      <Routes>
+        <Route
+          path="/"
+          element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
+        />
+        <Route
+          path={SCREEN_PATHS["investigation-map"]}
+          element={<UnderDevelopmentScreen />}
+        />
+        <Route
+          path={SCREEN_PATHS["operational-performance"]}
+          element={<UnderDevelopmentScreen />}
+        />
+        <Route
+          path={SCREEN_PATHS["economic-analysis"]}
+          element={<UnderDevelopmentScreen />}
+        />
+        <Route
+          path="*"
+          element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
+        />
+      </Routes>
+    </>
+  );
+};
+
 export const App = () => {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={commandRoomTheme}>
       <CssBaseline />
-
-      {/* Navbar */}
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            My App
-          </Typography>
-          <Button color="inherit">have</Button>
-          <Button color="inherit">fun</Button>
-        </Toolbar>
-      </AppBar>
-
-      <Container maxWidth="md" sx={{ mt: 8 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          <Typography
-            variant="h2"
-            align="center"
-            sx={{
-              fontFamily: '"Amatic SC", cursive',
-              fontSize: { xs: "4rem", md: "6rem" },
-              color: "primary.main",
-            }}
-          >
-            🚀תרגיל השלמה 021
-          </Typography>
-        </Box>
-      </Container>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs}
+        adapterLocale="he"
+        localeText={
+          heIL.components.MuiLocalizationProvider.defaultProps.localeText
+        }
+      >
+        <BrowserRouter>
+          <AppFiltersProvider>
+            <AppRoutes />
+          </AppFiltersProvider>
+        </BrowserRouter>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };
