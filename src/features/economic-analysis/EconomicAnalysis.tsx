@@ -56,8 +56,8 @@ export const EconomicAnalysis = () => {
 
       <GraphContainer
         icon={<RadarIcon />}
-        title="עלות מיירט מול רחפנים מיורטים"
-        subtitle="השוואה בין עלות היירוט למספר הרחפנים שיורטו"
+        title="יחס עלות אסימטרי"
+        subtitle="עלות מיירט מול שווי רחפן"
       >
         <DroneDashboardChart />
       </GraphContainer>

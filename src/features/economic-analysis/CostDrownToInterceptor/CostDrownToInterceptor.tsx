@@ -1,53 +1,65 @@
 import { ChartsContainer } from "@mui/x-charts/ChartsContainer";
 import { BarPlot } from "@mui/x-charts/BarChart";
-import { LinePlot, MarkPlot } from "@mui/x-charts/LineChart";
+import {
+  LinePlot,
+  LineHighlightPlot,
+  MarkPlot,
+} from "@mui/x-charts/LineChart";
 import { ChartsXAxis } from "@mui/x-charts/ChartsXAxis";
 import { ChartsYAxis } from "@mui/x-charts/ChartsYAxis";
 import { ChartsTooltip } from "@mui/x-charts/ChartsTooltip";
 import { ChartsGrid } from "@mui/x-charts/ChartsGrid";
+import { ChartsAxisHighlight } from "@mui/x-charts/ChartsAxisHighlight";
 import type { DorwnToExpens } from "../economicAnalysis.types";
 
-const days = ["יום א׳", "יום ב׳", "יום ג׳", "יום ד׳", "יום ה׳", "יום ו׳", "שבת׳"];
+const days = [
+  "יום א׳",
+  "יום ב׳",
+  "יום ג׳",
+  "יום ד׳",
+  "יום ה׳",
+  "יום ו׳",
+  "שבת׳",
+];
 
 const data: DorwnToExpens[] = [
   {
-    date: new Date(new Date().getTime() - 1000 * 60 * 7),
+    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 6),
     droneIntercepted: 17,
     totalCost: 25000,
   },
   {
-    date: new Date(new Date().getTime() - 1000 * 60 * 6),
+    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 5),
     droneIntercepted: 25,
     totalCost: 47000,
   },
   {
-    date: new Date(new Date().getTime() - 1000 * 60 * 5),
+    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 4),
     droneIntercepted: 31,
     totalCost: 43000,
   },
   {
-    date: new Date(new Date().getTime() - 1000 * 60 * 4),
+    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 3),
     droneIntercepted: 27,
     totalCost: 63000,
   },
   {
-    date: new Date(new Date().getTime() - 1000 * 60 * 3),
+    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2),
     droneIntercepted: 21,
     totalCost: 29000,
   },
   {
-    date: new Date(new Date().getTime() - 1000 * 60 * 2),
+    date: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
     droneIntercepted: 21,
     totalCost: 40000,
   },
   {
-    date: new Date(new Date().getTime() - 1000 * 60),
+    date: new Date(new Date().getTime()),
     droneIntercepted: 0,
     totalCost: 0,
   },
 ];
 
-const BG = "#1b2417";
 const CARD_BORDER = "#2c3a26";
 const GOLD = "#e0b04a";
 const RED = "#c0392b";
@@ -56,6 +68,8 @@ const TEXT_MUTED = "#8a9482";
 export const DroneDashboardChart = () => {
   const costs = data.map(({ totalCost }) => totalCost);
   const intercepted = data.map(({ droneIntercepted }) => droneIntercepted);
+
+  const dayLabels = data.map(({ date }) => days[date.getDay()]);
 
   return (
     <div className="drone-interceptor-chart" dir="rtl">
@@ -77,14 +91,25 @@ export const DroneDashboardChart = () => {
             label: "רחפנים מיורטים",
             curve: "linear",
             showMark: true,
+
+            highlightScope: {
+              highlight: "item",
+            },
           },
         ]}
         xAxis={[
           {
             id: "days",
+            data: dayLabels,
             scaleType: "band",
-            data: data.map((_, index) => days[index]),
-            tickLabelStyle: { fill: TEXT_MUTED, fontSize: 12 },
+            categoryGapRatio: 0.72,
+            position: "bottom",
+            height: 40,
+
+            tickLabelStyle: {
+              fill: TEXT_MUTED,
+              fontSize: 12,
+            },
           },
         ]}
         yAxis={[
@@ -95,7 +120,10 @@ export const DroneDashboardChart = () => {
             min: 0,
             max: 80000,
             valueFormatter: (value) => `$${value / 1000}K`,
-            tickLabelStyle: { fill: TEXT_MUTED, fontSize: 11 },
+            tickLabelStyle: {
+              fill: TEXT_MUTED,
+              fontSize: 11,
+            },
           },
           {
             id: "countAxis",
@@ -103,23 +131,51 @@ export const DroneDashboardChart = () => {
             scaleType: "linear",
             min: 0,
             max: 32,
-            tickLabelStyle: { fill: TEXT_MUTED, fontSize: 11 },
+            tickLabelStyle: {
+              fill: TEXT_MUTED,
+              fontSize: 11,
+            },
           },
         ]}
         sx={{
-          ".MuiChartsAxis-line": { stroke: CARD_BORDER },
-          ".MuiChartsAxis-tick": { stroke: CARD_BORDER },
+          ".MuiChartsAxis-line": {
+            stroke: CARD_BORDER,
+          },
+          ".MuiChartsAxis-tick": {
+            stroke: CARD_BORDER,
+          },
+          ".MuiChartsAxis-tickLabel": {
+            fill: TEXT_MUTED,
+            fontSize: 12,
+          },
           ".MuiChartsGrid-line": {
             stroke: "#263a23",
             strokeDasharray: "3 4",
           },
-          ".MuiBarElement-root": { rx: 4 },
+          ".MuiBarElement-root": {
+            rx: 4,
+          },
+
+          ".MuiChartsAxisHighlight-root": {
+            stroke: "#ffffff",
+            strokeWidth: 1,
+          },
+
+          ".MuiLineChart-mark[data-highlighted]": {
+            stroke: "#ffffff",
+            strokeWidth: 2,
+          },
         }}
       >
         <ChartsGrid horizontal vertical={false} />
         <BarPlot />
         <LinePlot />
+        <LineHighlightPlot />
         <MarkPlot />
+        <ChartsAxisHighlight
+          x="line"
+          y="none"
+        />
         <ChartsXAxis axisId="days" />
         <ChartsYAxis axisId="costAxis" />
         <ChartsYAxis axisId="countAxis" />
@@ -134,6 +190,7 @@ export const DroneDashboardChart = () => {
           />
           עלות מיירט (K$)
         </span>
+
         <span>
           <span
             className="drone-interceptor-chart__legend-mark drone-interceptor-chart__legend-mark--circle"
