@@ -24,4 +24,4 @@ on:
 
 jobs:
   pipeline:
-    uses: Amit11234/until-midnight-infra/.github/workflows/main.yml@main
+    uses: Devops-Had-Hatzot/ci-template/.github/workflows/main.yml@main
