@@ -20,6 +20,7 @@ import "dayjs/locale/he";
 import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
+import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",
@@ -84,7 +85,7 @@ const AppRoutes = () => {
         />
         <Route
           path={SCREEN_PATHS["economic-analysis"]}
-          element={<UnderDevelopmentScreen />}
+          element={<EconomicAnalysis />}
         />
         <Route
           path="*"
