@@ -8,6 +8,16 @@ on:
       - '*'
 
 jobs:
-  ci:
-    uses: The-Dawn-Org/ci-template/.github/workflows/main.yml@main
-    secrets: inherit
+  trigger:
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Trigger Pipeline
+        run: |
+          gh workflow run main.yml \
+            --repo Amit11234/until-midnight-infra \
+            -- ref main \
+            -f environment=dev
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_TOKEN }}
+          
