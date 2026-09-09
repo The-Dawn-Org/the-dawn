@@ -1,0 +1,6 @@
+[
+  { "launcherTypeId": 0, "name": "Iron Dome Battery", "reloadTime": 15 },
+  { "launcherTypeId": 1, "name": "Patriot Launcher", "reloadTime": 30 },
+  { "launcherTypeId": 2, "name": "David's Sling Launcher", "reloadTime": 25 },
+  { "launcherTypeId": 3, "name": "Arrow-3 Battery", "reloadTime": 45 }
+]

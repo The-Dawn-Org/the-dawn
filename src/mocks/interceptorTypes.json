@@ -1,0 +1,7 @@
+[
+  { "interceptorTypeId": 0, "type": "Tamir", "price": 50000, "maxRange": 70 },
+  { "interceptorTypeId": 1, "type": "PAC-3", "price": 4000000, "maxRange": 160 },
+  { "interceptorTypeId": 2, "type": "Stunner", "price": 1000000, "maxRange": 300 },
+  { "interceptorTypeId": 3, "type": "C-RAM Round", "price": 15000, "maxRange": 2 },
+  { "interceptorTypeId": 4, "type": "Arrow-3 Interceptor", "price": 3500000, "maxRange": 2400 }
+]

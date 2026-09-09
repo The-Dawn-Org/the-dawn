@@ -1,0 +1,6 @@
+[
+  { "droneTypeId": 0, "type": "SkyMite-C7", "price": 2500 },
+  { "droneTypeId": 1, "type": "LoadBee-M2", "price": 8300 },
+  { "droneTypeId": 2, "type": "Falcon-Long X4", "price": 18000 },
+  { "droneTypeId": 3, "type": "NanoSwarm-Q9", "price": 900 }
+]
