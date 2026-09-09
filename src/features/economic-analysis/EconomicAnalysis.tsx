@@ -21,19 +21,21 @@ export const EconomicAnalysis = () => {
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
   const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [infoCardsErrorMessage, setInfoCardsErrorMessage] = useState<string | null>(null);
+  const [expensesErrorMessage, setExpensesErrorMessage] = useState<string | null>(null);
+
 
   useEffect(() => {
     const abortController = new AbortController();
 
     setIsLoadingExpenses(true);
-    setErrorMessage(null);
+    setExpensesErrorMessage(null);
 
     getCostBySystem(dateRange, abortController.signal)
       .then((nextExpenses) => setExpenses(nextExpenses))
       .catch((error: unknown) => {
         if (!axios.isCancel(error)) {
-          setErrorMessage("לא ניתן לטעון את נתוני העלות");
+          setExpensesErrorMessage("לא ניתן לטעון את נתוני העלות");
         }
       })
       .finally(() => setIsLoadingExpenses(false));
@@ -45,13 +47,13 @@ export const EconomicAnalysis = () => {
     const abortController = new AbortController();
 
     setIsLoadingCards(true);
-    setErrorMessage(null);
+    setInfoCardsErrorMessage(null);
 
     getCardsInfoItem(dateRange, abortController.signal)
       .then((cardsInfoData) => setCardsInfo(cardsInfoData))
       .catch((error: unknown) => {
         if (!axios.isCancel(error)) {
-          setErrorMessage("לא ניתן לטעון את נתוני הקלפים");
+          setInfoCardsErrorMessage("לא ניתן לטעון את נתוני הקלפים");
         }
       })
       .finally(() => setIsLoadingCards(false));
@@ -76,9 +78,9 @@ export const EconomicAnalysis = () => {
           <Box className="economic-graph__loading">
             <CircularProgress size={28} />
           </Box>
-        ) : errorMessage ? (
+        ) : infoCardsErrorMessage ? (
           <Box className="economic-graph__empty">
-            <Typography>{errorMessage}</Typography>
+            <Typography>{infoCardsErrorMessage}</Typography>
           </Box>
         ) : (
           <Box
@@ -140,9 +142,9 @@ export const EconomicAnalysis = () => {
           <Box className="economic-graph__loading">
             <CircularProgress size={28} />
           </Box>
-        ) : errorMessage ? (
+        ) : expensesErrorMessage ? (
           <Box className="economic-graph__empty">
-            <Typography>{errorMessage}</Typography>
+            <Typography>{expensesErrorMessage}</Typography>
           </Box>
         ) : (
           <ExpensesByAmmunitionChart data={expenses} />
