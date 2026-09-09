@@ -2,15 +2,12 @@ name: CI
 
 on:
   push:
-  pull_request:
+    branches:
+      - main
+    tags:
+      - '*'
 
 jobs:
-  build:
-    runs-on: self-hosted
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build
-        run: |
-          echo "Running on my Kubernetes runner"
+  ci:
+    uses: Amit11234/until-midnight-infra/.github/workflows/main.yml@main
+    secrets: inherit
