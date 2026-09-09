@@ -1,10 +1,10 @@
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import {
   GpsFixed as GpsFixedIcon,
   PeopleAlt as PeopleAltIcon,
   AttachMoney as AttachMoneyIcon,
   MonitorHeart as MonitorHeartIcon,
-  CrisisAlert as CrisisAlertIcon,
+  ShieldOutlined as ShieldIcon,
 } from "@mui/icons-material";
 import { StatSumCard } from "./statCard";
 import { droneEventsMock, EventStatus } from "../dataMock";
@@ -28,14 +28,14 @@ export const SummaryStatisticsCard = () => {
   );
 
   return (
-    <Box>
+    <Stack spacing={3} direction={"row-reverse"} sx={{direction: "ltr"}}>
       <StatSumCard
-        icon={<CrisisAlertIcon />}
+        icon={<MonitorHeartIcon />}
         title="סך אירועים"
         value={eventCount.toString()}
       />
       <StatSumCard
-        icon={<MonitorHeartIcon />}
+        icon={<ShieldIcon />}
         title="יירוטים"
         value={totalIntercepted.toString()}
       />
@@ -54,6 +54,6 @@ export const SummaryStatisticsCard = () => {
         title="עלות מבצעית"
         value={`$${totalDamageCostIls}`}
       />
-    </Box>
+    </Stack>
   );
 };
