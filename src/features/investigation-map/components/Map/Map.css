@@ -1,34 +1,73 @@
-/* Container sizing */
 .tactical-map-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100vh; /* Set to 100vh or a fixed height like 600px depending on layout */
-    background-color: #0d110d;
-    overflow: hidden;
-  }
+  width: 100%;
+  height: 100vh;
+  background-color: #0f140f;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.tactical-map-container {
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-container {
+  background-color: #0f140f !important;
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid #2d3b2a !important;
+  box-shadow: none !important;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  background-color: #171f16 !important;
+  color: #8fa887 !important;
+  border-bottom: 1px solid #2d3b2a !important;
+}
+
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+  background-color: #233022 !important;
+  color: #b3d1ab !important;
+}
+
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(18, 23, 18, 0.8) !important;
+  color: #51634c !important;
+  font-size: 10px;
+}
+
+.leaflet-container .leaflet-control-attribution a {
+  color: #6a8264 !important;
+}
+
+.leaflet-marker-icon.tactical-layer-label-container {
+  background: transparent !important;
+  border: none !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.tactical-layer-label-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Keeps text strictly centered over center coordinates */
   
-  .tactical-map-container {
-    width: 100%;
-    height: 100%;
-    background-color: #0d110d;
-  }
-  
-  /* Green tint filter over the dark map tiles */
-  .tactical-map-container .leaflet-tile-pane {
-    filter: brightness(0.7) contrast(1.2) hue-rotate(50deg) sepia(0.3);
-  }
-  
-  /* Radar-style Grid Overlay */
-  .tactical-grid-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Allows user to click through to map controls/zoom */
-    z-index: 1000;
-    background-image: 
-      linear-gradient(to right, rgba(50, 75, 50, 0.15) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(50, 75, 50, 0.15) 1px, transparent 1px);
-    background-size: 80px 80px;
-  }
+  color: #6a8556;
+  font-size: 15px; 
+  font-weight: 900;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  -webkit-text-stroke: 0.3px black;
+  white-space: nowrap;
+
+}

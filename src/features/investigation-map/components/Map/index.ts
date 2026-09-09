@@ -1,1 +1,2 @@
-import * "./Map.css";
+export * from "./Map";
+export * from "./Map.css"
