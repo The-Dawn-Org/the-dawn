@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: org-a-runner
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          echo "Running on my Kubernetes runner"
