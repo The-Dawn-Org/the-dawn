@@ -20,6 +20,7 @@ import "dayjs/locale/he";
 import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
+import { InvestigationMap } from "./features/investigation-map/investigationMap";
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",
@@ -28,7 +29,7 @@ const SCREEN_PATHS: Record<NavigationItemId, string> = {
 };
 
 const PATH_SCREEN_IDS = Object.fromEntries(
-  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId]),
+  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId])
 ) as Record<string, NavigationItemId>;
 
 const commandRoomTheme = createTheme({
@@ -76,7 +77,7 @@ const AppRoutes = () => {
         />
         <Route
           path={SCREEN_PATHS["investigation-map"]}
-          element={<UnderDevelopmentScreen />}
+          element={<InvestigationMap />}
         />
         <Route
           path={SCREEN_PATHS["operational-performance"]}
