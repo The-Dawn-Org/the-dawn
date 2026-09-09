@@ -11,13 +11,12 @@ jobs:
   trigger:
     runs-on: self-hosted
 
-    steps: 
+    steps:
       - name: Trigger Pipeline
         run: |
           gh workflow run main.yml \
             --repo Amit11234/until-midnight-infra \
-            -- ref main \
+            --ref main \
             -f environment=dev
         env:
           GH_TOKEN: ${{ secrets.INFRA_TOKEN }}
-          
