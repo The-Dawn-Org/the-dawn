@@ -1,8 +1,8 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { PieChart } from '@mui/x-charts/PieChart';
-import { useDrawingArea } from '@mui/x-charts/hooks';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { useDrawingArea } from "@mui/x-charts/hooks";
 
 export type InterceptionStatsProps = {
   title: string;
@@ -12,12 +12,15 @@ export type InterceptionStatsProps = {
   onSelect?: (title: string) => void;
 };
 
-const COLOR_HIT = '#8cb85c';
-const COLOR_MISS = '#c0392b';
+const COLOR_HIT = "#8cb85c";
+const COLOR_MISS = "#c0392b";
+const COLOR_MUTED = "rgba(255,255,255,0.55)";
 
-type CenterLabelProps = { value: string; caption: string };
+const ACCURACY_PASS_THRESHOLD = 50;
 
-const CenterLabel = ({ value, caption }: CenterLabelProps) => {
+type CenterLabelProps = { value: string; caption: string; color: string };
+
+const CenterLabel = ({ value, caption, color }: CenterLabelProps) => {
   const { width, height, left, top } = useDrawingArea();
   const cx = left + width / 2;
   const cy = top + height / 2;
@@ -29,7 +32,7 @@ const CenterLabel = ({ value, caption }: CenterLabelProps) => {
         y={cy - 6}
         textAnchor="middle"
         dominantBaseline="central"
-        style={{ fill: COLOR_HIT, fontSize: 26, fontWeight: 700 }}
+        style={{ fill: color, fontSize: 26, fontWeight: 700 }}
       >
         {value}
       </text>
@@ -38,13 +41,13 @@ const CenterLabel = ({ value, caption }: CenterLabelProps) => {
         y={cy + 20}
         textAnchor="middle"
         dominantBaseline="central"
-        style={{ fill: 'rgba(255,255,255,0.55)', fontSize: 12 }}
+        style={{ fill: COLOR_MUTED, fontSize: 12 }}
       >
         {caption}
       </text>
     </g>
   );
-}
+};
 
 export const InterceptionStats = ({
   title,
@@ -55,13 +58,15 @@ export const InterceptionStats = ({
 }: InterceptionStatsProps) => {
   const total = intercepted + missed;
   const accuracy = total > 0 ? (intercepted / total) * 100 : 0;
-  const missedLabel = 'החטיא';
-  const accuracyLabel = 'דיוק';
-  const interceptedLabel = 'יורט';
+  const accuracyColor =
+    total === 0 ? COLOR_MUTED : accuracy >= ACCURACY_PASS_THRESHOLD ? COLOR_HIT : COLOR_MISS;
+  const missedLabel = "החטיא";
+  const accuracyLabel = "דיוק";
+  const interceptedLabel = "יורט";
 
   const data = [
-    { id: 'intercepted', value: intercepted, label: interceptedLabel, color: COLOR_HIT },
-    { id: 'missed', value: missed, label: missedLabel, color: COLOR_MISS },
+    { id: "intercepted", value: intercepted, label: interceptedLabel, color: COLOR_HIT },
+    { id: "missed", value: missed, label: missedLabel, color: COLOR_MISS },
   ].filter((d) => d.value > 0);
 
   const isClickable = Boolean(onSelect);
@@ -71,7 +76,7 @@ export const InterceptionStats = ({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleActivate();
     }
@@ -80,7 +85,7 @@ export const InterceptionStats = ({
   return (
     <Box
       dir="rtl"
-      role={isClickable ? 'button' : undefined}
+      role={isClickable ? "button" : undefined}
       tabIndex={isClickable ? 0 : undefined}
       aria-label={isClickable ? title : undefined}
       onClick={isClickable ? handleActivate : undefined}
@@ -88,23 +93,23 @@ export const InterceptionStats = ({
       sx={{
         p: 3,
         borderRadius: 3,
-        bgcolor: '#1a2118',
-        border: '1px solid rgba(255,255,255,0.08)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        bgcolor: "#1a2118",
+        border: "1px solid rgba(255,255,255,0.08)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         gap: 1,
-        width: 'fit-content',
+        width: "fit-content",
         ...(isClickable && {
-          cursor: 'pointer',
-          transition: 'border-color 150ms ease, background-color 150ms ease',
-          '&:hover': {
-            bgcolor: '#202a1d',
-            borderColor: 'rgba(255,255,255,0.24)',
+          cursor: "pointer",
+          transition: "border-color 150ms ease, background-color 150ms ease",
+          "&:hover": {
+            bgcolor: "#202a1d",
+            borderColor: "rgba(255,255,255,0.24)",
           },
-          '&:focus-visible': {
-            outline: '2px solid',
-            outlineColor: 'primary.main',
+          "&:focus-visible": {
+            outline: "2px solid",
+            outlineColor: "primary.main",
             outlineOffset: 2,
           },
         }),
@@ -129,16 +134,17 @@ export const InterceptionStats = ({
         margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
       >
         <CenterLabel
-          value={total > 0 ? `${accuracy.toFixed(1)}%` : '—'}
+          value={total > 0 ? `${accuracy.toFixed(1)}%` : "—"}
           caption={accuracyLabel}
+          color={accuracyColor}
         />
       </PieChart>
 
-      <Typography sx={{ color: 'rgba(255,255,255,0.92)', fontSize: 16, fontWeight: 600 }}>
+      <Typography sx={{ color: "rgba(255,255,255,0.92)", fontSize: 16, fontWeight: 600 }}>
         {title}
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 1.5, fontSize: 13 }}>
+      <Box sx={{ display: "flex", gap: 1.5, fontSize: 13 }}>
         <Typography component="span" sx={{ color: COLOR_HIT, fontSize: 13 }}>
           {intercepted} {interceptedLabel}
         </Typography>
@@ -148,4 +154,4 @@ export const InterceptionStats = ({
       </Box>
     </Box>
   );
-}
+};

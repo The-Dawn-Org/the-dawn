@@ -2,21 +2,13 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 export type RegionStatsRowProps = {
-  /** Region name, e.g. "צפון" */
   region: string;
-  /** Number of successful interceptions */
   intercepted: number;
-  /** Number of missed/leakers */
   missed: number;
-  /** Civilian casualties */
   casualties: number;
-  /** Damage cost in thousands, e.g. 1971 for 1,971K */
   damageK: number;
-  /** Number of events recorded in the region */
-  eventCount?: number;
-  /** Placeholder scale for the casualties bar until a real one is defined */
+  eventCount: number;
   maxCasualties?: number;
-  /** Placeholder scale for the damage bar until a real one is defined */
   maxDamageK?: number;
 };
 
