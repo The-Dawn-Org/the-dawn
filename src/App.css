@@ -72,7 +72,7 @@
 .economic-graph__empty {
   display: grid;
   min-height: 330px;
-  color: #84917f;
+  color: rgb(205, 49, 49);
   place-items: center;
 }
 

@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
-import type { CostBySystemItem } from "./economicAnalysis.types";
+import type { CostBySystemItem } from "../types";
 
 interface ExpensesByAmmunitionChartProps {
   data: CostBySystemItem[];
