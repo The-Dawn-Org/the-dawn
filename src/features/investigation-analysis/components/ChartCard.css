@@ -1,0 +1,43 @@
+.chart-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 24px 8px;
+  border: 1px solid rgba(232, 238, 242, 0.08);
+  border-radius: 12px;
+  background: #121d13;
+}
+
+.chart-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chart-card__title.MuiTypography-root {
+  margin: 0;
+  color: #e8eef2;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.chart-card__subtitle.MuiTypography-root {
+  margin: 0;
+  color: #91a0b4;
+  font-size: 0.8125rem;
+}
+
+.chart-card__body {
+  min-width: 0;
+}
+
+.chart-card__body .MuiChartsGrid-line {
+  stroke: rgba(232, 238, 242, 0.08);
+}
+
+.chart-card__body .MuiBarLabel-root {
+  fill: #e8eef2;
+  font-size: 0.75rem;
+  font-weight: 600;
+}

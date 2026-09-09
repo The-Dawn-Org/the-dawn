@@ -7,10 +7,7 @@ import PaidIcon from "@mui/icons-material/Paid";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { type Dayjs } from "dayjs";
-import {
-  useAppFilters,
-  type DateRangeFilter,
-} from "../filters/AppFiltersContext";
+import { useAppFilters, type DateRangeFilter } from "../filters/AppFiltersContext";
 import logoUrl from "../../assets/logo.png";
 import "./MainNavbar.css";
 
@@ -53,10 +50,7 @@ const useCurrentDateTime = () => {
   const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
 
   useEffect(() => {
-    const intervalId = window.setInterval(
-      () => setCurrentDateTime(new Date()),
-      60_000,
-    );
+    const intervalId = window.setInterval(() => setCurrentDateTime(new Date()), 60_000);
 
     return () => window.clearInterval(intervalId);
   }, []);
@@ -87,10 +81,7 @@ const Brand = () => {
 const DateRangeControls = () => {
   const { dateRange, setDateRange } = useAppFilters();
 
-  const updateDateRange = (
-    field: keyof DateRangeFilter,
-    value: Dayjs | null,
-  ) => {
+  const updateDateRange = (field: keyof DateRangeFilter, value: Dayjs | null) => {
     if (!value?.isValid()) {
       return;
     }
@@ -113,11 +104,7 @@ const DateRangeControls = () => {
   return (
     <Box className="navbar__date-range">
       <Box className="navbar__date-control">
-        <Typography
-          component="label"
-          htmlFor="start-date-time"
-          className="navbar__date-label"
-        >
+        <Typography component="label" htmlFor="start-date-time" className="navbar__date-label">
           תאריך ושעת התחלה
         </Typography>
         <DateTimePicker
@@ -138,11 +125,7 @@ const DateRangeControls = () => {
         />
       </Box>
       <Box className="navbar__date-control">
-        <Typography
-          component="label"
-          htmlFor="end-date-time"
-          className="navbar__date-label"
-        >
+        <Typography component="label" htmlFor="end-date-time" className="navbar__date-label">
           תאריך ושעת סיום
         </Typography>
         <DateTimePicker
@@ -180,31 +163,19 @@ const OperationalControls = () => (
   </Box>
 );
 
-export const MainNavbar = ({
-  activeItemId = "investigation-map",
-  onNavigate,
-}: MainNavbarProps) => {
+export const MainNavbar = ({ activeItemId = "investigation-map", onNavigate }: MainNavbarProps) => {
   const handleNavigate = (itemId: NavigationItemId) => {
     onNavigate?.(itemId);
   };
 
   return (
-    <AppBar
-      component="header"
-      position="static"
-      elevation={0}
-      className="navbar"
-    >
+    <AppBar component="header" position="static" elevation={0} className="navbar">
       <Toolbar className="navbar__top">
         <Brand />
         <OperationalControls />
       </Toolbar>
 
-      <Toolbar
-        component="nav"
-        aria-label="ניווט ראשי"
-        className="navbar__navigation"
-      >
+      <Toolbar component="nav" aria-label="ניווט ראשי" className="navbar__navigation">
         {NAVIGATION_ITEMS.map(({ id, label, Icon: ItemIcon }) => {
           const isActive = id === activeItemId;
 
@@ -212,12 +183,7 @@ export const MainNavbar = ({
             <Button
               key={id}
               color="inherit"
-              startIcon={
-                <ItemIcon
-                  aria-hidden="true"
-                  className="navbar__navigation-icon"
-                />
-              }
+              startIcon={<ItemIcon aria-hidden="true" className="navbar__navigation-icon" />}
               aria-current={isActive ? "page" : undefined}
               onClick={() => handleNavigate(id)}
               className={`navbar__navigation-item${isActive ? " navbar__navigation-item--active" : ""}`}

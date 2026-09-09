@@ -1,18 +1,5 @@
-import {
-  Box,
-  CssBaseline,
-  ThemeProvider,
-  Typography,
-  createTheme,
-} from "@mui/material";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Box, CssBaseline, ThemeProvider, Typography, createTheme } from "@mui/material";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { heIL } from "@mui/x-date-pickers/locales";
@@ -60,8 +47,7 @@ const UnderDevelopmentScreen = () => (
 const AppRoutes = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const activeScreenId =
-    PATH_SCREEN_IDS[location.pathname] ?? "investigation-map";
+  const activeScreenId = PATH_SCREEN_IDS[location.pathname] ?? "investigation-map";
 
   const handleNavigate = (screenId: NavigationItemId) => {
     navigate(SCREEN_PATHS[screenId]);
@@ -71,26 +57,14 @@ const AppRoutes = () => {
     <>
       <MainNavbar activeItemId={activeScreenId} onNavigate={handleNavigate} />
       <Routes>
-        <Route
-          path="/"
-          element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
-        />
-        <Route
-          path={SCREEN_PATHS["investigation-map"]}
-          element={<UnderDevelopmentScreen />}
-        />
+        <Route path="/" element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />} />
+        <Route path={SCREEN_PATHS["investigation-map"]} element={<UnderDevelopmentScreen />} />
         <Route
           path={SCREEN_PATHS["operational-performance"]}
           element={<InvestigationAnalysisPage />}
         />
-        <Route
-          path={SCREEN_PATHS["economic-analysis"]}
-          element={<UnderDevelopmentScreen />}
-        />
-        <Route
-          path="*"
-          element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
-        />
+        <Route path={SCREEN_PATHS["economic-analysis"]} element={<UnderDevelopmentScreen />} />
+        <Route path="*" element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />} />
       </Routes>
     </>
   );
@@ -103,9 +77,7 @@ export const App = () => {
       <LocalizationProvider
         dateAdapter={AdapterDayjs}
         adapterLocale="he"
-        localeText={
-          heIL.components.MuiLocalizationProvider.defaultProps.localeText
-        }
+        localeText={heIL.components.MuiLocalizationProvider.defaultProps.localeText}
       >
         <BrowserRouter>
           <AppFiltersProvider>
