@@ -1,13 +1,15 @@
 import { useMemo } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { countEventsBySystem } from "../data/events";
+import { countEventsBySystem } from "../data/droneEvents";
 import { useFilteredEvents } from "../data/useFilteredEvents";
 import { ChartCard } from "./ChartCard";
 import {
+  CATEGORY_AXIS_HEIGHT,
   CATEGORY_TICK_STYLE,
   CHART_COLORS,
   CHART_HEIGHT,
   NUMBER_FORMATTER,
+  SHOW_EVERY_CATEGORY_TICK,
   VALUE_TICK_STYLE,
 } from "./chartTheme";
 
@@ -41,6 +43,8 @@ export const EventsBySystemChart = () => {
           {
             scaleType: "band",
             dataKey: "category",
+            height: CATEGORY_AXIS_HEIGHT,
+            tickLabelInterval: SHOW_EVERY_CATEGORY_TICK,
             reverse: true,
             categoryGapRatio: 0.65,
             disableLine: true,

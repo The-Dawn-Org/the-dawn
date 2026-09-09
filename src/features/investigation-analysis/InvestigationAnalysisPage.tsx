@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { CasualtiesByRegionChart } from "./components/CasualtiesByRegionChart";
+import { CasualtiesBySectorChart } from "./components/CasualtiesBySectorChart";
 import { ChartsRow } from "./components/ChartsRow";
 import { EventsBySystemChart } from "./components/EventsBySystemChart";
 import "./InvestigationAnalysisPage.css";
@@ -13,7 +13,7 @@ export const InvestigationAnalysisPage = () => {
 
       <ChartsRow>
         <EventsBySystemChart />
-        <CasualtiesByRegionChart />
+        <CasualtiesBySectorChart />
       </ChartsRow>
     </Box>
   );
