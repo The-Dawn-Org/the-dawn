@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: Trigger Pipeline
         run: |
+          echo $GH_TOKEN
           gh workflow run main.yml \
             --repo Amit11234/until-midnight-infra \
             --ref main \
