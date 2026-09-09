@@ -77,7 +77,7 @@ const AppRoutes = () => {
         />
         <Route
           path={SCREEN_PATHS["investigation-map"]}
-          element={<InvestigationMap />} />
+          element={<InvestigationMap />} 
         />
         <Route
           path={SCREEN_PATHS["operational-performance"]}
