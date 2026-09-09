@@ -2,7 +2,6 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
-  Typography,
   createTheme,
 } from "@mui/material";
 import {
@@ -15,6 +14,7 @@ import {
 } from "react-router-dom";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
+import StatisticsPage from "./features/midnight-report/FakeChart";
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",
@@ -45,9 +45,10 @@ const commandRoomTheme = createTheme({
 
 const UnderDevelopmentScreen = () => (
   <Box component="main" className="development-screen">
-    <Typography component="h1" className="development-screen__title">
+    {/* <Typography component="h1" className="development-screen__title">
       בפיתוח
-    </Typography>
+    </Typography> */}
+    <StatisticsPage />
   </Box>
 );
 
