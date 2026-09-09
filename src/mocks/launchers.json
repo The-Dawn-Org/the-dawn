@@ -1,0 +1,38 @@
+[
+  {
+    "launcherId": 0,
+    "launcherType": { "launcherTypeId": 0, "name": "Iron Dome Battery", "reloadTime": 15 },
+    "location": { "lat": 32.0853, "lng": 34.7818 },
+    "asl": 45,
+    "agl": 0,
+    "amount": 20,
+    "active": true
+  },
+  {
+    "launcherId": 1,
+    "launcherType": { "launcherTypeId": 1, "name": "Patriot Launcher", "reloadTime": 30 },
+    "location": { "lat": 31.7683, "lng": 35.2137 },
+    "asl": 780,
+    "agl": 0,
+    "amount": 16,
+    "active": true
+  },
+  {
+    "launcherId": 2,
+    "launcherType": { "launcherTypeId": 2, "name": "David's Sling Launcher", "reloadTime": 25 },
+    "location": { "lat": 32.7940, "lng": 34.9896 },
+    "asl": 30,
+    "agl": 0,
+    "amount": 12,
+    "active": false
+  },
+  {
+    "launcherId": 3,
+    "launcherType": { "launcherTypeId": 3, "name": "Arrow-3 Battery", "reloadTime": 45 },
+    "location": { "lat": 29.5581, "lng": 34.9482 },
+    "asl": 15,
+    "agl": 0,
+    "amount": 8,
+    "active": true
+  }
+]

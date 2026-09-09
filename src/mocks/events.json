@@ -1,0 +1,62 @@
+[
+  {
+    "eventId": 0,
+    "interceptor": { "interceptorTypeId": 0, "type": "Tamir", "price": 50000 },
+    "launcher": { "launcherId": 0, "location": { "lat": 32.0853, "lng": 34.7818 } },
+    "region": "Central District",
+    "time": "2026-09-08T14:32:10Z",
+    "eventLocation": { "lat": 32.0900, "lng": 34.7900 },
+    "interceptionStatus": "Intercepted",
+    "eventStatus": "Closed",
+    "attackingBody": "Hostile Militia",
+    "drone": { "type": "NanoSwarm-Q9", "price": 900 }
+  },
+  {
+    "eventId": 1,
+    "interceptor": { "interceptorTypeId": 1, "type": "PAC-3", "price": 4000000 },
+    "launcher": { "launcherId": 1, "location": { "lat": 31.7683, "lng": 35.2137 } },
+    "region": "Jerusalem District",
+    "time": "2026-09-08T18:05:44Z",
+    "eventLocation": { "lat": 31.7750, "lng": 35.2200 },
+    "interceptionStatus": "Missed",
+    "eventStatus": "Closed",
+    "attackingBody": "Unknown State Actor",
+    "drone": { "type": "LoadBee-M2", "price": 8300 }
+  },
+  {
+    "eventId": 2,
+    "interceptor": { "interceptorTypeId": 2, "type": "Stunner", "price": 1000000 },
+    "launcher": { "launcherId": 2, "location": { "lat": 32.7940, "lng": 34.9896 } },
+    "region": "Haifa District",
+    "time": "2026-09-09T02:17:59Z",
+    "eventLocation": { "lat": 32.8000, "lng": 34.9950 },
+    "interceptionStatus": "In Progress",
+    "eventStatus": "Open",
+    "attackingBody": "Non-State Group A",
+    "drone": { "type": "Falcon-Long X4", "price": 18000 }
+  },
+  {
+    "eventId": 3,
+    "interceptor": { "interceptorTypeId": 4, "type": "Arrow-3 Interceptor", "price": 3500000 },
+    "launcher": { "launcherId": 3, "location": { "lat": 29.5581, "lng": 34.9482 } },
+    "region": "Southern District",
+    "time": "2026-09-09T05:48:21Z",
+    "eventLocation": { "lat": 29.5600, "lng": 34.9600 },
+    "interceptionStatus": "Intercepted",
+    "eventStatus": "Closed",
+    "attackingBody": "Unknown State Actor",
+    "drone": { "type": "Falcon-Long X4", "price": 18000 }
+  },
+  {
+    "eventId": 4,
+    "interceptor": { "interceptorTypeId": 3, "type": "C-RAM Round", "price": 15000 },
+    "launcher": { "launcherId": 0, "location": { "lat": 32.0853, "lng": 34.7818 } },
+    "region": "Central District",
+    "time": "2026-09-09T07:03:12Z",
+    "eventLocation": { "lat": 32.0870, "lng": 34.7850 },
+    "interceptionStatus": "Pending",
+    "eventStatus": "Open",
+    "attackingBody": "Hostile Militia",
+    "drone": { "type": "SkyMite-C7", "price": 2500 }
+  }
+]
