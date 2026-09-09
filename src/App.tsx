@@ -15,6 +15,11 @@ import {
 } from "react-router-dom";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar"
 import { useExportStatistics } from "./features/midnight-report/pdf-export/hooks/useExportStatisticsPdf";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { heIL } from "@mui/x-date-pickers/locales";
+import "dayjs/locale/he";
+import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import "./App.css";
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
@@ -79,7 +84,7 @@ const UnderDevelopmentScreen = () => {
     <button
      className="export-to-pdf-button"
      onClick={handleExport}>
-        Export Statistics
+        יצא לקובץ PDF
       </button>
   </Box>
   )
@@ -128,9 +133,19 @@ export const App = () => {
   return (
     <ThemeProvider theme={commandRoomTheme}>
       <CssBaseline />
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs}
+        adapterLocale="he"
+        localeText={
+          heIL.components.MuiLocalizationProvider.defaultProps.localeText
+        }
+      >
+        <BrowserRouter>
+          <AppFiltersProvider>
+            <AppRoutes />
+          </AppFiltersProvider>
+        </BrowserRouter>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };

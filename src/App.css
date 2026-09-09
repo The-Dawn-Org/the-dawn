@@ -1,6 +1,6 @@
 .development-screen {
   display: grid;
-  min-height: calc(100vh - 126px);
+  min-height: calc(100vh - 140px);
   place-items: center;
   padding: 24px;
   position: relative;
