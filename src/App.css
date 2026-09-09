@@ -5,6 +5,101 @@
   padding: 24px;
 }
 
+.economic-analysis {
+  display: grid;
+  grid-template-columns: minmax(620px, 1fr);
+  gap: 20px;
+  padding: 24px;
+}
+
+.economic-graph {
+  min-height: 430px;
+  overflow: hidden;
+  background: #121d13;
+  border: 1px solid #2c4228;
+  border-radius: 13px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.economic-graph__header {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  padding: 0 22px;
+}
+
+.economic-graph__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.economic-graph__icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  color: #d5a62f;
+  place-items: center;
+}
+
+.economic-graph__icon .MuiSvgIcon-root {
+  font-size: 20px;
+}
+
+.economic-graph__title.MuiTypography-root {
+  color: #eef2ec;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.economic-graph__subtitle.MuiTypography-root {
+  margin: 3px 0 0;
+  color: #718092;
+  font-size: 0.76rem;
+}
+
+.economic-graph__divider {
+  border-color: #263a23;
+}
+
+.economic-graph__content {
+  min-height: 350px;
+  padding: 16px 18px 8px;
+}
+
+.economic-graph__loading,
+.economic-graph__empty {
+  display: grid;
+  min-height: 330px;
+  color: #84917f;
+  place-items: center;
+}
+
+.economic-graph__loading .MuiCircularProgress-root {
+  color: #6ca847;
+}
+
+.expenses-chart {
+  width: 100%;
+}
+
+.expenses-chart__labels {
+  display: grid;
+  margin: -7px 18px 0 182px;
+  color: #9ca994;
+  direction: ltr;
+  text-align: center;
+}
+
+.expenses-chart__labels .MuiTypography-root {
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .development-screen__title.MuiTypography-root {
   margin: 0;
   color: #91a0b4;
