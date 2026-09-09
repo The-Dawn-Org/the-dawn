@@ -8,12 +8,11 @@ export interface StatCardProps {
   title: string;
   /** The number/text to display */
   value: string;
-
   /** Accent color for icon + value */
   accent?: string;
 }
 
-export const StatSummaryCard = ({
+export const StatSumCard = ({
   icon,
   title,
   value,
