@@ -1,6 +1,6 @@
 [
-  { "droneTypeId": 0, "type": "SkyMite-C7", "price": 2500 },
-  { "droneTypeId": 1, "type": "LoadBee-M2", "price": 8300 },
-  { "droneTypeId": 2, "type": "Falcon-Long X4", "price": 18000 },
-  { "droneTypeId": 3, "type": "NanoSwarm-Q9", "price": 900 }
+  { "droneTypeId": 0, "type": "סקימייט סי-7", "price": 2500 },
+  { "droneTypeId": 1, "type": "לואדבי אמ-2", "price": 8300 },
+  { "droneTypeId": 2, "type": "פלקון-לונג אקס-2", "price": 18000 },
+  { "droneTypeId": 3, "type": "ננוסוורם קיו-9", "price": 900 }
 ]
