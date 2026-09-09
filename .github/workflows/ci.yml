@@ -7,16 +7,20 @@ on:
     tags:
       - '*'
 
-jobs:
-  trigger:
-    runs-on: self-hosted
+# jobs:
+#   trigger:
+#     runs-on: self-hosted
 
-    steps:
-      - name: Trigger Pipeline
-        run: |
-          echo $GH_TOKEN
-          gh workflow run main.yml \
-            --repo Amit11234/until-midnight-infra \
-            --ref main 
-        env:
-          GH_TOKEN: ${{ secrets.INFRA_TOKEN }}
+#     steps:
+#       - name: Trigger Pipeline
+#         run: |
+#           echo $GH_TOKEN
+#           gh workflow run main.yml \
+#             --repo Amit11234/until-midnight-infra \
+#             --ref main 
+#         env:
+#           GH_TOKEN: ${{ secrets.INFRA_TOKEN }}
+
+jobs:
+  pipeline:
+    uses: Amit11234/until-midnight-infra/.github/workflows/main.yml@main
