@@ -2,8 +2,8 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
-  Typography,
   createTheme,
+  Typography,
 } from "@mui/material";
 import {
   BrowserRouter,
@@ -13,17 +13,20 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
+import { useExportStatistics } from "./features/midnight-report/pdf-export/hooks/useExportStatisticsPdf";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { heIL } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/he";
-import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
-import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
+import {
+  AppFiltersProvider,
+  useAppFilters,
+} from "./app/filters/AppFiltersContext";
 import "./App.css";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
-import { getEventById } from "./api/endpoints/events";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -78,12 +81,42 @@ const commandRoomTheme = createTheme({
 });
 
 const UnderDevelopmentScreen = () => {
+  const { exportStatistics } = useExportStatistics();
+
+  const handleExport = async () => {
+    let url: string | undefined;
+    try {
+      const currentUrl = window.location.href;
+      const pdf = await exportStatistics(`${currentUrl}`);
+
+      url = URL.createObjectURL(pdf);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "statistics.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Failed to export statistics:", error);
+    } finally {
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
+    }
+  };
+
   return (
-    <Box component="main" className="development-screen">
-      <Typography component="h1" className="development-screen__title">
-        בפיתוח
-      </Typography>
-    </Box>
+    <>
+      <Box component="main" className="development-screen">
+        <Typography component="h1" className="development-screen__title">
+          בפיתוח
+        </Typography>
+        <button className="export-to-pdf-button" onClick={handleExport}>
+          יצא לקובץ PDF
+        </button>
+      </Box>
+    </>
   );
 };
 
@@ -95,6 +128,38 @@ const AppRoutes = () => {
 
   const handleNavigate = (screenId: NavigationItemId) => {
     navigate(SCREEN_PATHS[screenId]);
+  };
+
+  const { exportStatistics } = useExportStatistics();
+  const { dateRange } = useAppFilters();
+
+  const handleExport = async () => {
+    let url: string | undefined;
+
+    try {
+      const currentUrl = new URL(window.location.href);
+
+      currentUrl.searchParams.set("startDate", dateRange.startDate);
+      currentUrl.searchParams.set("endDate", dateRange.endDate);
+
+      const pdf = await exportStatistics(currentUrl.toString());
+
+      url = URL.createObjectURL(pdf);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "statistics.pdf";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Failed to export statistics:", error);
+    } finally {
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
+    }
   };
 
   return (
@@ -122,6 +187,9 @@ const AppRoutes = () => {
           element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
         />
       </Routes>
+      <button className="export-to-pdf-button" onClick={handleExport}>
+        יצא לקובץ PDF
+      </button>
     </>
   );
 };

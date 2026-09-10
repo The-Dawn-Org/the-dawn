@@ -4,7 +4,6 @@ import type { EventOutcome } from "./widget";
 import type { InterceptionEvent } from "../../types/tableTypes";
 import type { FC } from "react";
 
-
 export interface EventDetailsCardProps {
   event: InterceptionEvent;
 }
@@ -26,9 +25,7 @@ const formatDateTime = (iso: string) =>
     timeStyle: "short",
   }).format(new Date(iso));
 
-export const EventDetailsCard: FC<EventDetailsCardProps> = ({
-  event
-})=> {
+export const EventDetailsCard: FC<EventDetailsCardProps> = ({ event }) => {
   const outcome = getEventOutcome(event.interceptionStatus);
   const accentColor = outcome === "success" ? "success.main" : "error.main";
 
@@ -37,7 +34,10 @@ export const EventDetailsCard: FC<EventDetailsCardProps> = ({
   const metrics: { label: string; value: string; status?: EventOutcome }[] = [
     { label: "סטטוס אירוע", value: event.eventStatus },
     { label: "מזהה אירוע", value: String(event.eventId) },
-    { label: "נזק כספי", value: formatCurrency(event.interceptor.price - event.drone.price) },
+    {
+      label: "נזק כספי",
+      value: formatCurrency(event.interceptor.price - event.drone.price),
+    },
     { label: "מערכת הגנה", value: event.interceptor.type },
     {
       label: "נפגעים מהרחפן",
@@ -63,7 +63,13 @@ export const EventDetailsCard: FC<EventDetailsCardProps> = ({
           color: "common.white",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography variant="h6" sx={{ fontWeight: 700, color: accentColor }}>
             {event.interceptionStatus}
           </Typography>
@@ -92,19 +98,24 @@ export const EventDetailsCard: FC<EventDetailsCardProps> = ({
         }}
       >
         {metrics.map((metric, index) => {
-          const isDanglingLast = index === metrics.length - 1 && metrics.length % 2 !== 0;
+          const isDanglingLast =
+            index === metrics.length - 1 && metrics.length % 2 !== 0;
 
           return (
             <Box
               key={metric.label}
               sx={{ gridColumn: isDanglingLast ? "1 / -1" : undefined }}
             >
-              <MetricCard fullWidth label={metric.label} value={metric.value} status={metric.status} />
+              <MetricCard
+                fullWidth
+                label={metric.label}
+                value={metric.value}
+                status={metric.status}
+              />
             </Box>
           );
         })}
       </Box>
     </Box>
   );
-}
-
+};

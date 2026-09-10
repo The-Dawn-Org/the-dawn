@@ -1,5 +1,6 @@
 import { axiosInstance } from "../axios";
 import type { Event } from "../../types";
+import type { AIResponse } from "../../types/AIResponse";
 
 
 export const getEventById = async (id: number): Promise<Event> => {
@@ -7,3 +8,4 @@ export const getEventById = async (id: number): Promise<Event> => {
 
     return(response.data);
 };
+
