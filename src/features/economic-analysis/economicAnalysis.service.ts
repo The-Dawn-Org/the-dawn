@@ -26,6 +26,7 @@ export const getCostBySystem = async (
 
 export const getDrownToInterceptor = async (
   dateRange: DateRangeFilter,
+  signal?: AbortSignal,
 ): Promise<DrownToInterceptorType[]> => {
   const response = await financeApi.get<DrownToInterceptorType[]>(
     "/finance/daily-interceptions",
@@ -34,6 +35,7 @@ export const getDrownToInterceptor = async (
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
       },
+      signal,
     }
   );
 

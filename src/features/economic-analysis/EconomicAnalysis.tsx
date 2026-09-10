@@ -39,7 +39,6 @@ export const EconomicAnalysis = () => {
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
 
-  // console.log(drownToInterceptor);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -57,7 +56,7 @@ export const EconomicAnalysis = () => {
 
     getDrownToInterceptor(
       dateRange
-      // , abortController.signal
+      ,abortController.signal
     )
       .then((nextDrownToInterceptor) => {
         console.log(nextDrownToInterceptor);
@@ -69,6 +68,7 @@ export const EconomicAnalysis = () => {
         }
       })
       .finally(() => setIsLoadingDrownToInter(false));
+
 
     return () => abortController.abort();
   }, [dateRange]);
@@ -98,8 +98,6 @@ export const EconomicAnalysis = () => {
   const formatNumber = (value: number) => {
     return value.toLocaleString("en-US");
   };
-
-  // console.log(cardsInfo.interceptorsLaunched);
 
   return (
     <Box
