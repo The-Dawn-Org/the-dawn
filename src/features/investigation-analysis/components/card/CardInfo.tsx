@@ -1,52 +1,52 @@
-import React from "react";
 import { Box, Paper, Typography } from "@mui/material";
 import MetricCard from "./widget";
 import type { EventOutcome } from "./widget";
+import type { InterceptionEvent } from "../../types/tableTypes";
 
 // --- טיפוסים לפי מבנה האובייקט שהתקבל ---
 
-export interface InterceptorInfo {
-  interceptorTypeId: number;
-  type: string;
-  price: number;
-}
+// export interface InterceptorInfo {
+//   interceptorTypeId: number;
+//   type: string;
+//   price: number;
+// }
 
-export interface LauncherLocation {
-  lat: number;
-  lng: number;
-}
+// export interface LauncherLocation {
+//   lat: number;
+//   lng: number;
+// }
 
-export interface LauncherInfo {
-  launcherId: number;
-  location: LauncherLocation;
-}
+// export interface LauncherInfo {
+//   launcherId: number;
+//   location: LauncherLocation;
+// }
 
-export interface DroneInfo {
-  type: string;
-  price: number;
-}
+// export interface DroneInfo {
+//   type: string;
+//   price: number;
+// }
 
-export interface EventLocation {
-  lat: number;
-  lng: number;
-}
+// export interface EventLocation {
+//   lat: number;
+//   lng: number;
+// }
 
-export interface DefenseEvent {
-  eventId: number;
-  interceptor: InterceptorInfo;
-  launcher: LauncherInfo;
-  region: string;
-  time: string;
-  eventLocation: EventLocation;
-  interceptionStatus: string;
-  droneInjuryCount: number;
-  eventStatus: string;
-  attackingBody: string;
-  drone: DroneInfo;
-}
+// export interface DefenseEvent {
+//   eventId: number;
+//   interceptor: InterceptorInfo;
+//   launcher: LauncherInfo;
+//   region: string;
+//   time: string;
+//   eventLocation: EventLocation;
+//   interceptionStatus: string;
+//   droneInjuryCount: number;
+//   eventStatus: string;
+//   attackingBody: string;
+//   drone: DroneInfo;
+// }
 
 export interface EventDetailsCardProps {
-  event: DefenseEvent;
+  event: InterceptionEvent;
 }
 
 // --- פונקציה משותפת לקביעת הצלחה/כישלון (משמשת גם את TabCard) ---
