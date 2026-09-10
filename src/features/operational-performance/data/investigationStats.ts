@@ -23,12 +23,24 @@ export interface RegionSummary {
   eventCount: number;
 }
 
-enum droneDamageCost {
-  "SkyMite-C7"=10000,
-  "LoadBee-M2"=25000,
-  "Falcon-Long X4"=40000,
-  "NanoSwarm-Q9"=3000,
-}
+const droneDamageCost: Record<string, number> = {
+  "SkyMite-C7": 10000,
+  "LoadBee-M2": 25000,
+  "Falcon-Long X4": 40000,
+  "NanoSwarm-Q9": 3000,
+};
+
+/** A drone type missing from the map above falls back to 0 instead of poisoning the sum with NaN. */
+const damageCostFor = (droneType: string): number => {
+  const cost = droneDamageCost[droneType];
+
+  if (cost === undefined) {
+    console.warn("[investigationStats] no damage cost mapped for drone type:", droneType);
+    return 0;
+  }
+
+  return cost;
+};
 
 const groupBy = <T>(items: ReadonlyArray<T>, toKey: (item: T) => string) =>
   items.reduce<Record<string, T[]>>((groups, item) => {
@@ -60,7 +72,7 @@ export const summarizeByRegion = (events: ReadonlyArray<Event>): RegionSummary[]
       intercepted: regionEvents.filter(isIntercepted).length,
       missed: regionEvents.filter(isMissed).length,
       casualties: regionEvents.reduce((sum, event) => sum + event.droneInjuryCount, 0),
-      damageK: Math.round(regionEvents.reduce((sum, event) => sum + (isMissed(event) ? droneDamageCost[event.drone.type] : 0), 0) / 1000),
+      damageK: Math.round(regionEvents.reduce((sum, event) => sum + (isMissed(event) ? damageCostFor(event.drone.type) : 0), 0) / 1000),
       eventCount: regionEvents.length,
     }))
     .sort((first, second) => second.eventCount - first.eventCount);

@@ -7,5 +7,6 @@ export interface Launcher {
   asl: number;
   agl: number;
   amount: number;
+  launcherName: string;
   active: boolean;
 }
