@@ -58,6 +58,8 @@ export const InvestigationMap: FC = () => {
             flexDirection: "column",
             gap: 2,
             flexShrink: 0,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <StatisticsEventLogs events={events} />

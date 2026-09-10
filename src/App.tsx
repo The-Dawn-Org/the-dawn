@@ -2,8 +2,8 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
-  Typography,
   createTheme,
+  Typography,
 } from "@mui/material";
 import {
   BrowserRouter,
@@ -13,14 +13,18 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar"
+import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import { useExportStatistics } from "./features/midnight-report/pdf-export/hooks/useExportStatisticsPdf";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { heIL } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/he";
-import { AppFiltersProvider, useAppFilters } from "./app/filters/AppFiltersContext";
+import {
+  AppFiltersProvider,
+  useAppFilters,
+} from "./app/filters/AppFiltersContext";
 import "./App.css";
+import { InvestigationAnalysisPage } from "./features/operational-performance/InvestigationAnalysisPage";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
@@ -51,7 +55,7 @@ const SCREEN_PATHS: Record<NavigationItemId, string> = {
 };
 
 const PATH_SCREEN_IDS = Object.fromEntries(
-  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId])
+  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId]),
 ) as Record<string, NavigationItemId>;
 
 const commandRoomTheme = createTheme({
@@ -85,10 +89,10 @@ const UnderDevelopmentScreen = () => {
     try {
       const currentUrl = window.location.href;
       const pdf = await exportStatistics(`${currentUrl}`);
-  
+
       url = URL.createObjectURL(pdf);
       const link = document.createElement("a");
-  
+
       link.href = url;
       link.download = "statistics.pdf";
       document.body.appendChild(link);
@@ -98,25 +102,23 @@ const UnderDevelopmentScreen = () => {
       console.error("Failed to export statistics:", error);
     } finally {
       if (url) {
-      URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
       }
     }
   };
 
   return (
     <>
-  <Box component="main" className="development-screen">
-    <Typography component="h1" className="development-screen__title">
-      בפיתוח
-    </Typography>
-    <button
-     className="export-to-pdf-button"
-     onClick={handleExport}>
-        יצא לקובץ PDF
-    </button>
-  </Box>
-  </>
-  )
+      <Box component="main" className="development-screen">
+        <Typography component="h1" className="development-screen__title">
+          בפיתוח
+        </Typography>
+        <button className="export-to-pdf-button" onClick={handleExport}>
+          יצא לקובץ PDF
+        </button>
+      </Box>
+    </>
+  );
 };
 
 const AppRoutes = () => {
@@ -132,34 +134,34 @@ const AppRoutes = () => {
   const { exportStatistics } = useExportStatistics();
   const { dateRange } = useAppFilters();
 
-const handleExport = async () => {
-  let url: string | undefined;
+  const handleExport = async () => {
+    let url: string | undefined;
 
-  try {
-    const currentUrl = new URL(window.location.href);
+    try {
+      const currentUrl = new URL(window.location.href);
 
-    currentUrl.searchParams.set("startDate", dateRange.startDate);
-    currentUrl.searchParams.set("endDate", dateRange.endDate);
+      currentUrl.searchParams.set("startDate", dateRange.startDate);
+      currentUrl.searchParams.set("endDate", dateRange.endDate);
 
-    const pdf = await exportStatistics(currentUrl.toString());
+      const pdf = await exportStatistics(currentUrl.toString());
 
-    url = URL.createObjectURL(pdf);
+      url = URL.createObjectURL(pdf);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "statistics.pdf";
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "statistics.pdf";
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    console.error("Failed to export statistics:", error);
-  } finally {
-    if (url) {
-      URL.revokeObjectURL(url);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Failed to export statistics:", error);
+    } finally {
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
     }
-  }
-};
+  };
 
   return (
     <>
@@ -175,7 +177,7 @@ const handleExport = async () => {
         />
         <Route
           path={SCREEN_PATHS["operational-performance"]}
-          element={<UnderDevelopmentScreen />}
+          element={<InvestigationAnalysisPage />}
         />
         <Route
           path={SCREEN_PATHS["economic-analysis"]}
@@ -185,11 +187,17 @@ const handleExport = async () => {
           path="*"
           element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
         />
+        <Route
+          path={SCREEN_PATHS["economic-analysis"]}
+          element={<UnderDevelopmentScreen />}
+        />
+        <Route
+          path="*"
+          element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
+        />
       </Routes>
-      <button
-        className="export-to-pdf-button"
-        onClick={handleExport}>
-            יצא לקובץ PDF
+      <button className="export-to-pdf-button" onClick={handleExport}>
+        יצא לקובץ PDF
       </button>
     </>
   );

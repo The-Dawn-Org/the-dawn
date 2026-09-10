@@ -1,0 +1,13 @@
+.investigation-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+}
+
+.investigation-analysis__title.MuiTypography-root {
+  margin: 0;
+  color: #e8eef2;
+  font-size: 1.5rem;
+  font-weight: 600;
+}

@@ -8,7 +8,7 @@ export const getCostBySystem = async (
   dateRange: DateRangeFilter,
   signal?: AbortSignal,
 ): Promise<SystemCost[]> => {
-  const response = await axiosInstance.get<SystemCost[]>(
+  const response = await financeApi.get<SystemCost[]>(
     "/finance/cost-by-system",
     {
       params: {
@@ -18,6 +18,8 @@ export const getCostBySystem = async (
       signal,
     },
   );
+
+  console.log("[economicAnalysisAPI] GET /finance/cost-by-system ->", response.data);
 
   return response.data;
 };
@@ -36,6 +38,8 @@ export const getCardsInfoItem = async (
       signal,
     },
   );
+
+  console.log("[economicAnalysisAPI] GET /finance/cards ->", response.data);
 
   return response.data;
 };

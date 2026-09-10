@@ -24,8 +24,11 @@ export const useEvents = (filters: FilterEventsDto = {}) => {
       
       try {
         const response = await axiosInstance.post<Event[]>('/events/all-events', filters);
+        console.log('[useEvents] POST /events/all-events filters:', filters);
+        console.log('[useEvents] response.data:', response.data);
         setEvents(response.data);
       } catch (err: any) {
+        console.error('[useEvents] request failed:', err);
         setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
