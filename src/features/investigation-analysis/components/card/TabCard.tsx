@@ -13,8 +13,6 @@ import {
 
 import EventDetailsCard, { getEventOutcome } from "./CardInfo";
 import type { DefenseEvent } from "./CardInfo";
-import { getAIEventAnalysisById } from "../../../../api/endpoints/events";
-import type { AIResponse } from "../../../../types/AIResponse";
 import { useAIResponse } from "../../../../hooks/useAIResponse";
 
 export interface InfoEventsCardProps {
@@ -61,7 +59,7 @@ export default function InfoEventsCard({
   title = "יירוט",
 }: InfoEventsCardProps) {
   const [tabIndex, setTabIndex] = useState(0);
-  const { analysis } = useAIResponse(event.eventId);
+  const { analysis, loading, error } = useAIResponse(event);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
@@ -223,32 +221,76 @@ export default function InfoEventsCard({
 
         <Divider />
 
-        {/* ========================= */}
-        {/* טאב 1: מידע כללי */}
-        {/* ========================= */}
-
         <TabPanel value={tabIndex} index={0}>
           <EventDetailsCard event={event} />
         </TabPanel>
 
-        {/* ========================= */}
-        {/* טאב 2: רצף אירועים */}
-        {/* ========================= */}
-
         <TabPanel value={tabIndex} index={1}>
+          {" "}
           <Typography variant="h6" sx={{ mb: 2 }}>
-            רצף אירועים
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{
-              color: "text.secondary",
-              lineHeight: 1.8,
-            }}
-          >
-            {analysis.text}
-          </Typography>
+            {" "}
+            רצף אירועים{" "}
+          </Typography>{" "}
+          {loading ? (
+            <Box
+              sx={{
+                minHeight: 200,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 36,
+                  height: 36,
+                  border: "4px solid",
+                  borderColor: "divider",
+                  borderTopColor: "primary.main",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite",
+                  "@keyframes spin": {
+                    from: { transform: "rotate(0deg)" },
+                    to: { transform: "rotate(360deg)" },
+                  },
+                }}
+              />
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                טוען את רצף האירועים...
+              </Typography>
+            </Box>
+          ) : error ? (
+            <Box
+              sx={{
+                minHeight: 200,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                gap: 1,
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ color: "error.main", fontWeight: 700 }}
+              >
+                שגיאה בטעינת רצף האירועים
+              </Typography>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                לא ניתן היה לקבל את הנתונים מהשרת. נסה שוב מאוחר יותר.
+              </Typography>
+            </Box>
+          ) : (
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", lineHeight: 1.8 }}
+            >
+              {analysis.text}
+            </Typography>
+          )}
         </TabPanel>
       </CardContent>
     </Card>
