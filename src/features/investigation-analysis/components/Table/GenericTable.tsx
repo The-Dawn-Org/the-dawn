@@ -3,7 +3,7 @@ import GenericTableRow from "./TableRow";
 import type { Column } from "../../types/tableTypes";
 import { Box } from "@mui/system";
 import type { ReactElement } from "react";
-import { BACKGROUND_GREEN } from "./consts";
+import { BACKGROUND_GREEN, HIGHLIGHT_WHITE, SOFT_GREEN } from "./consts";
 
 interface GenericTableProps<T> {
     targetSubjects: T[];
@@ -58,7 +58,7 @@ const GenericTable = <T,>({
 
             <TableContainer component={Paper}>
                     <Table sx={{
-                        minWidth: 600,
+                        minWidth: 400,
                         }} aria-label="table">
                         <TableHead>
                             <TableRow>
@@ -76,6 +76,23 @@ const GenericTable = <T,>({
                             overflowY: "auto",
                             overflowX: "hidden",
                             background: BACKGROUND_GREEN,
+
+                            "&::-webkit-scrollbar": {
+                                width: "8px",
+                              },
+                          
+                              "&::-webkit-scrollbar-track": {
+                                background: BACKGROUND_GREEN,
+                              },
+                          
+                              "&::-webkit-scrollbar-thumb": {
+                                background: SOFT_GREEN,
+                                borderRadius: "4px",
+                              },
+                          
+                              "&::-webkit-scrollbar-thumb:hover": {
+                                background: HIGHLIGHT_WHITE,
+                              },
                         }}>
                     <Table>
                         <TableBody>
