@@ -1,34 +1,24 @@
 import { Box } from "@mui/material";
 import { Statistics } from "./Statistics";
-import { useState, type FC } from "react";
+import { type FC } from "react";
 import type { Event } from "../../../types";
 import type { InterceptionEvent } from "../../investigation-analysis/types/tableTypes";
-import InfoEventsCard from "../../investigation-analysis/components/card/TabCard";
 import GenericTable from "../../investigation-analysis/components/Table/GenericTable";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { columns } from "../../investigation-analysis/components/Table/TableColumnDefinition";
-import { getEventById } from "../../../api/endpoints/events";
 
 type StatisticsEventLogsProps = {
   events: Event[];
+  onEventSelect: (eventId: number) => void;
 };
 
 export const StatisticsEventLogs: FC<StatisticsEventLogsProps> = ({
   events,
+  onEventSelect,
 }) => {
-  const [selectedEvent, setSelectedEvent] = useState<InterceptionEvent | null>(
-    null
-  );
-
-  const handleRowClick = async (info: InterceptionEvent) => {
-    setSelectedEvent(await getEventById(info.eventId));
+  const handleRowClick = (info: InterceptionEvent) => {
+    onEventSelect(info.eventId);
   };
-
-  const handleClosePopup = () => {
-    setSelectedEvent(null);
-  };
-
-  // const { events } = useEvents();
 
   return (
     <Box
@@ -65,10 +55,6 @@ export const StatisticsEventLogs: FC<StatisticsEventLogsProps> = ({
           onRowClick={handleRowClick}
         />
       </Box>
-
-      {selectedEvent && (
-        <InfoEventsCard event={selectedEvent} onClose={handleClosePopup} />
-      )}
     </Box>
   );
 };

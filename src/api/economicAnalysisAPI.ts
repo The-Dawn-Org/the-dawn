@@ -8,7 +8,7 @@ export const getCostBySystem = async (
   dateRange: DateRangeFilter,
   signal?: AbortSignal,
 ): Promise<SystemCost[]> => {
-  const response = await financeApi.get<SystemCost[]>(
+  const response = await axiosInstance.get<SystemCost[]>(
     "/finance/cost-by-system",
     {
       params: {

@@ -8,15 +8,29 @@ import { StatisticsEventLogs } from "./Componants/EventsAndStatistics";
 import L from "leaflet";
 import { Marker, Popup } from "react-leaflet";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
+import InfoEventsCard from "../investigation-analysis/components/card/TabCard";
+import type { InterceptionEvent } from "../investigation-analysis/types/tableTypes";
+import { getEventById } from "../../api/endpoints/events";
 
 export const InvestigationMap: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<Boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState<InterceptionEvent | null>(
+    null
+  );
 
   const { dateRange } = useAppFilters();
   const { events } = useEvents({
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
   });
+
+  const handleEventSelect = async (eventId: number) => {
+    setSelectedEvent(await getEventById(eventId));
+  };
+
+  const handleCloseCard = () => {
+    setSelectedEvent(null);
+  };
 
   const toggleFullscreen = (): void => {
     setIsFullscreen((prev) => !prev);
@@ -62,7 +76,10 @@ export const InvestigationMap: FC = () => {
             justifyContent: "center",
           }}
         >
-          <StatisticsEventLogs events={events} />
+          <StatisticsEventLogs
+            events={events}
+            onEventSelect={handleEventSelect}
+          />
         </Box>
       )}
 
@@ -195,10 +212,18 @@ export const InvestigationMap: FC = () => {
               },
             }}
           >
-            <Map isFullscreen={isFullscreen} events={events} />
+            <Map
+              isFullscreen={isFullscreen}
+              events={events}
+              onEventClick={handleEventSelect}
+            />
           </Box>
         </Box>
       </Box>
+
+      {selectedEvent && (
+        <InfoEventsCard event={selectedEvent} onClose={handleCloseCard} />
+      )}
     </Box>
   );
 };
