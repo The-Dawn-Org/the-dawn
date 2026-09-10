@@ -72,7 +72,7 @@ export const summarizeByRegion = (events: ReadonlyArray<Event>): RegionSummary[]
       intercepted: regionEvents.filter(isIntercepted).length,
       missed: regionEvents.filter(isMissed).length,
       casualties: regionEvents.reduce((sum, event) => sum + event.droneInjuryCount, 0),
-      damageK: Math.round(regionEvents.reduce((sum, event) => sum + (isMissed(event) ? damageCostFor(event.drone.type) : 0), 0) / 1000),
+      damageK: Math.round(regionEvents.reduce((sum, event) => sum + (isMissed(event) ? 0:damageCostFor(event.drone.type)), 0) / 1000),
       eventCount: regionEvents.length,
     }))
     .sort((first, second) => second.eventCount - first.eventCount);

@@ -30,7 +30,7 @@ export const SummaryStatisticsCard = ({ events }: EventsBySystemChartProps) => {
     notation: "compact",
     compactDisplay: "short",
   }).format(
-    events.reduce((sum, event) => sum + event.drone.price - event.interceptor.price, 0)
+    events.reduce((sum, event) => sum + event.interceptor.price - event.drone.price , 0)
     // TODO
   );
 
