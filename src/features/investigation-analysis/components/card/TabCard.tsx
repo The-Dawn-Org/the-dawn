@@ -64,6 +64,7 @@ export default function InfoEventsCard({
 }: InfoEventsCardProps) {
   const [tabIndex, setTabIndex] = useState(0);
   const { analysis, loading, error } = useAIResponse(event);
+  console.log(analysis);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
@@ -81,7 +82,7 @@ export default function InfoEventsCard({
           top: 0,
           right: 0,
 
-          width: 420,
+          width: 500,
           height: "100vh",
 
           maxWidth: "none",
@@ -220,10 +221,6 @@ export default function InfoEventsCard({
               aria-controls="info-events-tabpanel-1"
             />
           </Tabs>
-
-          <TabPanel value={tabIndex} index={0}>
-            <EventDetailsCard event={event} />
-          </TabPanel>
 
           <TabPanel value={tabIndex} index={0}>
             <EventDetailsCard event={event} />
