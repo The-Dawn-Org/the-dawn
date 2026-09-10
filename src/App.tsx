@@ -53,26 +53,28 @@ const UnderDevelopmentScreen = () => {
 
   const { exportStatistics } = useExportStatistics();
 
-  const statistics = {
-    investigations: 42,
-    completed: 31,
-    pending: 11,
-  };
-
   const handleExport = async () => {
+    let url: string | undefined;
     try {
-      const pdf = await exportStatistics(statistics);
+      const currentUrl = window.location.href;
+      const pdf = await exportStatistics(`${currentUrl}`);
   
-      const url = URL.createObjectURL(pdf);
+      url = URL.createObjectURL(pdf);
       const link = document.createElement("a");
   
       link.href = url;
       link.download = "statistics.pdf";
+      document.body.appendChild(link);
       link.click();
+      link.remove();
   
-      URL.revokeObjectURL(url);
+      
     } catch (error) {
       console.error("Failed to export statistics:", error);
+    } finally {
+      if (url) {
+      URL.revokeObjectURL(url);
+      }
     }
   };
 
