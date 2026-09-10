@@ -34,7 +34,7 @@ export interface RegionSummary {
   eventCount: number;
 }
 
-const groupBy = <T>(items: T[], toKey: (item: T) => string) =>
+const groupBy = <T>(items: ReadonlyArray<T>, toKey: (item: T) => string) =>
   items.reduce<Record<string, T[]>>((groups, item) => {
     const key = toKey(item);
 
@@ -47,7 +47,7 @@ const groupBy = <T>(items: T[], toKey: (item: T) => string) =>
     return groups;
   }, {});
 
-export const summarizeByInterceptor = (events: DroneEvent[]): InterceptionSummary[] =>
+export const summarizeByInterceptor = (events: ReadonlyArray<DroneEvent>): InterceptionSummary[] =>
   Object.entries(groupBy(events, (event) => event.interceptor.name)).map(
     ([title, interceptorEvents]) => ({
       title,
@@ -56,7 +56,7 @@ export const summarizeByInterceptor = (events: DroneEvent[]): InterceptionSummar
     }),
   );
 
-export const summarizeByRegion = (events: DroneEvent[]): RegionSummary[] =>
+export const summarizeByRegion = (events: ReadonlyArray<DroneEvent>): RegionSummary[] =>
   Object.entries(groupBy(events, resolveRegion))
     .map(([region, regionEvents]) => ({
       region,

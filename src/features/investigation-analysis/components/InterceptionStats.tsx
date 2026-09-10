@@ -53,7 +53,7 @@ export const InterceptionStats = ({
   title,
   intercepted,
   missed,
-  size = 220,
+  size = 200,
   onSelect,
 }: InterceptionStatsProps) => {
   const total = intercepted + missed;
@@ -99,7 +99,7 @@ export const InterceptionStats = ({
         flexDirection: "column",
         alignItems: "center",
         gap: 1,
-        width: "fit-content",
+        width: "100%",
         ...(isClickable && {
           cursor: "pointer",
           transition: "border-color 150ms ease, background-color 150ms ease",

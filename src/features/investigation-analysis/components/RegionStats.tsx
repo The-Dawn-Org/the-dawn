@@ -8,27 +8,64 @@ export type RegionStatsRowProps = {
   casualties: number;
   damageK: number;
   eventCount: number;
-  maxCasualties?: number;
-  maxDamageK?: number;
 };
 
 const COLOR_INTERCEPTED = "#8cb85c";
-const COLOR_CASUALTIES = "#c0392b";
-const COLOR_DAMAGE = "#d4a574";
+const COLOR_REGION_DOT = "#d4a574";
 
-const DEFAULT_MAX_CASUALTIES = 50;
-const DEFAULT_MAX_DAMAGE_K = 5000;
+type Rgb = readonly [number, number, number];
+
+const SEVERITY_LOW: Rgb = [140, 184, 92];
+const SEVERITY_MID: Rgb = [213, 166, 47];
+const SEVERITY_HIGH: Rgb = [192, 57, 43];
+
+
+const CASUALTY_SEVERITY_CEILING = 10;
+const DAMAGE_SEVERITY_CEILING_K = 5000;
+
+const FULL_BAR_PERCENT = 100;
+
+const toRgb = (color: Rgb) => `rgb(${color.join(", ")})`;
+
+const mixChannel = (from: number, to: number, ratio: number) =>
+  Math.round(from + (to - from) * ratio);
+
+const mixColors = (from: Rgb, to: Rgb, ratio: number) =>
+  toRgb([
+    mixChannel(from[0], to[0], ratio),
+    mixChannel(from[1], to[1], ratio),
+    mixChannel(from[2], to[2], ratio),
+  ]);
+
+const severityRatio = (value: number, ceiling: number) =>
+  ceiling > 0 ? Math.min(Math.max(value / ceiling, 0), 1) : 0;
+
+/** Damage climbs green through yellow to red across its ceiling. */
+const damageColor = (damageK: number) => {
+  const ratio = severityRatio(damageK, DAMAGE_SEVERITY_CEILING_K);
+
+  return ratio <= 0.5
+    ? mixColors(SEVERITY_LOW, SEVERITY_MID, ratio * 2)
+    : mixColors(SEVERITY_MID, SEVERITY_HIGH, (ratio - 0.5) * 2);
+};
+
+/** Green is reserved for a region with no casualties, so one already reads as a warning. */
+const casualtyColor = (casualties: number) =>
+  casualties <= 0
+    ? toRgb(SEVERITY_LOW)
+    : mixColors(SEVERITY_MID, SEVERITY_HIGH, severityRatio(casualties, CASUALTY_SEVERITY_CEILING));
 
 type MetricBarProps = {
   label: string;
   valueLabel: string;
   value: number;
   max: number;
+  fillPercent: number;
   color: string;
 };
 
-const MetricBar = ({ label, valueLabel, value, max, color }: MetricBarProps) => {
-  const percent = max > 0 ? Math.min(Math.max((value / max) * 100, 0), 100) : 0;
+const MetricBar = ({ label, valueLabel, value, max, fillPercent, color }: MetricBarProps) => {
+  const percent = Math.min(Math.max(fillPercent, 0), 100);
 
   return (
     <Box sx={{ flex: 1, minWidth: 120 }}>
@@ -41,14 +78,8 @@ const MetricBar = ({ label, valueLabel, value, max, color }: MetricBarProps) => 
           mb: 0.5,
         }}
       >
-        <Typography
-          sx={{ fontSize: 11, color: "rgba(255, 255, 255, 0.55)" }}
-        >
-          {label}
-        </Typography>
-        <Typography sx={{ fontSize: 13, fontWeight: 600, color }}>
-          {valueLabel}
-        </Typography>
+        <Typography sx={{ fontSize: 11, color: "rgba(255, 255, 255, 0.55)" }}>{label}</Typography>
+        <Typography sx={{ fontSize: 13, fontWeight: 600, color }}>{valueLabel}</Typography>
       </Box>
       <Box
         role="progressbar"
@@ -70,7 +101,7 @@ const MetricBar = ({ label, valueLabel, value, max, color }: MetricBarProps) => 
             height: "100%",
             borderRadius: 5,
             bgcolor: color,
-            transition: "width 200ms ease",
+            transition: "width 200ms ease, background-color 200ms ease",
           }}
         />
       </Box>
@@ -85,8 +116,6 @@ export const RegionStatsRow = ({
   casualties,
   damageK,
   eventCount,
-  maxCasualties = DEFAULT_MAX_CASUALTIES,
-  maxDamageK = DEFAULT_MAX_DAMAGE_K,
 }: RegionStatsRowProps) => {
   const total = intercepted + missed;
   const accuracy = total > 0 ? (intercepted / total) * 100 : 0;
@@ -124,7 +153,7 @@ export const RegionStatsRow = ({
             width: 8,
             height: 8,
             borderRadius: "50%",
-            bgcolor: COLOR_DAMAGE,
+            bgcolor: COLOR_REGION_DOT,
             flexShrink: 0,
           }}
         />
@@ -144,6 +173,7 @@ export const RegionStatsRow = ({
         valueLabel={total > 0 ? `${accuracy.toFixed(1)}%` : "—"}
         value={accuracy}
         max={100}
+        fillPercent={accuracy}
         color={COLOR_INTERCEPTED}
       />
 
@@ -151,16 +181,18 @@ export const RegionStatsRow = ({
         label="נפגעים"
         valueLabel={casualties.toLocaleString("he-IL")}
         value={casualties}
-        max={maxCasualties}
-        color={COLOR_CASUALTIES}
+        max={CASUALTY_SEVERITY_CEILING}
+        fillPercent={FULL_BAR_PERCENT}
+        color={casualtyColor(casualties)}
       />
 
       <MetricBar
         label="נזק"
         valueLabel={`${damageK.toLocaleString("he-IL")}K ₪`}
         value={damageK}
-        max={maxDamageK}
-        color={COLOR_DAMAGE}
+        max={DAMAGE_SEVERITY_CEILING_K}
+        fillPercent={FULL_BAR_PERCENT}
+        color={damageColor(damageK)}
       />
 
       {/* Event count (far left) */}
@@ -184,11 +216,7 @@ export const RegionStatsRow = ({
           >
             {eventCount.toLocaleString("he-IL")}
           </Typography>
-          <Typography
-            sx={{ fontSize: 11, color: "rgba(255, 255, 255, 0.55)" }}
-          >
-            אירועים
-          </Typography>
+          <Typography sx={{ fontSize: 11, color: "rgba(255, 255, 255, 0.55)" }}>אירועים</Typography>
         </Box>
       )}
     </Box>

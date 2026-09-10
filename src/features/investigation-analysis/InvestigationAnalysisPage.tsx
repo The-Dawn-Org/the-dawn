@@ -1,43 +1,79 @@
-import { Box } from "@mui/material";
+import { useMemo } from "react";
+import { Box, Stack, Typography } from "@mui/material";
 import { InterceptionStats, RegionStatsRow } from "./components";
-import { droneEventsMock } from "./dataMock";
-import { summarizeByInterceptor, summarizeByRegion } from "./investigationStats";
+import { CasualtiesBySectorChart } from "./components/CasualtiesBySectorChart";
+import { ChartCard } from "./components/ChartCard";
+import { ChartsRow } from "./components/ChartsRow";
+import { EventsBySystemChart } from "./components/EventsBySystemChart";
+import { useFilteredEvents } from "./data/useFilteredEvents";
+import {
+  summarizeByInterceptor,
+  summarizeByRegion,
+} from "./investigationStats";
+import "./InvestigationAnalysisPage.css";
 
 const PIE_SIZE = 180;
 
 export const InvestigationAnalysisPage = () => {
-  const interceptionStats = summarizeByInterceptor(droneEventsMock);
-  const regionStats = summarizeByRegion(droneEventsMock);
+  const events = useFilteredEvents();
+  const interceptionStats = useMemo(
+    () => summarizeByInterceptor(events),
+    [events]
+  );
+  const regionStats = useMemo(() => summarizeByRegion(events), [events]);
 
   return (
-    <Box component="main" dir="rtl" sx={{ display: "flex", flexDirection: "column", gap: 4, p: 3 }}>
-      <Box component="section" sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 1 }}>
-        {interceptionStats.map((stat) => (
-          <Box key={stat.title} sx={{ flexShrink: 0 }}>
-            <InterceptionStats
-              title={stat.title}
-              intercepted={stat.intercepted}
-              missed={stat.missed}
-              size={PIE_SIZE}
-            />
-          </Box>
-        ))}
-      </Box>
+    <Box component="main" className="investigation-analysis">
+      <Typography component="h1" className="investigation-analysis__title">
+        ביצועים אופרטיביים
+      </Typography>
 
-      <Box component="section" sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-        {regionStats.map((stat) => (
-          <Box key={stat.region}>
-            <RegionStatsRow
-              region={stat.region}
-              intercepted={stat.intercepted}
-              missed={stat.missed}
-              casualties={stat.casualties}
-              damageK={stat.damageK}
-              eventCount={stat.eventCount}
-            />
+      <ChartsRow>
+        <EventsBySystemChart />
+        <CasualtiesBySectorChart />
+      </ChartsRow>
+
+      <ChartsRow columns={1}>
+        <ChartCard title="אחוזי פגיעה בכל מערכת" spacing={4} dir="row">
+          <Stack
+            sx={{ display: "flex", width: "220px", direction: 'ltr' }}
+            spacing={2}
+            direction={"row-reverse"}
+          >
+            {interceptionStats.map((stat) => (
+              <Box key={stat.title} sx={{ width: "100%" }}>
+                <InterceptionStats
+                  title={stat.title}
+                  intercepted={stat.intercepted}
+                  missed={stat.missed}
+                  size={PIE_SIZE}
+                />
+              </Box>
+            ))}
+          </Stack>
+        </ChartCard>
+      </ChartsRow>
+
+      <ChartsRow columns={1}>
+        <ChartCard title="תוצאות אירועים בגזרות">
+          <Box
+            sx={{ display: "flex", flexDirection: "column", gap: 1.5, pb: 1.5 }}
+          >
+            {regionStats.map((stat) => (
+              <Box key={stat.region}>
+                <RegionStatsRow
+                  region={stat.region}
+                  intercepted={stat.intercepted}
+                  missed={stat.missed}
+                  casualties={stat.casualties}
+                  damageK={stat.damageK}
+                  eventCount={stat.eventCount}
+                />
+              </Box>
+            ))}
           </Box>
-        ))}
-      </Box>
+        </ChartCard>
+      </ChartsRow>
     </Box>
   );
 };

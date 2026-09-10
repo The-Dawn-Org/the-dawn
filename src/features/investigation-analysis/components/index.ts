@@ -1,2 +1,2 @@
-export * from "./InterceptionStats"
-export * from "./RegionStats"
+export * from "./InterceptionStats";
+export * from "./RegionStats";
