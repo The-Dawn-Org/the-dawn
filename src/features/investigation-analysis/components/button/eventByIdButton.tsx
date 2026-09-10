@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { getEventById } from "../../../api/endpoints/events";
+import { getEventById } from "../../../../api/endpoints/events";
 
 const EventButton = () => {
   const handleGetEvent = async (eventId: number) => {
