@@ -5,6 +5,7 @@ import { Map } from "./components/Map";
 import { OpenInFull, CloseFullscreen } from "@mui/icons-material";
 import { useEvents } from "../../hooks/useEvents";
 import { StatisticsEventLogs } from "./Componants/EventsAndStatistics";
+import EventButton from "../investigation-analysis/components/button/eventByIdButton";
 
 export const InvestigationMap: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<Boolean>(false);

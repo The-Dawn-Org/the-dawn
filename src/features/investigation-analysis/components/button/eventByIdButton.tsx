@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import { getEventById } from "../../../../api/endpoints/events";
+import { useEvents } from "../../../../hooks/useEvents";
 
 const EventButton = () => {
   const handleGetEvent = async (eventId: number) => {
@@ -12,6 +13,8 @@ const EventButton = () => {
     }
   };
 
+  const { events } = useEvents();
+
   return (
     <>
       <Button onClick={() => handleGetEvent(1)}>Get Event 1</Button>
@@ -23,6 +26,8 @@ const EventButton = () => {
       <Button onClick={() => handleGetEvent(4)}>Get Event 4</Button>
 
       <Button onClick={() => handleGetEvent(5)}>Get Event 5</Button>
+
+      <Button onClick={() => console.log(events)}>push</Button>
     </>
   );
 };
