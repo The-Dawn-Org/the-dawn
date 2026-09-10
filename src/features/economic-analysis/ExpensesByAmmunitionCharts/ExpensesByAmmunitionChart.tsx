@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
-import type { CostBySystemItem } from "../types";
+import type { SystemCost } from "../types";
 
 interface ExpensesByAmmunitionChartProps {
-  data: CostBySystemItem[];
+  data: SystemCost[];
 }
 
 const currencyFormatter = new Intl.NumberFormat("he-IL", {
@@ -31,57 +31,57 @@ export const ExpensesByAmmunitionChart = ({
   return (
     <Box className="expenses-chart">
       <BarChart
-      height={320}
-      margin={{ top: 22, right: 18, bottom: 18, left: 100 }}
-      xAxis={[
-        {
-          scaleType: "band",
-          data: data.map(({ system }) => system),
-          categoryGapRatio: 0.72,
-          valueFormatter: (value) => String(value),
-          tickLabelStyle: { fill: "#9ca994", fontSize: 13 },
-        },
-      ]}
-      yAxis={[
-        {
-          min: 0,
-          width: 82,
-          valueFormatter: axisValueFormatter,
-          tickLabelStyle: { fill: "#87947e", fontSize: 12 },
-        },
-      ]}
-      series={[
-        {
-          data: data.map(({ cost }) => cost),
-          label: "הוצאה",
-          color: BAR_COLORS[0],
-          colorGetter: ({ dataIndex }) =>
-            BAR_COLORS[dataIndex % BAR_COLORS.length],
-          valueFormatter: (value) =>
-            value === null ? "" : currencyFormatter.format(value),
-        },
-      ]}
-      hideLegend
-      slotProps={{ tooltip: { trigger: "axis" } }}
-      sx={{
-        "& .MuiChartsAxis-line": { stroke: "#3f5435" },
-        "& .MuiChartsAxis-tick": { stroke: "#3f5435" },
-        "& .MuiChartsGrid-line": {
-          stroke: "#263a23",
-          strokeDasharray: "3 4",
-        },
-        "& .MuiBarElement-root": { rx: 3 },
-      }}
-      grid={{ horizontal: true }}
+        height={320}
+        margin={{ top: 22, right: 18, bottom: 18, left: 100 }}
+        xAxis={[
+          {
+            scaleType: "band",
+            data: data.map(({ systemName }) => systemName),
+            categoryGapRatio: 0.72,
+            valueFormatter: (value) => String(value),
+            tickLabelStyle: { fill: "#9ca994", fontSize: 13 },
+          },
+        ]}
+        yAxis={[
+          {
+            min: 0,
+            width: 82,
+            valueFormatter: axisValueFormatter,
+            tickLabelStyle: { fill: "#87947e", fontSize: 12 },
+          },
+        ]}
+        series={[
+          {
+            data: data.map(({ totalCost }) => totalCost),
+            label: "הוצאה",
+            color: BAR_COLORS[0],
+            colorGetter: ({ dataIndex }) =>
+              BAR_COLORS[dataIndex % BAR_COLORS.length],
+            valueFormatter: (value) =>
+              value === null ? "" : currencyFormatter.format(value),
+          },
+        ]}
+        hideLegend
+        slotProps={{ tooltip: { trigger: "axis" } }}
+        sx={{
+          "& .MuiChartsAxis-line": { stroke: "#3f5435" },
+          "& .MuiChartsAxis-tick": { stroke: "#3f5435" },
+          "& .MuiChartsGrid-line": {
+            stroke: "#263a23",
+            strokeDasharray: "3 4",
+          },
+          "& .MuiBarElement-root": { rx: 3 },
+        }}
+        grid={{ horizontal: true }}
       />
       <Box
         aria-label="שמות המערכות"
         className="expenses-chart__labels"
         sx={{ gridTemplateColumns: `repeat(${data.length}, minmax(0, 1fr))` }}
       >
-        {data.map(({ system }) => (
-          <Typography key={system} component="span">
-            {system}
+        {data.map(({ systemName }) => (
+          <Typography key={systemName} component="span">
+            {systemName}
           </Typography>
         ))}
       </Box>
