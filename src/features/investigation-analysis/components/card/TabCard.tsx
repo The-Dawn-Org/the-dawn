@@ -221,13 +221,23 @@ export default function InfoEventsCard({ event, title = "יירוט" }: InfoEven
         {/* ========================= */}
 
         <TabPanel value={tabIndex} index={1}>
-          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-            רצף אירועים
+          <Typography variant="h6" sx={{ mb: 2 }}>
+           רצף אירועים
           </Typography>
 
-          {/* TODO:
-              כאן תוכנס קומפוננטת "רצף אירועים"
-          */}
+          <Typography
+          variant="body2"
+        sx={{
+          color: "text.secondary",
+          lineHeight: 1.8,
+          }}
+      >
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+    commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+    velit esse cillum dolore eu fugiat nulla pariatur.
+  </Typography>
         </TabPanel>
       </CardContent>
     </Card>
