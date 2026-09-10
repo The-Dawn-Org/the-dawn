@@ -1,12 +1,12 @@
-import type { DroneEvent } from "../dataMock";
+import type { Event } from "../../../types";
 import { ChartCard } from "./ChartCard";
 import { useMemo } from "react";
-import { summarizeByRegion } from "../investigationStats";
+import { summarizeByRegion } from "../data/investigationStats";
 import { Box } from "@mui/material";
 import { RegionStatsRow } from ".";
 
 export type RegionsChartProps = {
-  events: DroneEvent[];
+  events: Event[];
 };
 
 export const RegionsChart = ({ events }: RegionsChartProps) => {

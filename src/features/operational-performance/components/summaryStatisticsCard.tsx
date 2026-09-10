@@ -7,28 +7,37 @@ import {
   ShieldOutlined as ShieldIcon,
 } from "@mui/icons-material";
 import { StatSumCard } from "./statCard";
-import { EventStatus, type DroneEvent } from "../dataMock";
+import type { Event } from "../../../types";
 
 export type EventsBySystemChartProps = {
-  events: DroneEvent[];
+  events: Event[];
 };
+
+/** Matches the DB's Hebrew status strings, same convention as investigationStats.ts. */
+const INTERCEPTED_STATUS = "הושלם בהצלחה";
 
 export const SummaryStatisticsCard = ({ events }: EventsBySystemChartProps) => {
   const eventCount = events.length;
   const totalIntercepted = events.filter(
-    (event) => event.status === EventStatus.INTERCEPTED
+    (event) => event.eventStatus === INTERCEPTED_STATUS
   ).length;
-  const interceptedPercent = (totalIntercepted / eventCount) * 100;
+  const interceptedPercent = eventCount > 0 ? (totalIntercepted / eventCount) * 100 : 0;
   const totalCasualtyCount = events.reduce(
-    (sum, event) => sum + event.casualtyCount,
+    (sum, event) => sum + event.droneInjuryCount,
     0
   );
   const totalDamageCostIls = Intl.NumberFormat("en-US", {
     notation: "compact",
     compactDisplay: "short",
   }).format(
-    events.reduce((sum, event) => sum + event.damageCostIls, 0)
+    events.reduce((sum, event) => sum + event.interceptor.price - event.drone.price , 0)
+    // TODO
   );
+
+  console.log("[SummaryStatisticsCard] events:", eventCount, "intercepted:", totalIntercepted, "percent:", interceptedPercent, "casualties:", totalCasualtyCount);
+  if (eventCount > 0) {
+    console.log("[SummaryStatisticsCard] sample event:", events[0]);
+  }
 
   return (
     <Stack spacing={3} direction={"row-reverse"} sx={{direction: "ltr"}}>

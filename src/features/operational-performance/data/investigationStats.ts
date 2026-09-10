@@ -1,20 +1,9 @@
-import { EventStatus, type DroneEvent } from "./dataMock";
-
-/**
- * The events carry no region, so regions are derived from the launcher latitude.
- * Both the threshold and the names are placeholders until the data carries a real region.
- */
-const REGION_LATITUDE_THRESHOLD = 32;
-const REGION_NORTH = "צפון";
-const REGION_SOUTH = "דרום";
-
-export const resolveRegion = (event: DroneEvent) =>
-  event.launcher.latitude >= REGION_LATITUDE_THRESHOLD ? REGION_NORTH : REGION_SOUTH;
+import type { Event } from "../../../types";
 
 /** Only a confirmed interception counts as a hit, and only a confirmed strike as a miss. */
-const isIntercepted = (event: DroneEvent) => event.status === EventStatus.INTERCEPTED;
+const isIntercepted = (event: Event) => event.eventStatus === "הושלם בהצלחה";
 
-const isMissed = (event: DroneEvent) => event.status === EventStatus.HIT_TARGET;
+const isMissed = (event: Event) => event.eventStatus === "נכשל";
 
 export interface InterceptionSummary {
   /** Interceptor type name, used as the chart title */
@@ -34,6 +23,25 @@ export interface RegionSummary {
   eventCount: number;
 }
 
+const droneDamageCost: Record<string, number> = {
+  "SkyMite-C7": 10000,
+  "LoadBee-M2": 25000,
+  "Falcon-Long X4": 40000,
+  "NanoSwarm-Q9": 3000,
+};
+
+/** A drone type missing from the map above falls back to 0 instead of poisoning the sum with NaN. */
+const damageCostFor = (droneType: string): number => {
+  const cost = droneDamageCost[droneType];
+
+  if (cost === undefined) {
+    console.warn("[investigationStats] no damage cost mapped for drone type:", droneType);
+    return 0;
+  }
+
+  return cost;
+};
+
 const groupBy = <T>(items: ReadonlyArray<T>, toKey: (item: T) => string) =>
   items.reduce<Record<string, T[]>>((groups, item) => {
     const key = toKey(item);
@@ -47,8 +55,8 @@ const groupBy = <T>(items: ReadonlyArray<T>, toKey: (item: T) => string) =>
     return groups;
   }, {});
 
-export const summarizeByInterceptor = (events: ReadonlyArray<DroneEvent>): InterceptionSummary[] =>
-  Object.entries(groupBy(events, (event) => event.interceptor.name)).map(
+export const summarizeByInterceptor = (events: ReadonlyArray<Event>): InterceptionSummary[] =>
+  Object.entries(groupBy(events, (event) => event.interceptor.type)).map(
     ([title, interceptorEvents]) => ({
       title,
       intercepted: interceptorEvents.filter(isIntercepted).length,
@@ -56,14 +64,15 @@ export const summarizeByInterceptor = (events: ReadonlyArray<DroneEvent>): Inter
     }),
   );
 
-export const summarizeByRegion = (events: ReadonlyArray<DroneEvent>): RegionSummary[] =>
-  Object.entries(groupBy(events, resolveRegion))
+export const summarizeByRegion = (events: ReadonlyArray<Event>): RegionSummary[] =>
+
+  Object.entries(groupBy(events, (event) => event.region))
     .map(([region, regionEvents]) => ({
       region,
       intercepted: regionEvents.filter(isIntercepted).length,
       missed: regionEvents.filter(isMissed).length,
-      casualties: regionEvents.reduce((sum, event) => sum + event.casualtyCount, 0),
-      damageK: Math.round(regionEvents.reduce((sum, event) => sum + event.damageCostIls, 0) / 1000),
+      casualties: regionEvents.reduce((sum, event) => sum + event.droneInjuryCount, 0),
+      damageK: Math.round(regionEvents.reduce((sum, event) => sum + (isMissed(event) ? 0:damageCostFor(event.drone.type)), 0) / 1000),
       eventCount: regionEvents.length,
     }))
     .sort((first, second) => second.eventCount - first.eventCount);

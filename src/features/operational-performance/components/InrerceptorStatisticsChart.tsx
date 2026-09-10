@@ -1,13 +1,13 @@
-import type { DroneEvent } from "../dataMock";
-import { InterceptorToHebrewMapper } from "../data/droneEvents";
+import type { Event } from "../../../types";
 import { ChartCard } from "./ChartCard";
 import { useMemo } from "react";
-import { summarizeByInterceptor } from "../investigationStats";
+import { summarizeByInterceptor } from "../data/investigationStats";
 import { Box, Stack } from "@mui/material";
 import { InterceptionStats } from ".";
+import { InterceptorToHebrewMapper } from "../data/droneEvents";
 
 export type InrerceptorStatisticsChartProps = {
-  events: DroneEvent[];
+  events: Event[];
 };
 
 export const InrerceptorStatisticsChart = ({ events }: InrerceptorStatisticsChartProps) => {

@@ -11,10 +11,10 @@ import {
   SHOW_EVERY_CATEGORY_TICK,
   VALUE_TICK_STYLE,
 } from "./chartTheme";
-import type { DroneEvent } from "../dataMock";
+import type { Event } from "../../../types";
 
 export type CasualtiesBySectorChartProps = {
-  events: DroneEvent[];
+  events: Event[];
 };
 
 export const CasualtiesBySectorChart = ({
