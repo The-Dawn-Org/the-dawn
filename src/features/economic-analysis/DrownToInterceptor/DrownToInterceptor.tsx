@@ -1,5 +1,4 @@
 import { ChartsContainer } from "@mui/x-charts/ChartsContainer";
-import { BarPlot } from "@mui/x-charts/BarChart";
 import { LinePlot, LineHighlightPlot, MarkPlot } from "@mui/x-charts/LineChart";
 import { ChartsXAxis } from "@mui/x-charts/ChartsXAxis";
 import { ChartsYAxis } from "@mui/x-charts/ChartsYAxis";
@@ -8,6 +7,7 @@ import { ChartsGrid } from "@mui/x-charts/ChartsGrid";
 import { ChartsAxisHighlight } from "@mui/x-charts/ChartsAxisHighlight";
 import type { DrownToInterceptorType } from "../types";
 import { Box, Typography } from "@mui/material";
+import { useAppFilters } from "../../../app/filters/AppFiltersContext";
 
 interface DrownsToInterceptorProps {
   data: DrownToInterceptorType[];
@@ -28,8 +28,34 @@ const GOLD = "#e0b04a";
 const RED = "#c0392b";
 const TEXT_MUTED = "#8a9482";
 
+const toDateKey = (date: Date | string | number): string =>
+  new Date(date).toDateString();
+
+const getDateRangeArray = (start: Date, end: Date): Date[] => {
+  const dates: Date[] = [];
+  const current = new Date(start);
+  current.setHours(0, 0, 0, 0);
+
+  const last = new Date(end);
+  last.setHours(0, 0, 0, 0);
+
+  while (current <= last) {
+    dates.push(new Date(current));
+    current.setDate(current.getDate() + 1);
+  }
+
+  return dates;
+};
+
 export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
-  if (data.length === 0) {
+  const { dateRange } = useAppFilters();
+
+  const rangeDates = getDateRangeArray(
+    new Date(dateRange.startDate),
+    new Date(dateRange.endDate),
+  );
+
+  if (rangeDates.length === 0) {
     return (
       <Box className="economic-graph__empty">
         <Typography>לא נמצאו נתונים לטווח שנבחר</Typography>
@@ -37,25 +63,29 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
     );
   }
 
-  const droneCost = data.map(({ dronesTotalCost }) => dronesTotalCost);
-  const interceptCost = data.map(
-    ({ interceptorsTotalCost }) => interceptorsTotalCost
+  const dataByDate = new Map(
+    data.map((item) => [toDateKey(item.date), item] as const),
   );
 
-  const dayLabels = data.map(({ date }) => days[new Date(date).getDay()]);
-
-  const maxCostToShow = Math.max(
-    ...data.map(({ dronesTotalCost, interceptorsTotalCost }) =>
-      Math.max(dronesTotalCost, interceptorsTotalCost)
-    )
+  const interceptCost = rangeDates.map(
+    (date) => dataByDate.get(toDateKey(date))?.interceptorsTotalCost ?? 0,
   );
+  const droneCost = rangeDates.map(
+    (date) => dataByDate.get(toDateKey(date))?.dronesTotalCost ?? 0,
+  );
+
+  const maxCostToShow = Math.max(0, ...interceptCost, ...droneCost);
   const numberToDevide = 10 ** (maxCostToShow.toString().length - 1);
-  const roundedMaxToShow = Math.round(maxCostToShow / numberToDevide) * (numberToDevide);
+  const roundedMaxToShow =
+    maxCostToShow === 0
+      ? 1
+      : Math.round(maxCostToShow / numberToDevide) * numberToDevide;
 
   return (
     <div className="drone-interceptor-chart" dir="rtl">
       <ChartsContainer
         height={320}
+        margin={{ top: 24, right: 24, bottom: 32, left: 24 }}
         series={[
           {
             type: "line",
@@ -65,7 +95,6 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
             label: "עלות מיירט",
             curve: "linear",
             showMark: true,
-
             highlightScope: {
               highlight: "item",
             },
@@ -78,7 +107,6 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
             label: "עלות רחפן",
             curve: "linear",
             showMark: true,
-
             highlightScope: {
               highlight: "item",
             },
@@ -87,12 +115,13 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
         xAxis={[
           {
             id: "days",
-            data: dayLabels,
+
+            data: rangeDates,
+            valueFormatter: (date: Date) => days[date.getDay()],
             scaleType: "band",
             categoryGapRatio: 0.72,
             position: "bottom",
             height: 40,
-
             tickLabelStyle: {
               fill: TEXT_MUTED,
               fontSize: 12,
@@ -140,15 +169,10 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
             stroke: "#263a23",
             strokeDasharray: "3 4",
           },
-          ".MuiBarElement-root": {
-            rx: 4,
-          },
-
           ".MuiChartsAxisHighlight-root": {
             stroke: "#ffffff",
             strokeWidth: 1,
           },
-
           ".MuiLineChart-mark[data-highlighted]": {
             stroke: "#ffffff",
             strokeWidth: 2,
@@ -157,14 +181,13 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
       >
         <ChartsGrid horizontal vertical={false} />
 
-        <BarPlot />
         <LinePlot />
         <LineHighlightPlot />
         <MarkPlot />
 
         <ChartsAxisHighlight x="line" y="none" />
         <ChartsXAxis axisId="days" />
-        <ChartsYAxis axisId="costAxis" />
+        <ChartsYAxis axisId="countAxis" />
         <ChartsTooltip trigger="axis" />
       </ChartsContainer>
 
