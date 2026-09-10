@@ -10,7 +10,6 @@ import { StatSumCard } from "./statCard";
 import { droneEventsMock, EventStatus } from "../dataMock";
 
 export const SummaryStatisticsCard = () => {
-  // Not wired into the cards yet — kept as separate variables until it's decided which card each maps to.
   const eventCount = droneEventsMock.length;
   const totalIntercepted = droneEventsMock.filter(
     (event) => event.status === EventStatus.INTERCEPTED
@@ -48,11 +47,13 @@ export const SummaryStatisticsCard = () => {
         icon={<PeopleAltIcon />}
         title="נפגעים"
         value={totalCasualtyCount.toString()}
+        accent = "#D4A843"
       />
       <StatSumCard
         icon={<AttachMoneyIcon />}
         title="עלות מבצעית"
         value={`$${totalDamageCostIls}`}
+        accent = "#D4A843"
       />
     </Stack>
   );
