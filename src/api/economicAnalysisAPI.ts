@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { DateRangeFilter } from "../app/filters/AppFiltersContext";
-import type { SystemCost, CardsInfoItem } from "../features/economic-analysis/types";
+import type { SystemCost, CardsInfoItem, DrownToInterceptorType, EconomicDamageItem } from "../features/economic-analysis/types";
 
 const financeApi = axios.create({
   baseURL: import.meta.env.VITE_FINANCE_API_URL ?? "",
@@ -30,6 +30,42 @@ export const getCardsInfoItem = async (
 ): Promise<CardsInfoItem> => {
   const response = await financeApi.get<CardsInfoItem>(
     "/finance/cards",
+    {
+      params: {
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      },
+      signal,
+    },
+  );
+
+  return response.data;
+};
+
+export const getDrownToInterceptor = async (
+  dateRange: DateRangeFilter,
+  signal?: AbortSignal,
+): Promise<DrownToInterceptorType[]> => {
+  const response = await financeApi.get<DrownToInterceptorType[]>(
+    "/finance/daily-interceptions",
+    {
+      params: {
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      },
+      signal,
+    }
+  );
+
+  return response.data;
+};
+
+export const getEconomicDamage = async (
+  dateRange: DateRangeFilter,
+  signal?: AbortSignal,
+): Promise<EconomicDamageItem[]> => {
+  const response = await financeApi.get<EconomicDamageItem[]>(
+    "/finance/economic-damage",
     {
       params: {
         startDate: dateRange.startDate,

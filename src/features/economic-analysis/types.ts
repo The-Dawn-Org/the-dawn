@@ -19,3 +19,8 @@ export interface DrownToInterceptorType {
   dronesTotalCost: number;
   interceptorsTotalCost: number;
 }
+
+export interface EconomicDamageItem {
+  sectorName: string;
+  totalDamage: number;
+}

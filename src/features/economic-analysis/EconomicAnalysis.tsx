@@ -8,70 +8,52 @@ import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import PaidIcon from "@mui/icons-material/Paid";
 import RadarIcon from "@mui/icons-material/Radar";
+import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import { InfoCard } from "./info-cards/InfoCard";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
-import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/ExpensesByAmmunitionChart";
+import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionChart/ExpensesByAmmunitionChart";
+import { DrownsToInterceptorChart } from "./DrownToInterceptorChart/DrownToInterceptorChart";
+import { EconomicDamageChart } from "./EconomicDamageChart/EconomicDamageChart";
 import { GraphContainer } from "./GraphContainer";
-import { DrownsToInterceptor } from "./DrownToInterceptor/DrownToInterceptor";
-import { getDrownToInterceptor } from "./economicAnalysis.service";
 import {
   getCardsInfoItem,
   getCostBySystem,
+  getEconomicDamage,
+  getDrownToInterceptor
 } from "../../api/economicAnalysisAPI";
 import type {
   DrownToInterceptorType,
   SystemCost,
   CardsInfoItem,
+  EconomicDamageItem,
 } from "./types";
 
 export const EconomicAnalysis = () => {
+  // mock data
+  const mockEconomicDamage: EconomicDamageItem[] = [
+    { sectorName: "דרום", totalDamage: 5_800_000 },
+    { sectorName: "צפון", totalDamage: 4_200_000 },
+    { sectorName: "גליל מערבי", totalDamage: 1_500_000 },
+    { sectorName: "מרכז", totalDamage: 650_000 },
+  ];
+
   const theme = useTheme();
   const { dateRange } = useAppFilters();
   const [drownToInterceptor, setDrownToInterceptor] = useState<
     DrownToInterceptorType[]
   >([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const [expenses, setExpenses] = useState<SystemCost[]>([]);
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
+  const [damageBySector, setDamageBySector] = useState<EconomicDamageItem[]>([]);
   const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
   const [isLoadingDrownToInter, setIsLoadingDrownToInter] = useState(true);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
+  const [isLoadingDamage, setIsLoadingDamage] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
-
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    setIsLoadingExpenses(true);
-
-    getCostBySystem(dateRange, abortController.signal)
-      .then((nextExpenses) => setExpenses(nextExpenses))
-      .catch((error: unknown) => {
-        if (!axios.isCancel(error)) {
-          setExpensesError(true);
-        }
-      })
-      .finally(() => setIsLoadingExpenses(false));
-
-    getDrownToInterceptor(
-      dateRange
-      ,abortController.signal
-    )
-      .then((nextDrownToInterceptor) => {
-        console.log(nextDrownToInterceptor);
-        setDrownToInterceptor(nextDrownToInterceptor);
-      })
-      .catch((error: unknown) => {
-        if (!axios.isCancel(error)) {
-          setErrorMessage("לא ניתן לטעון נתוני הרחפים ומחירי המיירטים.");
-        }
-      })
-      .finally(() => setIsLoadingDrownToInter(false));
-
-
-    return () => abortController.abort();
-  }, [dateRange]);
+  const [damageError, setDamageError] = useState<boolean>(false);
+  const [drownError, setDrownError] = useState<boolean>(false);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -86,6 +68,42 @@ export const EconomicAnalysis = () => {
         }
       })
       .finally(() => setIsLoadingCards(false));
+
+    setIsLoadingExpenses(true);
+
+    getCostBySystem(dateRange, abortController.signal)
+      .then((nextExpenses) => setExpenses(nextExpenses))
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setExpensesError(true);
+        }
+      })
+      .finally(() => setIsLoadingExpenses(false));
+
+    getDrownToInterceptor(dateRange, abortController.signal)
+      .then((nextDrownToInterceptor) => {
+        setDrownToInterceptor(nextDrownToInterceptor);
+      })
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setDrownError(true);
+        }
+      })
+      .finally(() => setIsLoadingDrownToInter(false));
+
+    setIsLoadingDamage(true);
+
+    getEconomicDamage(dateRange, abortController.signal)
+      .then((nextDamage) => setDamageBySector(nextDamage))
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setDamageError(false);
+        }
+      })
+      .finally(() => setIsLoadingDamage(false));
+
+    setDamageBySector(mockEconomicDamage);
+
     return () => abortController.abort();
   }, [dateRange]);
 
@@ -154,9 +172,8 @@ export const EconomicAnalysis = () => {
           />
           <InfoCard
             label="סטיית תקציב"
-            value={`${Math.abs(cardsInfo.budgetVariance)}%${
-              cardsInfo.budgetVariance > 0 ? "  +" : "  -"
-            }`}
+            value={`${Math.abs(cardsInfo.budgetVariance)}%${cardsInfo.budgetVariance > 0 ? "  +" : "  -"
+              }`}
             icon={TrendingUpRoundedIcon}
             accentColor={
               cardsInfo.budgetVariance > 0
@@ -180,7 +197,7 @@ export const EconomicAnalysis = () => {
             minWidth: 0,
             width: "100%",
           },
-          "& > :last-child:nth-child(odd)": {
+          "& > :last-child": {
             gridColumn: {
               xs: "auto",
               md: "1 / -1",
@@ -215,12 +232,29 @@ export const EconomicAnalysis = () => {
             <Box className="economic-graph__loading">
               <CircularProgress size={28} />
             </Box>
-          ) : errorMessage ? (
+          ) : drownError ? (
             <Box className="economic-graph__empty">
-              <Typography>{errorMessage}</Typography>
+              <Typography>לא ניתן לטעון נתוני הרחפים ומחירי המיירטים</Typography>
             </Box>
           ) : (
-            <DrownsToInterceptor data={drownToInterceptor} />
+            <DrownsToInterceptorChart data={drownToInterceptor} />
+          )}
+        </GraphContainer>
+
+        <GraphContainer
+          icon={<LocalFireDepartmentRoundedIcon />}
+          title="נזק רכוש לפי גזרה"
+        >
+          {isLoadingDamage ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : damageError ? (
+            <Box className="economic-graph__empty">
+              <Typography>לא ניתן לטעון את נתוני הנזק לרכוש</Typography>
+            </Box>
+          ) : (
+            <EconomicDamageChart data={damageBySector} />
           )}
         </GraphContainer>
       </Box>

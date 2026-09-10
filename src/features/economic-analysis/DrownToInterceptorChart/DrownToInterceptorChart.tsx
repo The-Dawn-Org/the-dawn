@@ -9,7 +9,7 @@ import { ChartsAxisHighlight } from "@mui/x-charts/ChartsAxisHighlight";
 import type { DrownToInterceptorType } from "../types";
 import { Box, Typography } from "@mui/material";
 
-interface DrownsToInterceptorProps {
+interface DrownsToInterceptorChartProps {
   data: DrownToInterceptorType[];
 }
 
@@ -28,7 +28,7 @@ const GOLD = "#e0b04a";
 const RED = "#c0392b";
 const TEXT_MUTED = "#8a9482";
 
-export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
+export const DrownsToInterceptorChart = ({ data }: DrownsToInterceptorChartProps) => {
   if (data.length === 0) {
     return (
       <Box className="economic-graph__empty">

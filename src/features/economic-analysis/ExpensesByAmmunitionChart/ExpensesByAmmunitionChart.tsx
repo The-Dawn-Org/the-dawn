@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import type { SystemCost } from "../types";
 
@@ -20,6 +20,8 @@ const BAR_COLORS = ["#6ca847", "#b0a260", "#d5a62f", "#82aa72"];
 export const ExpensesByAmmunitionChart = ({
   data,
 }: ExpensesByAmmunitionChartProps) => {
+  const theme = useTheme();
+
   if (data.length === 0) {
     return (
       <Box className="economic-graph__empty">
@@ -64,8 +66,8 @@ export const ExpensesByAmmunitionChart = ({
         hideLegend
         slotProps={{ tooltip: { trigger: "axis" } }}
         sx={{
-          "& .MuiChartsAxis-line": { stroke: "#3f5435" },
-          "& .MuiChartsAxis-tick": { stroke: "#3f5435" },
+          "& .MuiChartsAxis-line": { stroke: theme.palette.divider },
+          "& .MuiChartsAxis-tick": { stroke: theme.palette.divider },
           "& .MuiChartsGrid-line": {
             stroke: "#263a23",
             strokeDasharray: "3 4",
