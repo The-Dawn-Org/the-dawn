@@ -5,3 +5,4 @@ export const BACKGROUND_GREEN = "#121d13";
 export const HIGHLIGHT_GREEN = "#243324";
 export const HIGHLIGHT_WHITE = "#CDD6CD";
 export const SOFT_GREEN = "#697667";
+export const DEFAULT_TEXT_COLOR = "#CDD6CD";
