@@ -31,12 +31,12 @@ export const SummaryStatisticsCard = () => {
       <StatSumCard
         icon={<MonitorHeartIcon />}
         title="סך אירועים"
-        value={eventCount.toString()}
+        value={eventCount}
       />
       <StatSumCard
         icon={<ShieldIcon />}
         title="יירוטים"
-        value={totalIntercepted.toString()}
+        value={totalIntercepted}
       />
       <StatSumCard
         icon={<GpsFixedIcon />}
@@ -46,7 +46,7 @@ export const SummaryStatisticsCard = () => {
       <StatSumCard
         icon={<PeopleAltIcon />}
         title="נפגעים"
-        value={totalCasualtyCount.toString()}
+        value={totalCasualtyCount}
         accent = "#D4A843"
       />
       <StatSumCard
