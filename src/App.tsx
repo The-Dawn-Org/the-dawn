@@ -2,6 +2,7 @@ import {
   Box,
   CssBaseline,
   ThemeProvider,
+  Typography,
   createTheme,
 } from "@mui/material";
 import {
@@ -18,9 +19,31 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { heIL } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/he";
-import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
+import { AppFiltersProvider, useAppFilters } from "./app/filters/AppFiltersContext";
 import "./App.css";
+import { InvestigationMap } from "./features/investigation-map/investigationMap";
+import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
+import "@mui/material/styles";
 import StatisticsPage from "./features/midnight-report/FakeChart";
+
+declare module "@mui/material/styles" {
+  interface Palette {
+    kpi: {
+      gold: string;
+      red: string;
+      lightGreen: string;
+      darkGreen: string;
+    };
+  }
+  interface PaletteOptions {
+    kpi?: {
+      gold: string;
+      red: string;
+      lightGreen: string;
+      darkGreen: string;
+    };
+  }
+}
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",
@@ -29,7 +52,7 @@ const SCREEN_PATHS: Record<NavigationItemId, string> = {
 };
 
 const PATH_SCREEN_IDS = Object.fromEntries(
-  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId]),
+  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId])
 ) as Record<string, NavigationItemId>;
 
 const commandRoomTheme = createTheme({
@@ -43,6 +66,12 @@ const commandRoomTheme = createTheme({
       default: "#0c140d",
       paper: "#121d13",
     },
+    kpi: {
+      gold: "#D4A843",
+      red: "#C44536",
+      lightGreen: "#8BAE5A",
+      darkGreen: "#6FA84B",
+    },
   },
   typography: {
     fontFamily: '"Heebo", "Segoe UI", sans-serif',
@@ -50,7 +79,6 @@ const commandRoomTheme = createTheme({
 });
 
 const UnderDevelopmentScreen = () => {
-
   const { exportStatistics } = useExportStatistics();
 
   const handleExport = async () => {
@@ -81,15 +109,15 @@ const UnderDevelopmentScreen = () => {
   return (
     <>
   <Box component="main" className="development-screen">
-    {/* <Typography component="h1" className="development-screen__title">
+    <Typography component="h1" className="development-screen__title">
       בפיתוח
-    </Typography> */}
-    <StatisticsPage />
+    </Typography>
+    {/* <StatisticsPage /> */}
     <button
      className="export-to-pdf-button"
      onClick={handleExport}>
         יצא לקובץ PDF
-      </button>
+    </button>
   </Box>
   </>
   )
@@ -105,6 +133,39 @@ const AppRoutes = () => {
     navigate(SCREEN_PATHS[screenId]);
   };
 
+  const { exportStatistics } = useExportStatistics();
+
+  const { dateRange } = useAppFilters();
+
+const handleExport = async () => {
+  let url: string | undefined;
+
+  try {
+    const currentUrl = new URL(window.location.href);
+
+    currentUrl.searchParams.set("startDate", dateRange.startDate);
+    currentUrl.searchParams.set("endDate", dateRange.endDate);
+
+    const pdf = await exportStatistics(currentUrl.toString());
+
+    url = URL.createObjectURL(pdf);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "statistics.pdf";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Failed to export statistics:", error);
+  } finally {
+    if (url) {
+      URL.revokeObjectURL(url);
+    }
+  }
+};
+
   return (
     <>
       <MainNavbar activeItemId={activeScreenId} onNavigate={handleNavigate} />
@@ -115,7 +176,7 @@ const AppRoutes = () => {
         />
         <Route
           path={SCREEN_PATHS["investigation-map"]}
-          element={<UnderDevelopmentScreen />}
+          element={<InvestigationMap />}
         />
         <Route
           path={SCREEN_PATHS["operational-performance"]}
@@ -123,13 +184,18 @@ const AppRoutes = () => {
         />
         <Route
           path={SCREEN_PATHS["economic-analysis"]}
-          element={<UnderDevelopmentScreen />}
+          element={<EconomicAnalysis />}
         />
         <Route
           path="*"
           element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
         />
       </Routes>
+      <button
+        className="export-to-pdf-button"
+        onClick={handleExport}>
+            יצא לקובץ PDF
+      </button>
     </>
   );
 };
