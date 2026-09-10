@@ -4,7 +4,7 @@ import "./ChartsRow.css";
 
 interface ChartsRowProps extends PropsWithChildren {
   /** How many charts share the row. Defaults to two. */
-  columns?: 1 | 2 | 3 | 4;
+  columns?: number;
 }
 
 /**

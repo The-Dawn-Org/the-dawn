@@ -11,6 +11,7 @@ import {
   summarizeByRegion,
 } from "./investigationStats";
 import "./InvestigationAnalysisPage.css";
+import { SummaryStatisticsCard } from "./components/summaryStatisticsCard";
 
 const PIE_SIZE = 180;
 
@@ -27,7 +28,9 @@ export const InvestigationAnalysisPage = () => {
       <Typography component="h1" className="investigation-analysis__title">
         ביצועים אופרטיביים
       </Typography>
-
+      <ChartsRow columns={1}>
+        <SummaryStatisticsCard />
+      </ChartsRow>
       <ChartsRow>
         <EventsBySystemChart />
         <CasualtiesBySectorChart />
