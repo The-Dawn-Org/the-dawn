@@ -3,12 +3,24 @@ import { Box, Button } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import { Map } from "./components/Map";
 import { OpenInFull, CloseFullscreen } from "@mui/icons-material";
-import { useEvents } from "../../hooks/useEvents";
+import { useEvents, type FilterEventsDto } from "../../hooks/useEvents";
 import { StatisticsEventLogs } from "./Componants/EventsAndStatistics";
+import L from "leaflet";
+import { Marker, Popup } from "react-leaflet";
+import { useAppFilters } from "../../app/filters/AppFiltersContext";
 
 export const InvestigationMap: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<Boolean>(false);
-  const { events } = useEvents();
+
+  const { dateRange } = useAppFilters();
+  const { events } = useEvents({
+    startDate: dateRange.startDate,
+    endDate: dateRange.endDate,
+  });
+  console.log("dateRange.startDate");
+  console.log(dateRange.startDate);
+  console.log("new Date(dateRange.startDate)");
+  console.log(new Date(dateRange.startDate));
 
   const toggleFullscreen = (): void => {
     setIsFullscreen((prev) => !prev);
@@ -137,7 +149,7 @@ export const InvestigationMap: FC = () => {
               },
             }}
           >
-            <Map isFullscreen={isFullscreen} />
+            <Map isFullscreen={isFullscreen} events={events} />
           </Box>
         </Box>
       </Box>
