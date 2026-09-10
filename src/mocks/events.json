@@ -3,7 +3,7 @@
     "eventId": 0,
     "interceptor": { "interceptorTypeId": 0, "type": "תמיר", "price": 50000 },
     "launcher": { "launcherId": 0, "location": { "lat": 32.0853, "lng": 34.7818 } },
-    "region": "מחוז מרכז",
+    "region":"מחוז מרכז",
     "time": "2026-09-08T14:32:10Z",
     "eventLocation": { "lat": 32.0900, "lng": 34.7900 },
     "interceptionStatus": "יורט",
