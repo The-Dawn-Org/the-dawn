@@ -80,7 +80,3 @@ export interface InterceptionEvent {
   attackingBody: string;
   drone: DroneInfo;
 }
-
-// export interface EventDetailsCardProps {
-//   event: DefenseEvent;
-// }
