@@ -29,3 +29,10 @@ export interface BudgetByDateResponse {
   date: string;
   budget: number;
 }
+
+export interface InventoryType {
+  type: string;
+  current: number;
+  min: number;
+  max: number;
+}
