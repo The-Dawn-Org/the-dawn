@@ -7,15 +7,19 @@ import {
   ShieldOutlined as ShieldIcon,
 } from "@mui/icons-material";
 import { StatSumCard } from "./statCard";
-import { droneEventsMock, EventStatus } from "../dataMock";
+import { EventStatus, type DroneEvent } from "../dataMock";
 
-export const SummaryStatisticsCard = () => {
-  const eventCount = droneEventsMock.length;
-  const totalIntercepted = droneEventsMock.filter(
+export type EventsBySystemChartProps = {
+  events: DroneEvent[];
+};
+
+export const SummaryStatisticsCard = ({ events }: EventsBySystemChartProps) => {
+  const eventCount = events.length;
+  const totalIntercepted = events.filter(
     (event) => event.status === EventStatus.INTERCEPTED
   ).length;
   const interceptedPercent = (totalIntercepted / eventCount) * 100;
-  const totalCasualtyCount = droneEventsMock.reduce(
+  const totalCasualtyCount = events.reduce(
     (sum, event) => sum + event.casualtyCount,
     0
   );
@@ -23,7 +27,7 @@ export const SummaryStatisticsCard = () => {
     notation: "compact",
     compactDisplay: "short",
   }).format(
-    droneEventsMock.reduce((sum, event) => sum + event.damageCostIls, 0)
+    events.reduce((sum, event) => sum + event.damageCostIls, 0)
   );
 
   return (

@@ -7,7 +7,7 @@ import "dayjs/locale/he";
 import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
-import { InvestigationAnalysisPage } from "./features/investigation-analysis/InvestigationAnalysisPage";
+import { InvestigationAnalysisPage } from "./features/operational-performance/InvestigationAnalysisPage";
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",

@@ -16,7 +16,7 @@ export const InvestigationAnalysisPage = () => {
         ביצועים אופרטיביים
       </Typography>
       <ChartsRow columns={1}>
-        <SummaryStatisticsCard />
+        <SummaryStatisticsCard events={events}/>
       </ChartsRow>
       <ChartsRow>
         <EventsBySystemChart events={events} />
