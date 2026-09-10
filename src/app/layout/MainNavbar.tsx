@@ -55,7 +55,7 @@ const useCurrentDateTime = () => {
   useEffect(() => {
     const intervalId = window.setInterval(
       () => setCurrentDateTime(new Date()),
-      60_000,
+      60_000
     );
 
     return () => window.clearInterval(intervalId);
@@ -89,7 +89,7 @@ const DateRangeControls = () => {
 
   const updateDateRange = (
     field: keyof DateRangeFilter,
-    value: Dayjs | null,
+    value: Dayjs | null
   ) => {
     if (!value?.isValid()) {
       return;
@@ -220,7 +220,9 @@ export const MainNavbar = ({
               }
               aria-current={isActive ? "page" : undefined}
               onClick={() => handleNavigate(id)}
-              className={`navbar__navigation-item${isActive ? " navbar__navigation-item--active" : ""}`}
+              className={`navbar__navigation-item${
+                isActive ? " navbar__navigation-item--active" : ""
+              }`}
             >
               {label}
             </Button>
