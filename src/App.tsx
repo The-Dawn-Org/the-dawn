@@ -94,8 +94,6 @@ const UnderDevelopmentScreen = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-  
-      
     } catch (error) {
       console.error("Failed to export statistics:", error);
     } finally {
@@ -132,7 +130,6 @@ const AppRoutes = () => {
   };
 
   const { exportStatistics } = useExportStatistics();
-
   const { dateRange } = useAppFilters();
 
 const handleExport = async () => {
