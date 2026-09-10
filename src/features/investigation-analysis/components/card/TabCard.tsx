@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import EventDetailsCard, { getEventOutcome } from "./CardInfo";
+import { getEventOutcome, EventDetailsCard } from "./CardInfo";
 import type { InterceptionEvent } from "../../types/tableTypes";
 
 export interface InfoEventsCardProps {

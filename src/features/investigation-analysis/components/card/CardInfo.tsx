@@ -26,7 +26,7 @@ const formatDateTime = (iso: string) =>
     timeStyle: "short",
   }).format(new Date(iso));
 
-const EventDetailsCard: FC<EventDetailsCardProps> = ({
+export const EventDetailsCard: FC<EventDetailsCardProps> = ({
   event
 })=> {
   const outcome = getEventOutcome(event.interceptionStatus);
