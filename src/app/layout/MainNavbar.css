@@ -1,0 +1,167 @@
+.navbar.MuiAppBar-root {
+  color: #eef2ec;
+  background-color: #0d170e;
+  border: 1px solid #263a23;
+}
+
+.navbar__top.MuiToolbar-root {
+  min-height: 82px;
+  padding-inline: 20px;
+  gap: 16px;
+}
+
+.navbar__brand {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar__brand-icon {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  place-items: center;
+  overflow: hidden;
+  background-color: #000;
+  border: 1px solid rgba(213, 166, 47, 0.5);
+  border-radius: 9px;
+}
+
+.navbar__brand-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.navbar__title.MuiTypography-root {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.navbar__subtitle.MuiTypography-root {
+  display: block;
+  margin-top: 3px;
+  color: #78899f;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.76rem;
+}
+
+.navbar__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #77869b;
+  font-size: 0.82rem;
+}
+
+.navbar__time-label,
+.navbar__status {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.navbar__time-label {
+  gap: 6px;
+}
+
+.navbar__time-icon.MuiSvgIcon-root {
+  font-size: 16px;
+}
+
+.navbar__date-range {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.navbar__date-control {
+  display: flex;
+  width: 220px;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.navbar__date-label.MuiTypography-root {
+  color: #9ca9b9;
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: right;
+}
+
+.navbar__date-field.MuiTextField-root {
+  width: 220px;
+}
+
+.navbar__date-field .MuiInputBase-root {
+  height: 48px;
+  color: #f4f5f2;
+  background-color: #172317;
+  border-radius: 9px;
+}
+
+.navbar__date-field .MuiOutlinedInput-notchedOutline {
+  border-color: #30452b;
+}
+
+.navbar__date-field .MuiInputBase-input {
+  color-scheme: dark;
+  text-align: right;
+}
+
+.navbar__status {
+  gap: 8px;
+  color: #6da83f;
+}
+
+.navbar__status-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #355e29;
+  border-radius: 50%;
+}
+
+.navbar__navigation.MuiToolbar-root {
+  display: flex;
+  min-height: 58px;
+  padding-inline: 20px;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.navbar__navigation-item.MuiButton-root {
+  min-height: 45px;
+  padding-inline: 18px;
+  color: #91a0b4;
+  background-color: transparent;
+  border-radius: 9px;
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.navbar__navigation-item .MuiButton-startIcon {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+.navbar__navigation-icon.MuiSvgIcon-root {
+  font-size: 19px;
+}
+
+.navbar__navigation-item.MuiButton-root:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.navbar__navigation-item--active.MuiButton-root {
+  color: #d5a62f;
+  background-color: #33472a;
+}
+
+.navbar__navigation-item--active.MuiButton-root:hover {
+  background-color: #3b512f;
+}
