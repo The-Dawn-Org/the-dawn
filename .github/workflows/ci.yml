@@ -2,15 +2,26 @@ name: CI
 
 on:
   push:
-  pull_request:
+    branches:
+      - main
+    tags:
+      - '*'
+      
+
+# jobs:
+#   trigger:
+#     runs-on: self-hosted
+
+#     steps:
+#       - name: Trigger Pipeline
+#         run: |
+#           echo $GH_TOKEN
+#           gh workflow run main.yml \
+#             --repo Amit11234/until-midnight-infra \
+#             --ref main 
+#         env:
+#           GH_TOKEN: ${{ secrets.INFRA_TOKEN }}
 
 jobs:
-  build:
-    runs-on: org-a-runner
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build
-        run: |
-          echo "Running on my Kubernetes runner"
+  pipeline:
+    uses: Devops-Had-Hatzot/ci-template/.github/workflows/main.yml@main
