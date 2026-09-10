@@ -7,7 +7,7 @@ export interface StatCardProps {
   /** Label above the value */
   title: string;
   /** The number/text to display */
-  value: string;
+  value: string | number;
   /** Accent color for icon + value */
   accent?: string;
 }
