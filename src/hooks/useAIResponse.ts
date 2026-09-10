@@ -1,33 +1,71 @@
 import { useEffect, useState } from "react";
 import type { AIResponse } from "../types/AIResponse";
 import { axiosInstance } from "../api/axios";
-import type { AxiosResponse } from "axios";
 import type { InterceptionEvent } from "../features/investigation-analysis/types/tableTypes";
+import axios from "axios";
 
 
 
-export const useAIResponse = (event: InterceptionEvent) => {
-  const [analysis, setAnalysis] = useState<AIResponse>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+export function useAIResponse(
+  event: InterceptionEvent,
+  enabled: boolean
+) {
+  const [analysis, setAnalysis] = useState<AIResponse>({
+    text: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchAIEventsAnalysis = async () => {
+    // Don't do anything while AI tab isn't selected
+    if (!enabled) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const fetchAnalysis = async () => {
       setLoading(true);
-      setError(null);
-      
+      setError(false);
+
       try {
-        const analysis: AxiosResponse<AIResponse> = await axiosInstance.post<AIResponse>(`/ai-analysis`, JSON.stringify(event) );
-        setAnalysis(analysis.data);
-      } catch (err: any) {
-        setError(err.response?.data?.message || err.message);
+        const response = await axiosInstance.post<AIResponse>(
+          "/ai-analysis",
+          event,
+          {
+            signal: controller.signal,
+          }
+        );
+
+        // Don't update state if the request was cancelled
+        if (!controller.signal.aborted) {
+          setAnalysis(response.data);
+        }
+      } catch (err) {
+        // Cancellation is not an actual error
+        if (axios.isCancel(err) || controller.signal.aborted) {
+          return;
+        }
+
+        setError(true);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchAIEventsAnalysis();
-  }, []);
+    fetchAnalysis();
+
+    // Runs when:
+    // 1. User leaves the AI tab
+    // 2. Card is unmounted/closed
+    // 3. event changes
+    return () => {
+      controller.abort();
+    };
+  }, [event, enabled]);
 
   return { analysis, loading, error };
 };
