@@ -140,3 +140,4 @@ export const InvestigationMap: FC = () => {
     </Box>
   );
 };
+
