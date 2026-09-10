@@ -20,6 +20,9 @@ import "dayjs/locale/he";
 import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
+import InfoEventsCard from "./features/investigation-analysis/components/card/TabCard";
+import MetricCard from "./features/investigation-analysis/components/card/widget";
+import EventDetailsCard from "./features/investigation-analysis/components/card/CardInfo";
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",
@@ -47,13 +50,44 @@ const commandRoomTheme = createTheme({
     fontFamily: '"Heebo", "Segoe UI", sans-serif',
   },
 });
+const event = {
+  eventId: 1026,
+  interceptor: {
+    interceptorTypeId: 1,
+    type: "PAC-3",
+    price: 4000000,
+  },
+  launcher: {
+    launcherId: 1,
+    location: {
+      lat: 31.7683,
+      lng: 35.2137,
+    },
+  },
+  region: "מחוז ירושלים",
+  time: "2026-09-09T08:49:00Z",
+  eventLocation: {
+    lat: 31.775,
+    lng: 35.22,
+  },
+  interceptionStatus: "לא יורט",
+  droneInjuryCount: 3,
+  eventStatus: "נסגר",
+  attackingBody: "גורם מדינתי לא ידוע",
+  drone: {
+    type: "LoadBee-M2",
+    price: 8300,
+  },
+};
+
+
 
 const UnderDevelopmentScreen = () => (
   <Box component="main" className="development-screen">
     <Typography component="h1" className="development-screen__title">
       בפיתוח
     </Typography>
-  </Box>
+    <InfoEventsCard event={event} />  </Box>
 );
 
 const AppRoutes = () => {
