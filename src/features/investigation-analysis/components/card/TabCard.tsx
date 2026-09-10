@@ -63,9 +63,9 @@ export default function InfoEventsCard({
   onClose,
 }: InfoEventsCardProps) {
   const [tabIndex, setTabIndex] = useState(0);
-  const { analysis, loading, error } = useAIResponse(event);
-  console.log(analysis);
+  const isAIInsightsTab = tabIndex === 1;
 
+  const { analysis, loading, error } = useAIResponse(event, isAIInsightsTab);
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
