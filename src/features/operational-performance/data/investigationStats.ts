@@ -23,6 +23,13 @@ export interface RegionSummary {
   eventCount: number;
 }
 
+enum droneDamageCost {
+  "SkyMite-C7"=10000,
+  "LoadBee-M2"=25000,
+  "Falcon-Long X4"=40000,
+  "NanoSwarm-Q9"=3000,
+}
+
 const groupBy = <T>(items: ReadonlyArray<T>, toKey: (item: T) => string) =>
   items.reduce<Record<string, T[]>>((groups, item) => {
     const key = toKey(item);
@@ -53,8 +60,7 @@ export const summarizeByRegion = (events: ReadonlyArray<Event>): RegionSummary[]
       intercepted: regionEvents.filter(isIntercepted).length,
       missed: regionEvents.filter(isMissed).length,
       casualties: regionEvents.reduce((sum, event) => sum + event.droneInjuryCount, 0),
-      damageK: Math.round(regionEvents.reduce((sum, event) => sum + event.damageCostIls, 0) / 1000),
-      // TODO
+      damageK: Math.round(regionEvents.reduce((sum, event) => sum + (isMissed(event) ? droneDamageCost[event.drone.type] : 0), 0) / 1000),
       eventCount: regionEvents.length,
     }))
     .sort((first, second) => second.eventCount - first.eventCount);

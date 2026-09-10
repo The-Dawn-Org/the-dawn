@@ -1,24 +1,13 @@
 import type { DateRangeFilter } from "../../../app/filters/AppFiltersContext";
+import { useEvents } from "../../../hooks/useEvents";
 import type { Event } from "../../../types";
 /**
  * Declared as a type alias rather than an interface so it keeps the implicit
  * index signature that the MUI charts `dataset` prop requires.
  */
 export type CategoryTotal = {
-  category: string;
+  // category: string;
   total: number;
-};
-
-/**
- * The mock arrives with English codes, the screens are Hebrew, so every code is
- * translated on its way to an axis.
- *
- * Key order is also the axis order. A date range that empties a category must
- * not reshuffle the remaining bars, so the order never comes from the data.
- */
-export const SectorToHebrewMapper: Record<Sector, string> = {
-  [Sector.GAZA]: "עזה",
-  [Sector.LEBANON]: "לבנון",
 };
 
 /** An interceptor model is the defence system that answered the event. */
@@ -34,9 +23,6 @@ export const InterceptorToHebrewMapper: Record<string, string> = {
  * The interceptor axis follows the order the models are declared in the mock,
  * so the reference table stays the single source of truth for both.
  */
-const INTERCEPTOR_ORDER = interceptorTypesMock.map((interceptor) => interceptor.name);
-
-const SECTOR_ORDER: string[] = [Sector.GAZA, Sector.LEBANON];
 
 export const filterEventsByDateRange = (
   events: ReadonlyArray<Event>,
@@ -56,7 +42,7 @@ export const filterEventsByDateRange = (
 const totalByCategory = (
   events: ReadonlyArray<Event>,
   order: ReadonlyArray<string>,
-  hebrewLabels: Record<string, string>,
+  // hebrewLabels: Record<string, string>,
   getCode: (event: Event) => string,
   getValue: (event: Event) => number,
 ): CategoryTotal[] => {
@@ -81,7 +67,7 @@ const totalByCategory = (
 
   return orderedCodes.map((code) => ({
     // An unmapped code falls back to itself, which is louder than a blank tick.
-    category: hebrewLabels[code] ?? code,
+    // category: hebrewLabels[code] ?? code,
     total: totals.get(code) ?? 0,
   }));
 };
@@ -89,8 +75,8 @@ const totalByCategory = (
 export const countEventsBySystem = (events: ReadonlyArray<Event>): CategoryTotal[] =>
   totalByCategory(
     events,
-    INTERCEPTOR_ORDER,
-    InterceptorToHebrewMapper,
+    events.map((event) => event.interceptor.type),
+    // InterceptorToHebrewMapper,
     (event) => event.interceptor.type,
     () => 1,
   );
@@ -98,8 +84,8 @@ export const countEventsBySystem = (events: ReadonlyArray<Event>): CategoryTotal
 export const sumCasualtiesBySector = (events: ReadonlyArray<Event>): CategoryTotal[] =>
   totalByCategory(
     events,
-    SECTOR_ORDER,
-    SectorToHebrewMapper,
+    events.map((event) => event.region),
+    // SectorToHebrewMapper,
     (event) => event.region,
     (event) => event.droneInjuryCount,
   );
