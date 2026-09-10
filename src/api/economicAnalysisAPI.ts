@@ -19,6 +19,8 @@ export const getCostBySystem = async (
     },
   );
 
+  console.log("[economicAnalysisAPI] GET /finance/cost-by-system ->", response.data);
+
   return response.data;
 };
 
@@ -36,6 +38,8 @@ export const getCardsInfoItem = async (
       signal,
     },
   );
+
+  console.log("[economicAnalysisAPI] GET /finance/cards ->", response.data);
 
   return response.data;
 };

@@ -1,11 +1,11 @@
-import { useState, useMemo, type FC } from "react";
+import { useState, useMemo, useEffect, type FC } from "react";
 import {
   MapContainer,
   TileLayer,
   GeoJSON,
   Marker,
+  useMap,
   useMapEvents,
-  Popup,
 } from "react-leaflet";
 import L from "leaflet";
 import centroid from "@turf/centroid";
@@ -34,6 +34,24 @@ const ZoomTracker: FC<{ onZoomChange: (zoom: number) => void }> = ({
   return null;
 };
 
+const EVENT_FOCUS_ZOOM = 14;
+
+const MapFocus: FC<{ focus: { pos: [number, number]; nonce: number } | null }> = ({
+  focus,
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (focus) {
+      map.flyTo(focus.pos, Math.max(map.getZoom(), EVENT_FOCUS_ZOOM), {
+        duration: 1,
+      });
+    }
+  }, [focus, map]);
+
+  return null;
+};
+
 const createCustomIcon = (label: string, className: string) => {
   return L.divIcon({
     className: className,
@@ -45,11 +63,16 @@ const createCustomIcon = (label: string, className: string) => {
 interface MapProps {
   isFullscreen: Boolean;
   events: Event[];
+  onEventClick?: (eventId: number) => void;
 }
 
-export const Map: FC<MapProps> = ({ events }) => {
+export const Map: FC<MapProps> = ({ events, onEventClick }) => {
   const defaultCenter: [number, number] = [31.5, 34.85];
   const [zoomLevel, setZoomLevel] = useState<number>(8);
+  const [focus, setFocus] = useState<{
+    pos: [number, number];
+    nonce: number;
+  } | null>(null);
 
   const { cityLabels, districtLabels } = useMemo(() => {
     const cities: Array<{ id: string; name: string; pos: [number, number] }> =
@@ -127,9 +150,9 @@ export const Map: FC<MapProps> = ({ events }) => {
     });
   };
 
-  const handleEventClick = (eventId: number) => {
-    // TODO: Implement click handling
-    console.log("Clicked event ID:", eventId);
+  const handleEventClick = (eventId: number, pos: [number, number]) => {
+    setFocus({ pos, nonce: Date.now() });
+    onEventClick?.(eventId);
   };
 
   return (
@@ -142,6 +165,7 @@ export const Map: FC<MapProps> = ({ events }) => {
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomTracker onZoomChange={setZoomLevel} />
+          <MapFocus focus={focus} />
 
           <TileLayer
             className="tactical-tiles"
@@ -191,7 +215,7 @@ export const Map: FC<MapProps> = ({ events }) => {
                   event.droneInjuryCount
                 )}
                 eventHandlers={{
-                  click: () => handleEventClick(event.eventId),
+                  click: () => handleEventClick(event.eventId, [lat, lng]),
                 }}
               ></Marker>
             );
