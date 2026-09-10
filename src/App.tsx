@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   CssBaseline,
@@ -22,6 +23,11 @@ import "dayjs/locale/he";
 import { AppFiltersProvider, useAppFilters } from "./app/filters/AppFiltersContext";
 import "./App.css";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
+import GenericTable from "./features/investigation-analysis/components/Table/GenericTable";
+import type { InterceptionEvent } from "./features/investigation-analysis/types/tableTypes";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
+import { columns } from "./features/investigation-analysis/components/Table/TableColumnDefinition";
+import InfoEventsCard from "./features/investigation-analysis/components/card/TabCard";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
 import StatisticsPage from "./features/midnight-report/FakeChart";
@@ -78,49 +84,114 @@ const commandRoomTheme = createTheme({
   },
 });
 
-const UnderDevelopmentScreen = () => {
-  const { exportStatistics } = useExportStatistics();
+// // Mock data TODO: delete in prod
+// const events_STUB: InterceptionEvent[] = [
+//   {
+//     "eventId": 0,
+//     "interceptor": { "interceptorTypeId": 0, "type": "תמיר", "price": 50000 },
+//     "launcher": { "launcherId": 0, "location": { "lat": 32.0853, "lng": 34.7818 } },
+//     "region": "מרכז",
+//     "time": "2026-09-08T14:32:10Z",
+//     "eventLocation": { "lat": 32.0900, "lng": 34.7900 },
+//     "interceptionStatus": "יורט",
+//     "eventStatus": "סגור",
+//     "attackingBody": "עזה",
+//     "drone": { "type": "ננוסוורם קיו-9", "price": 900 },
+//     "droneInjuryCount": 0
+//   },
+//   {
+//     "eventId": 1,
+//     "interceptor": { "interceptorTypeId": 1, "type": "פק-3", "price": 4000000 },
+//     "launcher": { "launcherId": 1, "location": { "lat": 31.7683, "lng": 35.2137 } },
+//     "region": "צפון",
+//     "time": "2026-09-08T18:05:44Z",
+//     "eventLocation": { "lat": 31.7750, "lng": 35.2200 },
+//     "interceptionStatus": "לא יורט",
+//     "eventStatus": "סגור",
+//     "attackingBody": "לבנון",
+//     "drone": { "type": "לואדבי אמ-2", "price": 8300 },
+//     "droneInjuryCount": 0
+//   },
+//   {
+//     "eventId": 2,
+//     "interceptor": { "interceptorTypeId": 2, "type": "סטאנר", "price": 1000000 },
+//     "launcher": { "launcherId": 2, "location": { "lat": 32.7940, "lng": 34.9896 } },
+//     "region": "גליל מערבי",
+//     "time": "2026-09-09T02:17:59Z",
+//     "eventLocation": { "lat": 32.8000, "lng": 34.9950 },
+//     "interceptionStatus": "יש נפגעים",
+//     "eventStatus": "סגור",
+//     "attackingBody": "לבנון",
+//     "drone": { "type": "פלקון-לונג אקס-2", "price": 18000 },
+//     "droneInjuryCount": 2
+//   },
+//   {
+//     "eventId": 3,
+//     "interceptor": { "interceptorTypeId": 4, "type": "חץ 3 יירוט", "price": 3500000 },
+//     "launcher": { "launcherId": 3, "location": { "lat": 29.5581, "lng": 34.9482 } },
+//     "region": "דרום",
+//     "time": "2026-09-09T05:48:21Z",
+//     "eventLocation": { "lat": 29.5600, "lng": 34.9600 },
+//     "interceptionStatus": "יורט",
+//     "eventStatus": "סגור",
+//     "attackingBody": "עזה",
+//     "drone": { "type": "פלקון-לונג אקס-2", "price": 18000 },
+//     "droneInjuryCount": 0
+//   },
+//   {
+//     "eventId": 4,
+//     "interceptor": { "interceptorTypeId": 3, "type": "סי-רם ראונד", "price": 15000 },
+//     "launcher": { "launcherId": 0, "location": { "lat": 32.0853, "lng": 34.7818 } },
+//     "region": "מרכז",
+//     "time": "2026-09-09T07:03:12Z",
+//     "eventLocation": { "lat": 32.0870, "lng": 34.7850 },
+//     "interceptionStatus": "יש נפגעים",
+//     "eventStatus": "סגור",
+//     "attackingBody": "עזה",
+//     "drone": { "type": "סקימייט סי-7", "price": 2500 },
+//     "droneInjuryCount": 4
+//   },
+// ];
 
-  const handleExport = async () => {
-    let url: string | undefined;
-    try {
-      const currentUrl = window.location.href;
-      const pdf = await exportStatistics(`${currentUrl}`);
-  
-      url = URL.createObjectURL(pdf);
-      const link = document.createElement("a");
-  
-      link.href = url;
-      link.download = "statistics.pdf";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-  
-      
-    } catch (error) {
-      console.error("Failed to export statistics:", error);
-    } finally {
-      if (url) {
-      URL.revokeObjectURL(url);
-      }
-    }
-  };
+const UnderDevelopmentScreen = () => {
+  // האירוע שנבחר בטבלה - כשהוא לא null, הפופאפ פתוח
+  // const [selectedEvent, setSelectedEvent] = useState<InterceptionEvent | null>(null);
+
+  // const handleRowClick = (info: InterceptionEvent) => {
+  //   setSelectedEvent(info);
+  // };
+
+  // const handleClosePopup = () => {
+  //   setSelectedEvent(null);
+  // };
 
   return (
-    <>
-  <Box component="main" className="development-screen">
-    <Typography component="h1" className="development-screen__title">
-      בפיתוח
-    </Typography>
-    {/* <StatisticsPage /> */}
-    <button
-     className="export-to-pdf-button"
-     onClick={handleExport}>
-        יצא לקובץ PDF
-    </button>
-  </Box>
-  </>
-  )
+    <Box component="main" className="development-screen">
+      <Typography component="h1" className="development-screen__title">
+        בפיתוח
+      </Typography>
+
+      {/* <Box
+        sx={{
+          width: "30%",
+          minWidth: "600px",
+          marginLeft: "auto",
+        }}
+      >
+        <GenericTable
+          targetSubjects={events_STUB}
+          columns={columns}
+          title="יומן אירועים"
+          icon={<ShowChartIcon sx={{ color: "#8ABB4C" }} />}
+          onRowClick={handleRowClick}
+        />
+      </Box>
+
+      {selectedEvent && (
+        <InfoEventsCard event={selectedEvent} onClose={handleClosePopup} />
+      )} */}
+    </Box>
+  );
 };
 
 const AppRoutes = () => {
