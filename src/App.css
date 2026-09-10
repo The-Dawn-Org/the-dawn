@@ -3,6 +3,108 @@
   min-height: calc(100vh - 140px);
   place-items: center;
   padding: 24px;
+  position: relative;
+}
+
+.economic-analysis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  padding: 24px;
+}
+
+@media (max-width: 1100px) {
+  .economic-analysis {
+    grid-template-columns: 1fr;
+  }
+}
+
+.economic-graph {
+  min-height: 430px;
+  overflow: hidden;
+  background: #121d13;
+  border: 1px solid #2c4228;
+  border-radius: 13px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.economic-graph__header {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  padding: 0 22px;
+}
+
+.economic-graph__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.economic-graph__icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  color: #d5a62f;
+  place-items: center;
+}
+
+.economic-graph__icon .MuiSvgIcon-root {
+  font-size: 20px;
+}
+
+.economic-graph__title.MuiTypography-root {
+  color: #eef2ec;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.economic-graph__subtitle.MuiTypography-root {
+  margin: 3px 0 0;
+  color: #718092;
+  font-size: 0.76rem;
+}
+
+.economic-graph__divider {
+  border-color: #263a23;
+}
+
+.economic-graph__content {
+  min-height: 350px;
+  padding: 16px 18px 8px;
+}
+
+.economic-graph__loading,
+.economic-graph__empty {
+  display: grid;
+  min-height: 330px;
+  color: rgb(205, 49, 49);
+  place-items: center;
+}
+
+.economic-graph__loading .MuiCircularProgress-root {
+  color: #6ca847;
+}
+
+.expenses-chart {
+  width: 100%;
+}
+
+.expenses-chart__labels {
+  display: grid;
+  margin: -7px 18px 0 182px;
+  color: #9ca994;
+  direction: ltr;
+  text-align: center;
+}
+
+.expenses-chart__labels .MuiTypography-root {
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .development-screen__title.MuiTypography-root {
@@ -10,4 +112,110 @@
   color: #91a0b4;
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 600;
+}
+
+
+.drone-interceptor-chart {
+  width: 100%;
+}
+
+.drone-interceptor-chart__legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 4px;
+  color: #8a9482;
+  font-size: 12px;
+}
+
+.drone-interceptor-chart__legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drone-interceptor-chart__legend-mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.drone-interceptor-chart__legend-mark--circle {
+  border-radius: 50%;
+}
+
+.accumulative-expenses-chart {
+  width: 100%;
+}
+
+.accumulative-expenses-chart__legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  color: #8a9482;
+  font-size: 12px;
+}
+
+.accumulative-expenses-chart__legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.accumulative-expenses-chart__legend-mark {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 10px;
+}
+
+.accumulative-expenses-chart__legend-mark::before {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: #8bae5a;
+  content: "";
+}
+
+.accumulative-expenses-chart__legend-mark::after {
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #8bae5a;
+  border-radius: 50%;
+  background: #121d13;
+  content: "";
+}
+
+.export-to-pdf-button {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+
+  background: #d5a62f;
+  color: #0c140d;
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: opacity 0.2s ease;
+}
+
+.export-to-pdf-button:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 899px) {
+  .development-screen {
+    min-height: calc(100vh - 66px);
+  }
 }

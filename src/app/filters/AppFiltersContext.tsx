@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { createContext, useContext, useState, type PropsWithChildren } from "react";
 
 export interface DateRangeFilter {
   startDate: string;
@@ -20,7 +15,7 @@ const AppFiltersContext = createContext<AppFiltersContextValue | null>(null);
 const toLocalDateTimeValue = (date: Date) => {
   const timezoneOffset = date.getTimezoneOffset() * 60_000;
 
-  return new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
+  return new Date(date.getTime() - timezoneOffset).toISOString();
 };
 
 const createInitialDateRange = (): DateRangeFilter => {
@@ -37,11 +32,7 @@ const createInitialDateRange = (): DateRangeFilter => {
 export const AppFiltersProvider = ({ children }: PropsWithChildren) => {
   const [dateRange, setDateRange] = useState(createInitialDateRange);
 
-  return (
-    <AppFiltersContext value={{ dateRange, setDateRange }}>
-      {children}
-    </AppFiltersContext>
-  );
+  return <AppFiltersContext value={{ dateRange, setDateRange }}>{children}</AppFiltersContext>;
 };
 
 export const useAppFilters = () => {
