@@ -2,54 +2,12 @@ import { Box, Paper, Typography } from "@mui/material";
 import MetricCard from "./widget";
 import type { EventOutcome } from "./widget";
 import type { InterceptionEvent } from "../../types/tableTypes";
+import type { FC } from "react";
 
-// --- טיפוסים לפי מבנה האובייקט שהתקבל ---
-
-// export interface InterceptorInfo {
-//   interceptorTypeId: number;
-//   type: string;
-//   price: number;
-// }
-
-// export interface LauncherLocation {
-//   lat: number;
-//   lng: number;
-// }
-
-// export interface LauncherInfo {
-//   launcherId: number;
-//   location: LauncherLocation;
-// }
-
-// export interface DroneInfo {
-//   type: string;
-//   price: number;
-// }
-
-// export interface EventLocation {
-//   lat: number;
-//   lng: number;
-// }
-
-// export interface DefenseEvent {
-//   eventId: number;
-//   interceptor: InterceptorInfo;
-//   launcher: LauncherInfo;
-//   region: string;
-//   time: string;
-//   eventLocation: EventLocation;
-//   interceptionStatus: string;
-//   droneInjuryCount: number;
-//   eventStatus: string;
-//   attackingBody: string;
-//   drone: DroneInfo;
-// }
 
 export interface EventDetailsCardProps {
   event: InterceptionEvent;
 }
-
-// --- פונקציה משותפת לקביעת הצלחה/כישלון (משמשת גם את TabCard) ---
 
 export function getEventOutcome(interceptionStatus: string): EventOutcome {
   return interceptionStatus.includes("לא") ? "error" : "success";
@@ -68,7 +26,9 @@ const formatDateTime = (iso: string) =>
     timeStyle: "short",
   }).format(new Date(iso));
 
-export default function EventDetailsCard({ event }: EventDetailsCardProps) {
+const EventDetailsCard: FC<EventDetailsCardProps> = ({
+  event
+})=> {
   const outcome = getEventOutcome(event.interceptionStatus);
   const accentColor = outcome === "success" ? "success.main" : "error.main";
 
@@ -92,7 +52,6 @@ export default function EventDetailsCard({ event }: EventDetailsCardProps) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {/* פאנל עליון - היחיד (מלבד הנקודה בheader) שמשתנה לפי הצלחה/כישלון */}
       <Paper
         variant="outlined"
         sx={{
@@ -124,7 +83,6 @@ export default function EventDetailsCard({ event }: EventDetailsCardProps) {
         </Typography>
       </Paper>
 
-      {/* גריד אמיתי (CSS Grid) - שתי עמודות שוות תמיד, בלי תלות בתוכן */}
       <Box
         sx={{
           display: "grid",
