@@ -16,6 +16,7 @@
     "@mui/material": "^9.4.0",
     "@mui/x-charts": "^9.13.0",
     "@mui/x-date-pickers": "^9.13.0",
+    "axios": "^1.20.0",
     "@turf/centroid": "^7.4.0",
     "@turf/turf": "^7.4.0",
     "dayjs": "^1.11.18",
