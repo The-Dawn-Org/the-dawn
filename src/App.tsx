@@ -23,9 +23,9 @@ import { AppFiltersProvider, useAppFilters } from "./app/filters/AppFiltersConte
 import "./App.css";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
 import { EventsFiltersProvider } from "./app/filters/FilterEventsContext";
-import events from "./mocks/events.json";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
+import { useEvents } from "./hooks/useEvents";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -198,6 +198,8 @@ const handleExport = async () => {
 };
 
 export const App = () => {
+  const { events } = useEvents();
+
   return (
     <ThemeProvider theme={commandRoomTheme}>
       <CssBaseline />
