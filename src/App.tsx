@@ -210,8 +210,25 @@ const AppRoutes = () => {
 
 const handleExport = async () => {
   let url: string | undefined;
+  let html: string | undefined
+
 
   try {
+    if (false) {
+
+  const pdf = await exportStatisticsHTML(html);
+
+  url = URL.createObjectURL(pdf);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "statistics.pdf";
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+    } else {
+      
     const currentUrl = new URL(window.location.href);
    
 
@@ -229,6 +246,8 @@ const handleExport = async () => {
     document.body.appendChild(link);
     link.click();
     link.remove();
+    }
+
   } catch (error) {
     console.error("Failed to export statistics:", error);
   } finally {
