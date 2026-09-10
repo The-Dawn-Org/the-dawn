@@ -154,7 +154,7 @@ export const EconomicAnalysis = () => {
           />
           <InfoCard
             label="סטיית תקציב"
-            value={`${cardsInfo.budgetVariance}%${
+            value={`${Math.abs(cardsInfo.budgetVariance)}%${
               cardsInfo.budgetVariance > 0 ? "  +" : "  -"
             }`}
             icon={TrendingUpRoundedIcon}
