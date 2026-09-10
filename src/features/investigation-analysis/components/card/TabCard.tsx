@@ -9,10 +9,9 @@ import {
   Box,
   Typography,
   Divider,
-  
 } from "@mui/material";
 
-import EventDetailsCard from "./CardInfo";
+import EventDetailsCard, { getEventOutcome } from "./CardInfo";
 import type { DefenseEvent } from "./CardInfo";
 
 export interface InfoEventsCardProps {
@@ -26,11 +25,7 @@ interface TabPanelProps {
   value: number;
 }
 
-const TabPanel = ({
-  children,
-  value,
-  index,
-}: TabPanelProps) => {
+const TabPanel = ({ children, value, index }: TabPanelProps) => {
   return (
     <Box
       role="tabpanel"
@@ -41,6 +36,7 @@ const TabPanel = ({
         width: "100%",
         flex: 1,
         minHeight: 0,
+        overflowY: "auto",
       }}
     >
       {value === index && (
@@ -57,24 +53,26 @@ const TabPanel = ({
   );
 };
 
-export default function InfoEventsCard({
-  event,
-  title = "יירוט",
-}: InfoEventsCardProps) {
+export default function InfoEventsCard({ event, title = "יירוט" }: InfoEventsCardProps) {
   const [tabIndex, setTabIndex] = useState(0);
 
-  const handleChange = (
-    _event: SyntheticEvent,
-    newValue: number
-  ) => {
+  const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
+
+  // הנקודה בheader - היחידה (מלבד הפאנל העליון בCardInfo) שמשתנה לפי הצלחה/כישלון
+  const outcome = getEventOutcome(event.interceptionStatus);
+  const outcomeColor = outcome === "success" ? "success.main" : "error.main";
 
   return (
     <Card
       variant="outlined"
       sx={{
-        width: "35vh",
+        position: "fixed",
+        top: 0,
+        right: 0,
+
+        width: 420,
         height: "100vh",
 
         maxWidth: "none",
@@ -118,78 +116,79 @@ export default function InfoEventsCard({
         {/* ========================= */}
 
         <Box
-  sx={{
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    mb: 2,
-  }}
->
-  {/* Event ID + dot */}
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            mb: 2,
+          }}
+        >
+          {/* Event ID + dot (משתנה לפי הצלחה) */}
 
-  <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      gap: 1,
-    }}
-  >
-    <Typography
-      variant="body2"
-      sx={{
-        color: "text.secondary",
-      }}
-    >
-      EVT-{event.eventId}
-    </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
+              EVT-{event.eventId}
+            </Typography>
 
-    <Box
-      sx={{
-        width: 10,
-        height: 10,
-        borderRadius: "50%",
-        bgcolor: "success.main",
-      }}
-    />
-  </Box>
+            <Box
+              sx={{
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                bgcolor: outcomeColor,
+              }}
+            />
+          </Box>
 
-  {/* Title */}
+          {/* Title */}
 
-  <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      gap: 0.75,
-    }}
-  >
-    <Typography
-      variant="h6"
-      component="div"
-      sx={{
-        fontWeight: 700,
-        color: "common.white",
-      }}
-    >
-      יירוט
-    </Typography>
-  </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0.75,
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                fontWeight: 700,
+                color: "common.white",
+              }}
+            >
+              {title}
+            </Typography>
+          </Box>
 
-  {/* Date */}
+          {/* Date */}
 
-  <Typography
-    variant="body2"
-    sx={{
-      color: "text.secondary",
-      mt: 0.5,
-    }}
-  >
-    {new Intl.DateTimeFormat("he-IL", {
-      dateStyle: "short",
-      timeStyle: "short",
-    }).format(new Date(event.time))}
-  </Typography>
-</Box>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              mt: 0.5,
+            }}
+          >
+            {new Intl.DateTimeFormat("he-IL", {
+              dateStyle: "short",
+              timeStyle: "short",
+            }).format(new Date(event.time))}
+          </Typography>
+        </Box>
+
         {/* ========================= */}
         {/* Tabs */}
         {/* ========================= */}
@@ -202,17 +201,9 @@ export default function InfoEventsCard({
             width: "100%",
           }}
         >
-          <Tab
-            label="מידע כללי"
-            id="info-events-tab-0"
-            aria-controls="info-events-tabpanel-0"
-          />
+          <Tab label="מידע כללי" id="info-events-tab-0" aria-controls="info-events-tabpanel-0" />
 
-          <Tab
-            label="רצף אירועים"
-            id="info-events-tab-1"
-            aria-controls="info-events-tabpanel-1"
-          />
+          <Tab label="רצף אירועים" id="info-events-tab-1" aria-controls="info-events-tabpanel-1" />
         </Tabs>
 
         <Divider />
@@ -221,10 +212,7 @@ export default function InfoEventsCard({
         {/* טאב 1: מידע כללי */}
         {/* ========================= */}
 
-        <TabPanel
-          value={tabIndex}
-          index={0}
-        >
+        <TabPanel value={tabIndex} index={0}>
           <EventDetailsCard event={event} />
         </TabPanel>
 
@@ -232,17 +220,8 @@ export default function InfoEventsCard({
         {/* טאב 2: רצף אירועים */}
         {/* ========================= */}
 
-        <TabPanel
-          value={tabIndex}
-          index={1}
-        >
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              mb: 1,
-            }}
-          >
+        <TabPanel value={tabIndex} index={1}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             רצף אירועים
           </Typography>
 
