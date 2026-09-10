@@ -35,7 +35,7 @@ const NAVIGATION_ITEMS: ReadonlyArray<{
     label: "ביצועים אופרטיביים",
     Icon: BarChartIcon,
   },
-  { id: "economic-analysis", label: "עלויות ומלאי", Icon: PaidIcon },
+  { id: "economic-analysis", label: "ניתוח עלויות ומלאי", Icon: PaidIcon },
 ];
 
 const DATE_TIME_FORMATTER = new Intl.DateTimeFormat("he-IL", {

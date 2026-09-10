@@ -20,6 +20,27 @@ import "dayjs/locale/he";
 import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
+import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
+import "@mui/material/styles";
+
+declare module "@mui/material/styles" {
+  interface Palette {
+    kpi: {
+      gold: string;
+      red: string;
+      lightGreen: string;
+      darkGreen: string;
+    };
+  }
+  interface PaletteOptions {
+    kpi?: {
+      gold: string;
+      red: string;
+      lightGreen: string;
+      darkGreen: string;
+    };
+  }
+}
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",
@@ -41,6 +62,12 @@ const commandRoomTheme = createTheme({
     background: {
       default: "#0c140d",
       paper: "#121d13",
+    },
+    kpi: {
+      gold: "#D4A843",
+      red: "#C44536",
+      lightGreen: "#8BAE5A",
+      darkGreen: "#6FA84B",
     },
   },
   typography: {
@@ -84,7 +111,7 @@ const AppRoutes = () => {
         />
         <Route
           path={SCREEN_PATHS["economic-analysis"]}
-          element={<UnderDevelopmentScreen />}
+          element={<EconomicAnalysis />}
         />
         <Route
           path="*"
