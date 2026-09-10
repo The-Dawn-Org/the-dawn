@@ -59,10 +59,10 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
         series={[
           {
             type: "line",
-            data: droneCost,
+            data: interceptCost,
             yAxisId: "costAxis",
             color: GOLD,
-            label: "עלות מיירט (K$)",
+            label: "עלות מיירט",
             curve: "linear",
             showMark: true,
 
@@ -72,10 +72,10 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
           },
           {
             type: "line",
-            data: interceptCost,
+            data: droneCost,
             yAxisId: "countAxis",
             color: RED,
-            label: "רחפנים מיורטים",
+            label: "עלות רחפן",
             curve: "linear",
             showMark: true,
 
@@ -118,6 +118,7 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
             scaleType: "linear",
             min: 0,
             max: roundedMaxToShow,
+            valueFormatter: (value) => `$${value / 1000}K`,
             tickLabelStyle: {
               fill: TEXT_MUTED,
               fontSize: 11,
