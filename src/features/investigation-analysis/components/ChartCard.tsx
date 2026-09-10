@@ -1,15 +1,20 @@
 import type { PropsWithChildren } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Stack, type StackProps } from "@mui/material";
 import "./ChartCard.css";
 
-interface ChartCardProps extends PropsWithChildren {
+interface ChartCardProps extends PropsWithChildren, StackProps {
   title: string;
   subtitle?: string;
 }
 
-export const ChartCard = ({ title, subtitle, children }: ChartCardProps) => {
+export const ChartCard = ({
+  title,
+  subtitle,
+  children,
+  ...stackProps
+}: ChartCardProps) => {
   return (
-    <Box component="section" className="chart-card">
+    <Stack component="section" className="chart-card" {...stackProps}>
       <Box className="chart-card__header">
         <Typography component="h2" className="chart-card__title">
           {title}
@@ -21,6 +26,6 @@ export const ChartCard = ({ title, subtitle, children }: ChartCardProps) => {
         ) : null}
       </Box>
       <Box className="chart-card__body">{children}</Box>
-    </Box>
+    </Stack>
   );
 };
