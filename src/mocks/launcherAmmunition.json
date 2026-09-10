@@ -1,0 +1,67 @@
+[
+  {
+    "launcher": {
+      "launcherId": 0,
+      "launcherType": { "launcherTypeId": 0, "name": "כיפת ברזל", "reloadTime": 15 },
+      "location": { "lat": 32.0853, "lng": 34.7818 },
+      "asl": 45,
+      "agl": 0,
+      "amount": 20,
+      "active": true
+    },
+    "interceptorType": { "interceptorTypeId": 0, "type": "תמיר", "price": 50000, "maxRange": 70 },
+    "quantity": 20
+  },
+  {
+    "launcher": {
+      "launcherId": 1,
+      "launcherType": { "launcherTypeId": 1, "name": "מערך יהלום", "reloadTime": 30 },
+      "location": { "lat": 31.7683, "lng": 35.2137 },
+      "asl": 780,
+      "agl": 0,
+      "amount": 16,
+      "active": true
+    },
+    "interceptorType": { "interceptorTypeId": 1, "type": "פק-3", "price": 4000000, "maxRange": 160 },
+    "quantity": 16
+  },
+  {
+    "launcher": {
+      "launcherId": 2,
+      "launcherType": { "launcherTypeId": 2, "name": "קלע דוד", "reloadTime": 25 },
+      "location": { "lat": 32.7940, "lng": 34.9896 },
+      "asl": 30,
+      "agl": 0,
+      "amount": 12,
+      "active": false
+    },
+    "interceptorType": { "interceptorTypeId": 2, "type": "סטאנר", "price": 1000000, "maxRange": 300 },
+    "quantity": 12
+  },
+  {
+    "launcher": {
+      "launcherId": 3,
+      "launcherType": { "launcherTypeId": 3, "name": "חץ-3 בטרייה", "reloadTime": 45 },
+      "location": { "lat": 29.5581, "lng": 34.9482 },
+      "asl": 15,
+      "agl": 0,
+      "amount": 8,
+      "active": true
+    },
+    "interceptorType": { "interceptorTypeId": 4, "type": "חץ 3 יירוט", "price": 3500000, "maxRange": 2400 },
+    "quantity": 8
+  },
+  {
+    "launcher": {
+      "launcherId": 0,
+      "launcherType": { "launcherTypeId": 0, "name": "כיפת ברזל", "reloadTime": 15 },
+      "location": { "lat": 32.0853, "lng": 34.7818 },
+      "asl": 45,
+      "agl": 0,
+      "amount": 20,
+      "active": true
+    },
+    "interceptorType": { "interceptorTypeId": 3, "type": "סי-רם ראונד", "price": 15000, "maxRange": 2 },
+    "quantity": 200
+  }
+]
