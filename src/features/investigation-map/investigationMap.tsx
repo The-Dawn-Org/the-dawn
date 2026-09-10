@@ -4,12 +4,11 @@ import "leaflet/dist/leaflet.css";
 import { Map } from "./components/Map";
 import { OpenInFull, CloseFullscreen } from "@mui/icons-material";
 import { useEvents } from "../../hooks/useEvents";
+import { StatisticsEventLogs } from "./Componants/EventsAndStatistics";
 
 export const InvestigationMap: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<Boolean>(false);
-  const { events, loading, error } = useEvents();
-  console.log("events: ");
-  console.log(events);
+  const { events } = useEvents();
 
   const toggleFullscreen = (): void => {
     setIsFullscreen((prev) => !prev);
@@ -46,7 +45,9 @@ export const InvestigationMap: FC = () => {
             gap: 2,
             flexShrink: 0,
           }}
-        ></Box>
+        >
+          <StatisticsEventLogs events={events} />
+        </Box>
       )}
 
       {/* Map Container */}
