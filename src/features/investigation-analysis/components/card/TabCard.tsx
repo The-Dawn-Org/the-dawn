@@ -13,6 +13,9 @@ import {
 
 import EventDetailsCard, { getEventOutcome } from "./CardInfo";
 import type { DefenseEvent } from "./CardInfo";
+import { getAIEventAnalysisById } from "../../../../api/endpoints/events";
+import type { AIResponse } from "../../../../types/AIResponse";
+import { useAIResponse } from "../../../../hooks/useAIResponse";
 
 export interface InfoEventsCardProps {
   event: DefenseEvent;
@@ -53,8 +56,12 @@ const TabPanel = ({ children, value, index }: TabPanelProps) => {
   );
 };
 
-export default function InfoEventsCard({ event, title = "יירוט" }: InfoEventsCardProps) {
+export default function InfoEventsCard({
+  event,
+  title = "יירוט",
+}: InfoEventsCardProps) {
   const [tabIndex, setTabIndex] = useState(0);
+  const { analysis } = useAIResponse(event.eventId);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
@@ -201,9 +208,17 @@ export default function InfoEventsCard({ event, title = "יירוט" }: InfoEven
             width: "100%",
           }}
         >
-          <Tab label="מידע כללי" id="info-events-tab-0" aria-controls="info-events-tabpanel-0" />
+          <Tab
+            label="מידע כללי"
+            id="info-events-tab-0"
+            aria-controls="info-events-tabpanel-0"
+          />
 
-          <Tab label="רצף אירועים" id="info-events-tab-1" aria-controls="info-events-tabpanel-1" />
+          <Tab
+            label="רצף אירועים"
+            id="info-events-tab-1"
+            aria-controls="info-events-tabpanel-1"
+          />
         </Tabs>
 
         <Divider />
@@ -222,22 +237,18 @@ export default function InfoEventsCard({ event, title = "יירוט" }: InfoEven
 
         <TabPanel value={tabIndex} index={1}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-           רצף אירועים
+            רצף אירועים
           </Typography>
 
           <Typography
-          variant="body2"
-        sx={{
-          color: "text.secondary",
-          lineHeight: 1.8,
-          }}
-      >
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-    commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-    velit esse cillum dolore eu fugiat nulla pariatur.
-  </Typography>
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              lineHeight: 1.8,
+            }}
+          >
+            {analysis.text}
+          </Typography>
         </TabPanel>
       </CardContent>
     </Card>
