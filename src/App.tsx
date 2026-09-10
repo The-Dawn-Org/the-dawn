@@ -24,6 +24,7 @@ import GenericTable from "./features/investigation-analysis/components/Table/Gen
 import type { InterceptionEvent } from "./features/investigation-analysis/types/tableTypes";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { columns } from "./features/investigation-analysis/components/Table/TableColumnDefinition";
+import InfoEventsCard from "./features/investigation-analysis/components/card/TabCard";
 
 const SCREEN_PATHS: Record<NavigationItemId, string> = {
   "investigation-map": "/investigation-map",
@@ -51,6 +52,37 @@ const commandRoomTheme = createTheme({
     fontFamily: '"Heebo", "Segoe UI", sans-serif',
   },
 });
+const event = {
+  eventId: 1026,
+  interceptor: {
+    interceptorTypeId: 1,
+    type: "PAC-3",
+    price: 4000000,
+  },
+  launcher: {
+    launcherId: 1,
+    location: {
+      lat: 31.7683,
+      lng: 35.2137,
+    },
+  },
+  region: "מחוז ירושלים",
+  time: "2026-09-09T08:49:00Z",
+  eventLocation: {
+    lat: 31.775,
+    lng: 35.22,
+  },
+  interceptionStatus: "לא יורט",
+  droneInjuryCount: 3,
+  eventStatus: "נסגר",
+  attackingBody: "גורם מדינתי לא ידוע",
+  drone: {
+    type: "LoadBee-M2",
+    price: 8300,
+  },
+};
+
+
 
   
 // Mock data TODO: delete in prod
@@ -280,6 +312,7 @@ const UnderDevelopmentScreen = () => (
     />
     </Box>
     
+    <InfoEventsCard event={event} />  
   </Box>
 );
 
