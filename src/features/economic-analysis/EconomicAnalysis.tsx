@@ -12,14 +12,14 @@ import { InfoCard } from "./info-cards/InfoCard";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/ExpensesByAmmunitionChart";
 import { GraphContainer } from "./GraphContainer";
-import { DrownsToInterceptor } from "./DrownToInterceptor/DrownToInterceptor";
+import { DronesToInterceptor } from "./DroneToInterceptor/DroneToInterceptor";
 import { getDrownToInterceptor } from "./economicAnalysis.service";
 import {
   getCardsInfoItem,
   getCostBySystem,
 } from "../../api/economicAnalysisAPI";
 import type {
-  DrownToInterceptorType,
+  DroneToInterceptorType,
   SystemCost,
   CardsInfoItem,
 } from "./types";
@@ -28,7 +28,7 @@ export const EconomicAnalysis = () => {
   const theme = useTheme();
   const { dateRange } = useAppFilters();
   const [drownToInterceptor, setDrownToInterceptor] = useState<
-    DrownToInterceptorType[]
+    DroneToInterceptorType[]
   >([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<SystemCost[]>([]);
@@ -38,7 +38,6 @@ export const EconomicAnalysis = () => {
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
-
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -54,10 +53,7 @@ export const EconomicAnalysis = () => {
       })
       .finally(() => setIsLoadingExpenses(false));
 
-    getDrownToInterceptor(
-      dateRange
-      ,abortController.signal
-    )
+    getDrownToInterceptor(dateRange, abortController.signal)
       .then((nextDrownToInterceptor) => {
         console.log(nextDrownToInterceptor);
         setDrownToInterceptor(nextDrownToInterceptor);
@@ -68,7 +64,6 @@ export const EconomicAnalysis = () => {
         }
       })
       .finally(() => setIsLoadingDrownToInter(false));
-
 
     return () => abortController.abort();
   }, [dateRange]);
@@ -220,7 +215,7 @@ export const EconomicAnalysis = () => {
               <Typography>{errorMessage}</Typography>
             </Box>
           ) : (
-            <DrownsToInterceptor data={drownToInterceptor} />
+            <DronesToInterceptor data={drownToInterceptor} />
           )}
         </GraphContainer>
       </Box>

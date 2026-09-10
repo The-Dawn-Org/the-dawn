@@ -5,12 +5,12 @@ import { ChartsYAxis } from "@mui/x-charts/ChartsYAxis";
 import { ChartsTooltip } from "@mui/x-charts/ChartsTooltip";
 import { ChartsGrid } from "@mui/x-charts/ChartsGrid";
 import { ChartsAxisHighlight } from "@mui/x-charts/ChartsAxisHighlight";
-import type { DrownToInterceptorType } from "../types";
+import type { DroneToInterceptorType } from "../types";
 import { Box, Typography } from "@mui/material";
 import { useAppFilters } from "../../../app/filters/AppFiltersContext";
 
-interface DrownsToInterceptorProps {
-  data: DrownToInterceptorType[];
+interface DronesToInterceptorProps {
+  data: DroneToInterceptorType[];
 }
 
 const days = [
@@ -47,12 +47,12 @@ const getDateRangeArray = (start: Date, end: Date): Date[] => {
   return dates;
 };
 
-export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
+export const DronesToInterceptor = ({ data }: DronesToInterceptorProps) => {
   const { dateRange } = useAppFilters();
 
   const rangeDates = getDateRangeArray(
     new Date(dateRange.startDate),
-    new Date(dateRange.endDate),
+    new Date(dateRange.endDate)
   );
 
   if (rangeDates.length === 0) {
@@ -64,14 +64,14 @@ export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
   }
 
   const dataByDate = new Map(
-    data.map((item) => [toDateKey(item.date), item] as const),
+    data.map((item) => [toDateKey(item.date), item] as const)
   );
 
   const interceptCost = rangeDates.map(
-    (date) => dataByDate.get(toDateKey(date))?.interceptorsTotalCost ?? 0,
+    (date) => dataByDate.get(toDateKey(date))?.interceptorsTotalCost ?? 0
   );
   const droneCost = rangeDates.map(
-    (date) => dataByDate.get(toDateKey(date))?.dronesTotalCost ?? 0,
+    (date) => dataByDate.get(toDateKey(date))?.dronesTotalCost ?? 0
   );
 
   const maxCostToShow = Math.max(0, ...interceptCost, ...droneCost);
