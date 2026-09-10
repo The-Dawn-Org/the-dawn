@@ -8,13 +8,13 @@ import {
   Tab,
   Box,
   Typography,
-  Divider,
   Modal,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { getEventOutcome, EventDetailsCard } from "./CardInfo";
+import { EventDetailsCard, getEventOutcome } from "./CardInfo";
+import { useAIResponse } from "../../../../hooks/useAIResponse";
 import type { InterceptionEvent } from "../../types/tableTypes";
 
 export interface InfoEventsCardProps {
@@ -57,14 +57,19 @@ const TabPanel = ({ children, value, index }: TabPanelProps) => {
   );
 };
 
-export default function InfoEventsCard({ event, title = "יירוט", onClose }: InfoEventsCardProps) {
+export default function InfoEventsCard({
+  event,
+  title = "יירוט",
+  onClose,
+}: InfoEventsCardProps) {
   const [tabIndex, setTabIndex] = useState(0);
+  const { analysis, loading, error } = useAIResponse(event);
+  console.log(analysis);
 
   const handleChange = (_event: SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
 
-  // הנקודה בheader - היחידה (מלבד הפאנל העליון בCardInfo) שמשתנה לפי הצלחה/כישלון
   const outcome = getEventOutcome(event.interceptionStatus);
   const outcomeColor = outcome === "success" ? "success.main" : "error.main";
 
@@ -77,15 +82,12 @@ export default function InfoEventsCard({ event, title = "יירוט", onClose }:
           top: 0,
           right: 0,
 
-          width: 420,
+          width: 500,
           height: "100vh",
 
           maxWidth: "none",
           maxHeight: "none",
 
-          /*
-           * מעל ה-navbar ושאר התוכן.
-           */
           zIndex: (theme) => theme.zIndex.modal + 1,
 
           display: "flex",
@@ -98,7 +100,6 @@ export default function InfoEventsCard({ event, title = "יירוט", onClose }:
           outline: "none",
         }}
       >
-        {/* כפתור סגירה (X) */}
         <IconButton
           onClick={onClose}
           aria-label="סגור"
@@ -133,10 +134,6 @@ export default function InfoEventsCard({ event, title = "יירוט", onClose }:
             },
           }}
         >
-          {/* ========================= */}
-          {/* כותרת */}
-          {/* ========================= */}
-
           <Box
             sx={{
               width: "100%",
@@ -146,8 +143,6 @@ export default function InfoEventsCard({ event, title = "יירוט", onClose }:
               mb: 2,
             }}
           >
-            {/* Event ID + dot (משתנה לפי הצלחה) */}
-
             <Box
               sx={{
                 display: "flex",
@@ -174,8 +169,6 @@ export default function InfoEventsCard({ event, title = "יירוט", onClose }:
               />
             </Box>
 
-            {/* Title */}
-
             <Box
               sx={{
                 display: "flex",
@@ -194,9 +187,6 @@ export default function InfoEventsCard({ event, title = "יירוט", onClose }:
                 {title}
               </Typography>
             </Box>
-
-            {/* Date */}
-
             <Typography
               variant="body2"
               sx={{
@@ -211,45 +201,95 @@ export default function InfoEventsCard({ event, title = "יירוט", onClose }:
             </Typography>
           </Box>
 
-          {/* ========================= */}
-          {/* Tabs */}
-          {/* ========================= */}
-
           <Tabs
             value={tabIndex}
             onChange={handleChange}
-            aria-label="מידע כללי או רצף אירועים"
+            aria-label="מידע כללי או תובנות AI"
             sx={{
               width: "100%",
             }}
           >
-            <Tab label="מידע כללי" id="info-events-tab-0" aria-controls="info-events-tabpanel-0" />
+            <Tab
+              label="מידע כללי"
+              id="info-events-tab-0"
+              aria-controls="info-events-tabpanel-0"
+            />
 
-            <Tab label="רצף אירועים" id="info-events-tab-1" aria-controls="info-events-tabpanel-1" />
+            <Tab
+              label="תובנות AI"
+              id="info-events-tab-1"
+              aria-controls="info-events-tabpanel-1"
+            />
           </Tabs>
-
-          <Divider />
-
-          {/* ========================= */}
-          {/* טאב 1: מידע כללי */}
-          {/* ========================= */}
 
           <TabPanel value={tabIndex} index={0}>
             <EventDetailsCard event={event} />
           </TabPanel>
 
-          {/* ========================= */}
-          {/* טאב 2: רצף אירועים */}
-          {/* ========================= */}
-
           <TabPanel value={tabIndex} index={1}>
-            <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-              רצף אירועים
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              תובנות AI
             </Typography>
-
-            {/* TODO:
-                כאן תוכנס קומפוננטת "רצף אירועים"
-            */}
+            {loading ? (
+              <Box
+                sx={{
+                  minHeight: 200,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    border: "4px solid",
+                    borderColor: "divider",
+                    borderTopColor: "primary.main",
+                    borderRadius: "50%",
+                    animation: "spin 1s linear infinite",
+                    "@keyframes spin": {
+                      from: { transform: "rotate(0deg)" },
+                      to: { transform: "rotate(360deg)" },
+                    },
+                  }}
+                />
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  טוען את תובנות AI...
+                </Typography>
+              </Box>
+            ) : error ? (
+              <Box
+                sx={{
+                  minHeight: 200,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  gap: 1,
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{ color: "error.main", fontWeight: 700 }}
+                >
+                  שגיאה בטעינת תובנות AI
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  לא ניתן היה לקבל את הנתונים מהשרת. נסה שוב מאוחר יותר.
+                </Typography>
+              </Box>
+            ) : (
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", lineHeight: 1.8 }}
+              >
+                {analysis.text}
+              </Typography>
+            )}
           </TabPanel>
         </CardContent>
       </Card>

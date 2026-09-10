@@ -1,10 +1,9 @@
-import { useState } from "react";
 import {
   Box,
   CssBaseline,
   ThemeProvider,
-  Typography,
   createTheme,
+  Typography,
 } from "@mui/material";
 import {
   BrowserRouter,
@@ -22,11 +21,6 @@ import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
 import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
-import GenericTable from "./features/investigation-analysis/components/Table/GenericTable";
-import type { InterceptionEvent } from "./features/investigation-analysis/types/tableTypes";
-import ShowChartIcon from "@mui/icons-material/ShowChart";
-import { columns } from "./features/investigation-analysis/components/Table/TableColumnDefinition";
-import InfoEventsCard from "./features/investigation-analysis/components/card/TabCard";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
 import { getEventById } from "./api/endpoints/events";
