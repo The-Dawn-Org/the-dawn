@@ -3,6 +3,7 @@
   min-height: calc(100vh - 140px);
   place-items: center;
   padding: 24px;
+  position: relative;
 }
 
 .development-screen__title.MuiTypography-root {
@@ -10,4 +11,33 @@
   color: #91a0b4;
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 600;
+}
+
+.export-to-pdf-button {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+
+  background: #d5a62f;
+  color: #0c140d;
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: opacity 0.2s ease;
+}
+
+.export-to-pdf-button:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 899px) {
+  .development-screen {
+    min-height: calc(100vh - 66px);
+  }
 }

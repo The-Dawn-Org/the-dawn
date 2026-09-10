@@ -12,12 +12,13 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar"
+import { useExportStatistics } from "./features/midnight-report/pdf-export/hooks/useExportStatisticsPdf";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { heIL } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/he";
 import { AppFiltersProvider } from "./app/filters/AppFiltersContext";
-import { MainNavbar, type NavigationItemId } from "./app/layout/MainNavbar";
 import "./App.css";
 import StatisticsPage from "./features/midnight-report/FakeChart";
 
@@ -48,14 +49,49 @@ const commandRoomTheme = createTheme({
   },
 });
 
-const UnderDevelopmentScreen = () => (
+const UnderDevelopmentScreen = () => {
+
+  const { exportStatistics } = useExportStatistics();
+
+  const statistics = {
+    investigations: 42,
+    completed: 31,
+    pending: 11,
+  };
+
+  const handleExport = async () => {
+    try {
+      const pdf = await exportStatistics(statistics);
+  
+      const url = URL.createObjectURL(pdf);
+      const link = document.createElement("a");
+  
+      link.href = url;
+      link.download = "statistics.pdf";
+      link.click();
+  
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to export statistics:", error);
+    }
+  };
+
+  return (
+    <>
   <Box component="main" className="development-screen">
     {/* <Typography component="h1" className="development-screen__title">
       בפיתוח
     </Typography> */}
     <StatisticsPage />
+    <button
+     className="export-to-pdf-button"
+     onClick={handleExport}>
+        יצא לקובץ PDF
+      </button>
   </Box>
-);
+  </>
+  )
+};
 
 const AppRoutes = () => {
   const location = useLocation();
