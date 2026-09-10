@@ -8,14 +8,17 @@ import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import PaidIcon from "@mui/icons-material/Paid";
 import RadarIcon from "@mui/icons-material/Radar";
+import LocalAtmRoundedIcon from "@mui/icons-material/LocalAtmRounded";
 import { InfoCard } from "./info-cards/InfoCard";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/ExpensesByAmmunitionChart";
 import { GraphContainer } from "./GraphContainer";
 import { DrownsToInterceptor } from "./DrownToInterceptor/DrownToInterceptor";
+import { AccumulativeExpensesChart } from "./AccumulativeExpensesChart/AccumulativeExpensesChart";
 import { getDrownToInterceptor } from "./economicAnalysis.service";
 import {
   getCardsInfoItem,
+  getBudgetByDate,
   getCostBySystem,
 } from "../../api/economicAnalysisAPI";
 import type {
@@ -23,6 +26,7 @@ import type {
   SystemCost,
   CardsInfoItem,
 } from "./types";
+import type { AccumulativeExpensePoint } from "./types";
 
 export const EconomicAnalysis = () => {
   const theme = useTheme();
@@ -35,15 +39,25 @@ export const EconomicAnalysis = () => {
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
   const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
   const [isLoadingDrownToInter, setIsLoadingDrownToInter] = useState(true);
+  const [accumulativeExpenses, setAccumulativeExpenses] = useState<
+    AccumulativeExpensePoint[]
+  >(
+    [],
+  );
+  const [isLoadingAccumulativeExpenses, setIsLoadingAccumulativeExpenses] =
+    useState(true);
+  const [accumulativeExpensesError, setAccumulativeExpensesError] =
+    useState(false);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
-
 
   useEffect(() => {
     const abortController = new AbortController();
 
     setIsLoadingExpenses(true);
+    setIsLoadingAccumulativeExpenses(true);
+    setAccumulativeExpensesError(false);
 
     getCostBySystem(dateRange, abortController.signal)
       .then((nextExpenses) => setExpenses(nextExpenses))
@@ -54,10 +68,18 @@ export const EconomicAnalysis = () => {
       })
       .finally(() => setIsLoadingExpenses(false));
 
-    getDrownToInterceptor(
-      dateRange
-      ,abortController.signal
-    )
+    getBudgetByDate(dateRange, abortController.signal)
+      .then((nextAccumulativeExpenses) =>
+        setAccumulativeExpenses(nextAccumulativeExpenses),
+      )
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setAccumulativeExpensesError(true);
+        }
+      })
+      .finally(() => setIsLoadingAccumulativeExpenses(false));
+
+    getDrownToInterceptor(dateRange, abortController.signal)
       .then((nextDrownToInterceptor) => {
         console.log(nextDrownToInterceptor);
         setDrownToInterceptor(nextDrownToInterceptor);
@@ -68,7 +90,6 @@ export const EconomicAnalysis = () => {
         }
       })
       .finally(() => setIsLoadingDrownToInter(false));
-
 
     return () => abortController.abort();
   }, [dateRange]);
@@ -221,6 +242,24 @@ export const EconomicAnalysis = () => {
             </Box>
           ) : (
             <DrownsToInterceptor data={drownToInterceptor} />
+          )}
+        </GraphContainer>
+
+        <GraphContainer
+          icon={<LocalAtmRoundedIcon />}
+          title="סטיית תקציב לאורך זמן"
+          subtitle="סך ההוצאה בפועל לפי תאריך"
+        >
+          {isLoadingAccumulativeExpenses ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : accumulativeExpensesError ? (
+            <Box className="economic-graph__empty">
+              <Typography>לא ניתן לטעון את נתוני סטיית התקציב</Typography>
+            </Box>
+          ) : (
+            <AccumulativeExpensesChart data={accumulativeExpenses} />
           )}
         </GraphContainer>
       </Box>

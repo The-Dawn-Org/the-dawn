@@ -142,3 +142,7 @@
 .drone-interceptor-chart__legend-mark--circle {
   border-radius: 50%;
 }
+
+.accumulative-expenses-chart {
+  width: 100%;
+}

@@ -19,3 +19,13 @@ export interface DrownToInterceptorType {
   dronesTotalCost: number;
   interceptorsTotalCost: number;
 }
+
+export interface AccumulativeExpensePoint {
+  date: string;
+  number: number;
+}
+
+export interface BudgetByDateResponse {
+  date: string;
+  budget: number;
+}
