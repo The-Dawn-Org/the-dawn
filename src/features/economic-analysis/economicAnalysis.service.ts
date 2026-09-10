@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { DateRangeFilter } from "../../app/filters/AppFiltersContext";
-import type { SystemCost, DrownToInterceptorType } from "./types";
+import type { SystemCost, DroneToInterceptorType } from "./types";
 
 const financeApi = axios.create({
   baseURL: import.meta.env.VITE_FINANCE_API_URL ?? "",
@@ -27,8 +27,8 @@ export const getCostBySystem = async (
 export const getDrownToInterceptor = async (
   dateRange: DateRangeFilter,
   signal?: AbortSignal,
-): Promise<DrownToInterceptorType[]> => {
-  const response = await financeApi.get<DrownToInterceptorType[]>(
+): Promise<DroneToInterceptorType[]> => {
+  const response = await financeApi.get<DroneToInterceptorType[]>(
     "/finance/daily-interceptions",
     {
       params: {

@@ -14,7 +14,7 @@ export interface CardsInfoItem {
   averageInterceptCost: number
 }
 
-export interface DrownToInterceptorType {
+export interface DroneToInterceptorType {
   date: Date;
   dronesTotalCost: number;
   interceptorsTotalCost: number;

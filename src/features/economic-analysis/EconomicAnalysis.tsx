@@ -13,16 +13,16 @@ import { InfoCard } from "./info-cards/InfoCard";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/ExpensesByAmmunitionChart";
 import { GraphContainer } from "./GraphContainer";
-import { DrownsToInterceptor } from "./DrownToInterceptor/DrownToInterceptor";
-import { AccumulativeExpensesChart } from "./AccumulativeExpensesChart/AccumulativeExpensesChart";
+import { DronesToInterceptor } from "./DroneToInterceptor/DroneToInterceptor";
 import { getDrownToInterceptor } from "./economicAnalysis.service";
+import { AccumulativeExpensesChart } from "./AccumulativeExpensesChart/AccumulativeExpensesChart";
 import {
   getCardsInfoItem,
   getBudgetByDate,
   getCostBySystem,
 } from "../../api/economicAnalysisAPI";
 import type {
-  DrownToInterceptorType,
+  DroneToInterceptorType,
   SystemCost,
   CardsInfoItem,
 } from "./types";
@@ -32,7 +32,7 @@ export const EconomicAnalysis = () => {
   const theme = useTheme();
   const { dateRange } = useAppFilters();
   const [drownToInterceptor, setDrownToInterceptor] = useState<
-    DrownToInterceptorType[]
+    DroneToInterceptorType[]
   >([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<SystemCost[]>([]);
@@ -41,9 +41,7 @@ export const EconomicAnalysis = () => {
   const [isLoadingDrownToInter, setIsLoadingDrownToInter] = useState(true);
   const [accumulativeExpenses, setAccumulativeExpenses] = useState<
     AccumulativeExpensePoint[]
-  >(
-    [],
-  );
+  >([]);
   const [isLoadingAccumulativeExpenses, setIsLoadingAccumulativeExpenses] =
     useState(true);
   const [accumulativeExpensesError, setAccumulativeExpensesError] =
@@ -241,7 +239,7 @@ export const EconomicAnalysis = () => {
               <Typography>{errorMessage}</Typography>
             </Box>
           ) : (
-            <DrownsToInterceptor data={drownToInterceptor} />
+            <DronesToInterceptor data={drownToInterceptor} />
           )}
         </GraphContainer>
 
