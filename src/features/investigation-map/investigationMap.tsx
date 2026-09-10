@@ -3,25 +3,30 @@ import { Box, Button, Typography } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState, type FC } from "react";
 import { getEventById } from "../../api/endpoints/events";
-import { useAppFilters } from "../../app/filters/AppFiltersContext";
-import { useEvents } from "../../hooks/useEvents";
 import InfoEventsCard from "../investigation-analysis/components/card/TabCard";
 import type { InterceptionEvent } from "../investigation-analysis/types/tableTypes";
 import { StatisticsEventLogs } from "./Componants/EventsAndStatistics";
 import { FiltersNavbar } from "./components/FilterNavbar/FilterNavbar";
 import { Map } from "./components/Map";
+import { MapFiltersProvider, useMapFilters } from "./context/MapFiltersContext";
 
 export const InvestigationMap: FC = () => {
+  return (
+    <MapFiltersProvider>
+      <InvestigationMapContent />
+    </MapFiltersProvider>
+  );
+};
+
+const InvestigationMapContent: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<Boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<InterceptionEvent | null>(
     null,
   );
 
-  const { dateRange } = useAppFilters();
-  const { events } = useEvents({
-    startDate: dateRange.startDate,
-    endDate: dateRange.endDate,
-  });
+  // Events are shared through the context so the map, the events log table and
+  // the statistics panel always render the exact same, filter-synced result set.
+  const { events } = useMapFilters();
 
   const handleEventSelect = async (eventId: number) => {
     setSelectedEvent(await getEventById(eventId));

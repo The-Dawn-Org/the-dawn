@@ -1,57 +1,80 @@
-import { useState } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 
 import {
     Box,
-    FormControl,
-    Select,
-    MenuItem,
     Checkbox,
+    FormControl,
     ListItemText,
+    MenuItem,
     OutlinedInput,
+    Select,
     Typography,
+    type SelectChangeEvent,
 } from "@mui/material";
 
-const selectsConfig = [
-    { key: "גזרות", title: "גזרות", options: ["צפון", "דרום", "מרכז", "גליל מערבי"] },
+import { SYSTEM_OPTIONS, type FilterOption } from "../../constants/systems";
+import {
+    useMapFilters,
+    type MapFilterSelections,
+} from "../../context/MapFiltersContext";
 
+interface SelectConfig {
+    key: keyof MapFilterSelections;
+    title: string;
+    options: FilterOption[];
+}
+
+/** For dropdowns where the label and the filter value are the same string. */
+const toOptions = (values: string[]): FilterOption[] =>
+    values.map((value) => ({ value, label: value }));
+
+const selectsConfig: SelectConfig[] = [
     {
-        key: "מערכות",
-        title: "מערכות",
-        options: [
-            "BuzzStop-15",
-            "NetWing-30",
-            "DartFox-S",
-            "SpearMini-70",
-            "SkyLance-M",
-            "FalconClip-H",
-            "SwarmMist-5",
-            "MicroNet-R",
-        ],
+        key: "region",
+        title: "גזרות",
+        options: toOptions(["צפון", "דרום", "מרכז", "גליל מערבי"]),
     },
 
-    { key: "מקום שיגור", title: "מקום שיגור", options: ["עזה", "לבנון"] },
+    {
+        key: "type",
+        title: "מערכות",
+        // Hebrew label is shown, English value is used for filtering.
+        options: SYSTEM_OPTIONS,
+    },
 
-    { key: "סטטוס יירוט", title: "סטטוס יירוט", options: ["יורט", "לא יורט", "יש נפגעים"] },
+    {
+        key: "launchRegion",
+        title: "מקום שיגור",
+        options: toOptions(["עזה", "לבנון"]),
+    },
+
+    {
+        key: "status",
+        title: "סטטוס יירוט",
+        options: toOptions(["יורט", "לא יורט", "יש נפגעים"]),
+    },
 ];
 
 export const FilterDropdown = () => {
-    const [values, setValues] = useState(
-        Object.fromEntries(selectsConfig.map((cfg) => [cfg.key, []]))
-    );
+    const { selections, setSelection } = useMapFilters();
 
-    const handleChange = (key) => (event) => {
-        const { value } = event.target;
+    const handleChange =
+        (key: keyof MapFilterSelections) =>
+        (event: SelectChangeEvent<string[]>) => {
+            const { value } = event.target;
 
-        setValues((prev) => ({
-            ...prev,
+            setSelection(
+                key,
+                typeof value === "string" ? value.split(",") : value,
+            );
+        };
 
-            [key]: typeof value === "string" ? value.split(",") : value,
-        }));
-    };
-
-    const renderValue = (title) => (selected) => {
-        const selectedValues = selected as string[];
+    const renderValue = (config: SelectConfig) => (selected: string[]) => {
+        const labels = selected.map(
+            (value) =>
+                config.options.find((option) => option.value === value)?.label ??
+                value,
+        );
 
         return (
             <Box
@@ -74,7 +97,7 @@ export const FilterDropdown = () => {
                         fontWeight: "light",
                     }}
                 >
-                    {title}
+                    {config.title}
                 </Typography>
                 <Typography
                     sx={{
@@ -86,11 +109,11 @@ export const FilterDropdown = () => {
                         marginRight: 1,
                     }}
                 >
-                    {selectedValues.length > 1
-                        ? `${selected.length} נבחרו`
-                        : selectedValues.length === 0
+                    {labels.length > 1
+                        ? `${labels.length} נבחרו`
+                        : labels.length === 0
                         ? "הכל"
-                        : selected[0]}
+                        : labels[0]}
                 </Typography>
             </Box>
         );
@@ -103,17 +126,17 @@ export const FilterDropdown = () => {
                     <Select
                         multiple
                         displayEmpty
-                        value={values[cfg.key]}
+                        value={selections[cfg.key]}
                         onChange={handleChange(cfg.key)}
                         input={<OutlinedInput />}
-                        renderValue={renderValue(cfg.title)}
+                        renderValue={renderValue(cfg)}
                         sx={{ direction: "rtl", textAlign: "right" }}
-                        MenuProps={{ PaperProps: { sx: { direction: "rtl" } } }}
+                        MenuProps={{ slotProps: { paper: { sx: { direction: "rtl" } } } }}
                     >
                         {cfg.options.map((opt) => (
                             <MenuItem
-                                key={opt}
-                                value={opt}
+                                key={opt.value}
+                                value={opt.value}
                                 sx={{
                                     "&.Mui-selected": {
                                         backgroundColor: "rgba(255, 255, 255, 0.08)",
@@ -127,7 +150,7 @@ export const FilterDropdown = () => {
                                 }}
                             >
                                 <ListItemText
-                                    primary={opt}
+                                    primary={opt.label}
                                     sx={{
                                         maxWidth: "120px",
                                         height: "25px",
@@ -140,7 +163,7 @@ export const FilterDropdown = () => {
                                     }}
                                 />
                                 <Checkbox
-                                    checked={values[cfg.key].indexOf(opt) > -1}
+                                    checked={selections[cfg.key].indexOf(opt.value) > -1}
                                     icon={<span />}
                                     checkedIcon={<CheckIcon sx={{ color: "#D4A843" }} />}
                                     sx={{ padding: 0 }}
