@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { InventoryType } from "../types";
 
 export interface StockLevelItem {
   id: string;
@@ -10,10 +10,7 @@ export interface StockLevelItem {
 }
 
 interface StockLevelsProps {
-  icon?: ReactNode;
-  title?: string;
-  subtitle?: string;
-  items: StockLevelItem[];
+  items: InventoryType[];
 }
 
 // -----------------------------------------------------------------------------
@@ -52,11 +49,21 @@ const formatNumber = (value: number): string => {
 const StockLevelRow = ({
   item,
 }: {
-  item: StockLevelItem;
+  item: InventoryType;
 }) => {
-  const currentPercent = toPercent(item.current, item.total);
+  // Percentage of the maximum that we currently have
+  const currentPercent = toPercent(item.current, item.max);
 
-  const minimumPercent = toPercent(item.minimum, item.total);
+  // Percentage of the maximum that represents the minimum required amount
+  //
+  // Example:
+  // max = 5000
+  // min = 1000
+  //
+  // 1000 / 5000 * 100 = 20%
+  //
+  // So the red line will be positioned at 20% from the right side.
+  const minimumPercent = toPercent(item.min, item.max);
 
   return (
     <div
@@ -66,6 +73,10 @@ const StockLevelRow = ({
         direction: "rtl",
       }}
     >
+      {/* -----------------------------------------------------------------
+          Header
+          ----------------------------------------------------------------- */}
+
       <div
         style={{
           display: "flex",
@@ -92,20 +103,11 @@ const StockLevelRow = ({
               fontSize: 14,
             }}
           >
-            {item.name}
+            {item.type}
           </span>
-
-          {item.detail && (
-            <span
-              style={{
-                color: TEXT_MUTED,
-                fontSize: 12,
-              }}
-            >
-              {item.detail}
-            </span>
-          )}
         </div>
+
+        {/* LEFT SIDE - percentage + numbers */}
 
         <div
           style={{
@@ -131,10 +133,14 @@ const StockLevelRow = ({
               fontSize: 13,
             }}
           >
-            {formatNumber(item.total)} / {formatNumber(item.current)}
+            {formatNumber(item.max)} / {formatNumber(item.current)}
           </span>
         </div>
       </div>
+
+      {/* -----------------------------------------------------------------
+          Stock bar
+          ----------------------------------------------------------------- */}
 
       <div
         style={{
@@ -165,6 +171,26 @@ const StockLevelRow = ({
           }}
         />
 
+        {/* -----------------------------------------------------------------
+            Minimum stock marker
+
+            The important part is:
+
+            right: `${minimumPercent}%`
+
+            If:
+              max = 5000
+              min = 1000
+
+            minimumPercent = 20
+
+            Therefore:
+              right: "20%"
+
+            This puts the red line at the correct position relative
+            to the maximum amount.
+            ----------------------------------------------------------------- */}
+
         <div
           style={{
             position: "absolute",
@@ -180,6 +206,10 @@ const StockLevelRow = ({
         />
       </div>
 
+      {/* -----------------------------------------------------------------
+          Minimum amount label
+          ----------------------------------------------------------------- */}
+
       <div
         style={{
           marginTop: 5,
@@ -189,11 +219,15 @@ const StockLevelRow = ({
           direction: "rtl",
         }}
       >
-        מס׳ מינימלי: {formatNumber(item.minimum)}
+        מס׳ מינימלי: {formatNumber(item.min)}
       </div>
     </div>
   );
 };
+
+// -----------------------------------------------------------------------------
+// Inventory chart
+// -----------------------------------------------------------------------------
 
 export const StockLevels = ({
   items,
@@ -228,45 +262,10 @@ export const StockLevels = ({
     >
       {items.map((item) => (
         <StockLevelRow
-          key={item.id}
+          key={item.type}
           item={item}
         />
       ))}
     </div>
   );
 };
-
-export const stockLevelsData: StockLevelItem[] = [
-  {
-    id: "iron-dome",
-    name: "כיפת ברזל",
-    detail: "(סטיר)",
-    current: 3200,
-    total: 5000,
-    minimum: 1000,
-  },
-  {
-    id: "davids-sling",
-    name: "קלע דוד",
-    detail: "(סטאבר)",
-    current: 180,
-    total: 300,
-    minimum: 60,
-  },
-  {
-    id: "arrow-2",
-    name: "חץ 2",
-    detail: "(חץ 2 בלוק 4)",
-    current: 90,
-    total: 150,
-    minimum: 30,
-  },
-  {
-    id: "arrow-3",
-    name: "חץ 3",
-    detail: "(חץ 3)",
-    current: 48,
-    total: 80,
-    minimum: 16,
-  },
-];

@@ -14,7 +14,7 @@ import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/ExpensesByAmmunitionChart";
 import { GraphContainer } from "./GraphContainer";
 import { DronesToInterceptor } from "./DroneToInterceptor/DroneToInterceptor";
-import { getDrownToInterceptor } from "./economicAnalysis.service";
+import { getDroneToInterceptor, getInventoryDetails } from "./economicAnalysis.service";
 import { AccumulativeExpensesChart } from "./AccumulativeExpensesChart/AccumulativeExpensesChart";
 import {
   getCardsInfoItem,
@@ -25,10 +25,10 @@ import type {
   DroneToInterceptorType,
   SystemCost,
   CardsInfoItem,
+  InventoryType,
 } from "./types";
 import {
   StockLevels,
-  stockLevelsData,
 } from "./InventoryInterceptors/InventoryInterceptors";
 import { Inventory2Outlined } from "@mui/icons-material";
 import type { AccumulativeExpensePoint } from "./types";
@@ -36,14 +36,14 @@ import type { AccumulativeExpensePoint } from "./types";
 export const EconomicAnalysis = () => {
   const theme = useTheme();
   const { dateRange } = useAppFilters();
-  const [drownToInterceptor, setDrownToInterceptor] = useState<
+  const [droneToInterceptor, setDroneToInterceptor] = useState<
     DroneToInterceptorType[]
   >([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<SystemCost[]>([]);
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
   const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
-  const [isLoadingDrownToInter, setIsLoadingDrownToInter] = useState(true);
+  const [isLoadingDroneToInter, setIsLoadingDroneToInter] = useState(true);
   const [accumulativeExpenses, setAccumulativeExpenses] = useState<
     AccumulativeExpensePoint[]
   >([]);
@@ -54,13 +54,12 @@ export const EconomicAnalysis = () => {
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
+  const [inventoryError, setInventoryError] = useState<boolean>(false);
+  const [isLoadingInventory, setIsLoadingInventory] = useState<boolean>(true);
+  const [inventory, setInventory] = useState<InventoryType[]>([]);
 
   useEffect(() => {
     const abortController = new AbortController();
-
-    setIsLoadingExpenses(true);
-    setIsLoadingAccumulativeExpenses(true);
-    setAccumulativeExpensesError(false);
 
     getCostBySystem(dateRange, abortController.signal)
       .then((nextExpenses) => setExpenses(nextExpenses))
@@ -82,17 +81,27 @@ export const EconomicAnalysis = () => {
       })
       .finally(() => setIsLoadingAccumulativeExpenses(false));
 
-    getDrownToInterceptor(dateRange, abortController.signal)
-      .then((nextDrownToInterceptor) => {
-        console.log(nextDrownToInterceptor);
-        setDrownToInterceptor(nextDrownToInterceptor);
+    getDroneToInterceptor(dateRange, abortController.signal)
+      .then((nextDroneToInterceptor) => {
+        setDroneToInterceptor(nextDroneToInterceptor);
       })
       .catch((error: unknown) => {
         if (!axios.isCancel(error)) {
           setErrorMessage("לא ניתן לטעון נתוני הרחפים ומחירי המיירטים.");
         }
       })
-      .finally(() => setIsLoadingDrownToInter(false));
+      .finally(() => setIsLoadingDroneToInter(false));
+
+    getInventoryDetails(abortController.signal)
+      .then((nextInventory) => {
+        setInventory(nextInventory);
+      })
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setErrorMessage("לא ניתן לטעון את נתוני המלאי.");
+        }
+      })
+      .finally(() => setIsLoadingInventory(false));
 
     return () => abortController.abort();
   }, [dateRange]);
@@ -235,7 +244,7 @@ export const EconomicAnalysis = () => {
           title="יחס עלות אסימטרי"
           subtitle="עלות מיירט מול שווי רחפן"
         >
-          {isLoadingDrownToInter ? (
+          {isLoadingDroneToInter ? (
             <Box className="economic-graph__loading">
               <CircularProgress size={28} />
             </Box>
@@ -244,7 +253,7 @@ export const EconomicAnalysis = () => {
               <Typography>{errorMessage}</Typography>
             </Box>
           ) : (
-            <DronesToInterceptor data={drownToInterceptor} />
+            <DronesToInterceptor data={droneToInterceptor} />
           )}
         </GraphContainer>
 
@@ -253,16 +262,16 @@ export const EconomicAnalysis = () => {
           title="מלאי במערכות היירוט"
           subtitle="רמות מלאי נוכחיות"
         >
-          {isLoadingAccumulativeExpenses ? (
+          {isLoadingInventory ? (
             <Box className="economic-graph__loading">
               <CircularProgress size={28} />
             </Box>
-          ) : accumulativeExpensesError ? (
+          ) : errorMessage ? (
             <Box className="economic-graph__empty">
               <Typography>לא ניתן לטעון את נתוני סטיית התקציב</Typography>
             </Box>
           ) : (
-            <StockLevels items={stockLevelsData} />
+            <StockLevels items={inventory} />
           )}
         </GraphContainer>
       </Box>
