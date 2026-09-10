@@ -25,11 +25,13 @@ const formatDateTime = (iso: string) =>
     timeStyle: "short",
   }).format(new Date(iso));
 
-const EventDetailsCard: FC<EventDetailsCardProps> = ({ event }) => {
+export const EventDetailsCard: FC<EventDetailsCardProps> = ({ event }) => {
   const outcome = getEventOutcome(event.interceptionStatus);
   const accentColor = outcome === "success" ? "success.main" : "error.main";
 
-  const metrics: { label: string; value: string }[] = [
+  // הנתונים לוידג'טים - מרוכזים במערך אחד כדי לפרוש בגריד אחיד.
+  // status אופציונלי: כשלא מוגדר, הוידג'ט נשאר ירוק כברירת מחדל (ראו widget.tsx).
+  const metrics: { label: string; value: string; status?: EventOutcome }[] = [
     { label: "סטטוס אירוע", value: event.eventStatus },
     { label: "מזהה אירוע", value: String(event.eventId) },
     {
@@ -37,7 +39,11 @@ const EventDetailsCard: FC<EventDetailsCardProps> = ({ event }) => {
       value: formatCurrency(event.interceptor.price - event.drone.price),
     },
     { label: "מערכת הגנה", value: event.interceptor.type },
-    { label: "נפגעים מהרחפן", value: String(event.droneInjuryCount) },
+    {
+      label: "נפגעים מהרחפן",
+      value: String(event.droneInjuryCount),
+      status: event.droneInjuryCount > 0 ? "error" : "success",
+    },
     { label: "גזרה", value: event.region },
     { label: "זמן אירוע", value: formatDateTime(event.time) },
     { label: "סוג רחפן", value: event.drone.type },
@@ -100,7 +106,12 @@ const EventDetailsCard: FC<EventDetailsCardProps> = ({ event }) => {
               key={metric.label}
               sx={{ gridColumn: isDanglingLast ? "1 / -1" : undefined }}
             >
-              <MetricCard fullWidth label={metric.label} value={metric.value} />
+              <MetricCard
+                fullWidth
+                label={metric.label}
+                value={metric.value}
+                status={metric.status}
+              />
             </Box>
           );
         })}
@@ -108,5 +119,3 @@ const EventDetailsCard: FC<EventDetailsCardProps> = ({ event }) => {
     </Box>
   );
 };
-
-export default EventDetailsCard;

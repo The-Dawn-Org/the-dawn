@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import EventDetailsCard, { getEventOutcome } from "./CardInfo";
+import { EventDetailsCard, getEventOutcome } from "./CardInfo";
 import { useAIResponse } from "../../../../hooks/useAIResponse";
 import type { InterceptionEvent } from "../../types/tableTypes";
 
