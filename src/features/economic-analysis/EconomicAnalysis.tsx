@@ -14,23 +14,21 @@ import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/Expenses
 import { GraphContainer } from "./GraphContainer";
 import { DrownsToInterceptor } from "./DrownToInterceptor/DrownToInterceptor";
 import { getDrownToInterceptor } from "./economicAnalysis.service";
-import type { DrownToInterceptorType } from "./economicAnalysis.types";
 import { getCardsInfoItem, getCostBySystem } from "../../api/economicAnalysisAPI";
-import type { CostBySystemItem, CardsInfoItem } from "./types";
+import type { DrownToInterceptorType , SystemCost, CardsInfoItem } from "./types";
 
 export const EconomicAnalysis = () => {
   const theme = useTheme();
   const { dateRange } = useAppFilters();
-  const [expenses, setExpenses] = useState<CostBySystemItem[]>([]);
   const [drownToInterceptor, setDrownToInterceptor] = useState<DrownToInterceptorType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [expenses, setExpenses] = useState<SystemCost[]>([]);
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
   const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
+  const [isLoadingDrownToInter, setIsLoadingDrownToInter] = useState(true);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
-
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -55,7 +53,7 @@ export const EconomicAnalysis = () => {
           setErrorMessage("לא ניתן לטעון נתוני הרחפים ומחירי המיירטים.");
         }
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsLoadingDrownToInter(false));
 
     return () => abortController.abort();
   }, [dateRange]);
@@ -74,7 +72,6 @@ export const EconomicAnalysis = () => {
       })
       .finally(() => setIsLoadingCards(false));
     return () => abortController.abort();
-    
   }, [dateRange]);
 
   const formatCurrency = (value: number) => {
@@ -88,18 +85,23 @@ export const EconomicAnalysis = () => {
   };
 
   return (
-    <Box component="main" className="economic-analysis" sx={{ width: "99%", justifySelf: "center" }} dir="rtl">
+    <Box
+      component="main"
+      className="economic-analysis"
+      sx={{ width: "99%", justifySelf: "center" }}
+      dir="rtl"
+    >
       {/* Info Cards */}
       {isLoadingCards ? (
-          <Box className="economic-graph__loading">
-            <CircularProgress size={28} />
-          </Box>
-        ) : (infoCardsError || !cardsInfo) ? (
-          <Box className="economic-graph__empty">
-            <Typography>לא ניתן לטעון את נתוני הקלפים</Typography>
-          </Box>
-        ) : (
-          <Box
+        <Box className="economic-graph__loading">
+          <CircularProgress size={28} />
+        </Box>
+      ) : infoCardsError || !cardsInfo ? (
+        <Box className="economic-graph__empty">
+          <Typography>לא ניתן לטעון את נתוני הקלפים</Typography>
+        </Box>
+      ) : (
+        <Box
           sx={{
             display: "grid",
             gap: 1.5,
@@ -125,15 +127,13 @@ export const EconomicAnalysis = () => {
           />
           <InfoCard
             label="עלות ממוצעת ליירוט"
-            value={formatCurrency(
-             cardsInfo.averageInterceptCost
-            )}
+            value={formatCurrency(cardsInfo.averageInterceptCost)}
             icon={PaymentsRoundedIcon}
             accentColor={theme.palette.kpi.gold}
           />
           <InfoCard
             label="מיירטים ששוגרו"
-            value={formatNumber(cardsInfo.interceptorsLaunced)}
+            value={formatNumber(cardsInfo.interceptorsLaunched)}
             icon={BoltRoundedIcon}
             accentColor={theme.palette.kpi.lightGreen}
           />
@@ -142,11 +142,13 @@ export const EconomicAnalysis = () => {
             value={`${cardsInfo.budgetVariance}%${cardsInfo.budgetVariance > 0 ? "  +" : "  -"}`}
             icon={TrendingUpRoundedIcon}
             accentColor={
-              cardsInfo.budgetVariance > 0 ? theme.palette.kpi.red : theme.palette.kpi.darkGreen
+              cardsInfo.budgetVariance > 0
+                ? theme.palette.kpi.red
+                : theme.palette.kpi.darkGreen
             }
           />
         </Box>
-        )}
+      )}
 
       {/* Cost by System Graph */}
       <GraphContainer
@@ -172,7 +174,7 @@ export const EconomicAnalysis = () => {
         title="יחס עלות אסימטרי"
         subtitle="עלות מיירט מול שווי רחפן"
       >
-        {isLoading ? (
+        {isLoadingDrownToInter ? (
           <Box className="economic-graph__loading">
             <CircularProgress size={28} />
           </Box>
