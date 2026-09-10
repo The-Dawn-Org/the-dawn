@@ -1,10 +1,5 @@
 import type { DateRangeFilter } from "../../../app/filters/AppFiltersContext";
-import {
-  Sector,
-  droneEventsMock,
-  interceptorTypesMock,
-  type DroneEvent,
-} from "../dataMock";
+import { Sector, droneEventsMock, interceptorTypesMock, type DroneEvent } from "../dataMock";
 
 /**
  * Declared as a type alias rather than an interface so it keeps the implicit
