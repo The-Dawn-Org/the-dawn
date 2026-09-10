@@ -21,6 +21,7 @@ import { heIL } from "@mui/x-date-pickers/locales";
 import "dayjs/locale/he";
 import { AppFiltersProvider, useAppFilters } from "./app/filters/AppFiltersContext";
 import "./App.css";
+import { InvestigationAnalysisPage } from "./features/operational-performance/InvestigationAnalysisPage";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
@@ -51,7 +52,7 @@ const SCREEN_PATHS: Record<NavigationItemId, string> = {
 };
 
 const PATH_SCREEN_IDS = Object.fromEntries(
-  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId])
+  Object.entries(SCREEN_PATHS).map(([screenId, path]) => [path, screenId]),
 ) as Record<string, NavigationItemId>;
 
 const commandRoomTheme = createTheme({
@@ -175,11 +176,19 @@ const handleExport = async () => {
         />
         <Route
           path={SCREEN_PATHS["operational-performance"]}
-          element={<UnderDevelopmentScreen />}
+          element={<InvestigationAnalysisPage />}
         />
         <Route
           path={SCREEN_PATHS["economic-analysis"]}
           element={<EconomicAnalysis />}
+        />
+        <Route
+          path="*"
+          element={<Navigate to={SCREEN_PATHS["investigation-map"]} replace />}
+        />
+        <Route
+          path={SCREEN_PATHS["economic-analysis"]}
+          element={<UnderDevelopmentScreen />}
         />
         <Route
           path="*"

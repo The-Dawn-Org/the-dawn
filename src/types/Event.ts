@@ -3,7 +3,7 @@ import type { DroneType, InterceptorType, Launcher, Location } from ".";
 export interface Event {
   eventId: number;
   interceptor: Omit<InterceptorType, "maxRange">;
-  launcher: Pick<Launcher, "launcherId" | "location">;
+  launcher: Launcher;
   region: string;
   time: string;
   eventLocation: Location;
