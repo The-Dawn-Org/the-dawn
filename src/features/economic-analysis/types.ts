@@ -13,3 +13,19 @@ export interface CardsInfoItem {
   budgetVariance: number,
   averageInterceptCost: number
 }
+
+export interface DroneToInterceptorType {
+  date: Date;
+  dronesTotalCost: number;
+  interceptorsTotalCost: number;
+}
+
+export interface AccumulativeExpensePoint {
+  date: string;
+  number: number;
+}
+
+export interface BudgetByDateResponse {
+  date: string;
+  budget: number;
+}

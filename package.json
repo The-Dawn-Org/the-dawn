@@ -24,8 +24,9 @@
     "maplibre-gl": "^6.8.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-leaflet": "^5.0.0",
-    "react-router-dom": "^7.18.3"
+    "react-router-dom": "^7.18.3",
+    "recharts": "^3.10.1",
+    "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.22",
