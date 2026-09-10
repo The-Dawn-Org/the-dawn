@@ -98,6 +98,7 @@ export const EconomicAnalysis = () => {
       })
       .catch((error: unknown) => {
         if (!axios.isCancel(error)) {
+          setInventoryError(true);
           setErrorMessage("לא ניתן לטעון את נתוני המלאי.");
         }
       })
@@ -265,6 +266,8 @@ export const EconomicAnalysis = () => {
           )}
         </GraphContainer>
 
+        
+
         <GraphContainer
           icon={<Inventory2Outlined />}
           title="מלאי במערכות היירוט"
@@ -274,9 +277,9 @@ export const EconomicAnalysis = () => {
             <Box className="economic-graph__loading">
               <CircularProgress size={28} />
             </Box>
-          ) : errorMessage ? (
+          ) : inventoryError ? (
             <Box className="economic-graph__empty">
-              <Typography>לא ניתן לטעון את נתוני סטיית התקציב</Typography>
+              <Typography>{errorMessage}</Typography>
             </Box>
           ) : (
             <StockLevels items={inventory} />
