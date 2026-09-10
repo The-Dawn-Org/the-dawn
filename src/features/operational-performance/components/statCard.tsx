@@ -25,7 +25,7 @@ export const StatSumCard = ({
         display: "inline-flex",
         alignItems: "center",
         gap: 2.5,
-        minWidth: 260,
+        minWidth: 220,
         px: 2.5,
         py: 2,
         borderRadius: 3,

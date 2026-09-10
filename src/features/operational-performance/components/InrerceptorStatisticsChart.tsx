@@ -20,9 +20,15 @@ export const InrerceptorStatisticsChart = ({
   return (
     <ChartCard title="אחוזי פגיעה בכל מערכת" spacing={4} dir="row">
       <Stack
-        sx={{ display: "flex", width: "220px", direction: "ltr" }}
+        dir="rtl"
+        direction="row"
+        useFlexGap
         spacing={2}
-        direction={"row-reverse"}
+        sx={{
+          justifyContent: "space-evenly",
+          alignItems: "flex-start",
+          pb: 1,
+        }}
       >
         {interceptionStats.map((stat) => (
           <Box key={stat.title} sx={{ width: "100%" }}>
