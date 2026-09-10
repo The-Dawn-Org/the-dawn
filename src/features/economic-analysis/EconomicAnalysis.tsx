@@ -122,13 +122,21 @@ export const EconomicAnalysis = () => {
     return () => abortController.abort();
   }, [dateRange]);
 
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | null | undefined) => {
+    if (value == null) {
+      console.warn("[EconomicAnalysis] formatCurrency received null/undefined value");
+      return "$0";
+    }
     if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
     if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
     return `$${value}`;
   };
 
-  const formatNumber = (value: number) => {
+  const formatNumber = (value: number | null | undefined) => {
+    if (value == null) {
+      console.warn("[EconomicAnalysis] formatNumber received null/undefined value");
+      return "0";
+    }
     return value.toLocaleString("en-US");
   };
 
