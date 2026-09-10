@@ -14,13 +14,22 @@ import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/Expenses
 import { GraphContainer } from "./GraphContainer";
 import { DrownsToInterceptor } from "./DrownToInterceptor/DrownToInterceptor";
 import { getDrownToInterceptor } from "./economicAnalysis.service";
-import { getCardsInfoItem, getCostBySystem } from "../../api/economicAnalysisAPI";
-import type { DrownToInterceptorType , SystemCost, CardsInfoItem } from "./types";
+import {
+  getCardsInfoItem,
+  getCostBySystem,
+} from "../../api/economicAnalysisAPI";
+import type {
+  DrownToInterceptorType,
+  SystemCost,
+  CardsInfoItem,
+} from "./types";
 
 export const EconomicAnalysis = () => {
   const theme = useTheme();
   const { dateRange } = useAppFilters();
-  const [drownToInterceptor, setDrownToInterceptor] = useState<DrownToInterceptorType[]>([]);
+  const [drownToInterceptor, setDrownToInterceptor] = useState<
+    DrownToInterceptorType[]
+  >([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<SystemCost[]>([]);
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
@@ -29,6 +38,8 @@ export const EconomicAnalysis = () => {
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
+
+  // console.log(drownToInterceptor);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -44,10 +55,14 @@ export const EconomicAnalysis = () => {
       })
       .finally(() => setIsLoadingExpenses(false));
 
-    getDrownToInterceptor(dateRange
+    getDrownToInterceptor(
+      dateRange
       // , abortController.signal
-      )
-      .then((nextDrownToInterceptor) => setDrownToInterceptor(nextDrownToInterceptor))
+    )
+      .then((nextDrownToInterceptor) => {
+        console.log(nextDrownToInterceptor);
+        setDrownToInterceptor(nextDrownToInterceptor);
+      })
       .catch((error: unknown) => {
         if (!axios.isCancel(error)) {
           setErrorMessage("לא ניתן לטעון נתוני הרחפים ומחירי המיירטים.");
@@ -84,11 +99,13 @@ export const EconomicAnalysis = () => {
     return value.toLocaleString("en-US");
   };
 
+  // console.log(cardsInfo.interceptorsLaunched);
+
   return (
     <Box
       component="main"
       className="economic-analysis"
-      sx={{ width: "99%", justifySelf: "center" }}
+      sx={{ width: "99%", justifySelf: "center", display: "block" }}
       dir="rtl"
     >
       {/* Info Cards */}
@@ -139,7 +156,9 @@ export const EconomicAnalysis = () => {
           />
           <InfoCard
             label="סטיית תקציב"
-            value={`${cardsInfo.budgetVariance}%${cardsInfo.budgetVariance > 0 ? "  +" : "  -"}`}
+            value={`${cardsInfo.budgetVariance}%${
+              cardsInfo.budgetVariance > 0 ? "  +" : "  -"
+            }`}
             icon={TrendingUpRoundedIcon}
             accentColor={
               cardsInfo.budgetVariance > 0
@@ -150,42 +169,63 @@ export const EconomicAnalysis = () => {
         </Box>
       )}
 
-      {/* Cost by System Graph */}
-      <GraphContainer
-        icon={<PaidIcon />}
-        title="עלות לפי מערכת"
-        subtitle="עלות לפי סוג התחמושת ששוגר"
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: "repeat(2, minmax(0, 1fr))",
+          },
+          gap: 2,
+          marginTop: 2,
+          "& > *": {
+            minWidth: 0,
+            width: "100%",
+          },
+          "& > :last-child:nth-child(odd)": {
+            gridColumn: {
+              xs: "auto",
+              md: "1 / -1",
+            },
+          },
+        }}
       >
-        {isLoadingExpenses ? (
-          <Box className="economic-graph__loading">
-            <CircularProgress size={28} />
-          </Box>
-        ) : expensesError ? (
-          <Box className="economic-graph__empty">
-            <Typography>לא ניתן לטעון את נתוני העלות</Typography>
-          </Box>
-        ) : (
-          <ExpensesByAmmunitionChart data={expenses} />
-        )}
-      </GraphContainer>
+        <GraphContainer
+          icon={<PaidIcon />}
+          title="עלות לפי מערכת"
+          subtitle="עלות לפי סוג התחמושת ששוגר"
+        >
+          {isLoadingExpenses ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : expensesError ? (
+            <Box className="economic-graph__empty">
+              <Typography>לא ניתן לטעון את נתוני העלות</Typography>
+            </Box>
+          ) : (
+            <ExpensesByAmmunitionChart data={expenses} />
+          )}
+        </GraphContainer>
 
-      <GraphContainer
-        icon={<RadarIcon />}
-        title="יחס עלות אסימטרי"
-        subtitle="עלות מיירט מול שווי רחפן"
-      >
-        {isLoadingDrownToInter ? (
-          <Box className="economic-graph__loading">
-            <CircularProgress size={28} />
-          </Box>
-        ) : errorMessage ? (
-          <Box className="economic-graph__empty">
-            <Typography>{errorMessage}</Typography>
-          </Box>
-        ) : (
-          <DrownsToInterceptor data={drownToInterceptor} />
-        )}
-      </GraphContainer>
+        <GraphContainer
+          icon={<RadarIcon />}
+          title="יחס עלות אסימטרי"
+          subtitle="עלות מיירט מול שווי רחפן"
+        >
+          {isLoadingDrownToInter ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : errorMessage ? (
+            <Box className="economic-graph__empty">
+              <Typography>{errorMessage}</Typography>
+            </Box>
+          ) : (
+            <DrownsToInterceptor data={drownToInterceptor} />
+          )}
+        </GraphContainer>
+      </Box>
     </Box>
   );
 };

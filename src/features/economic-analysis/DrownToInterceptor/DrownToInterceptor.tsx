@@ -6,11 +6,11 @@ import { ChartsYAxis } from "@mui/x-charts/ChartsYAxis";
 import { ChartsTooltip } from "@mui/x-charts/ChartsTooltip";
 import { ChartsGrid } from "@mui/x-charts/ChartsGrid";
 import { ChartsAxisHighlight } from "@mui/x-charts/ChartsAxisHighlight";
-import type { DrownToInterceptorType } from "../economicAnalysis.types";
+import type { DrownToInterceptorType } from "../types";
 import { Box, Typography } from "@mui/material";
 
 interface DrownsToInterceptorProps {
-  data: DrownToInterceptorType[]
+  data: DrownToInterceptorType[];
 }
 
 const days = [
@@ -28,11 +28,7 @@ const GOLD = "#e0b04a";
 const RED = "#c0392b";
 const TEXT_MUTED = "#8a9482";
 
-export const DrownsToInterceptor = (
-  {
-    data,
-  }: DrownsToInterceptorProps
-) => {
+export const DrownsToInterceptor = ({ data }: DrownsToInterceptorProps) => {
   if (data.length === 0) {
     return (
       <Box className="economic-graph__empty">
@@ -42,11 +38,19 @@ export const DrownsToInterceptor = (
   }
 
   const droneCost = data.map(({ dronesTotalCost }) => dronesTotalCost);
-  const interceptCost = data.map(({ interceptorsTotalCost }) => interceptorsTotalCost);
-
-  console.log(data);
+  const interceptCost = data.map(
+    ({ interceptorsTotalCost }) => interceptorsTotalCost
+  );
 
   const dayLabels = data.map(({ date }) => days[new Date(date).getDay()]);
+
+  const maxCostToShow = Math.max(
+    ...data.map(({ dronesTotalCost, interceptorsTotalCost }) =>
+      Math.max(dronesTotalCost, interceptorsTotalCost)
+    )
+  );
+  const numberToDevide = 10 ** (maxCostToShow.toString().length - 1);
+  const roundedMaxToShow = Math.round(maxCostToShow / numberToDevide) * (numberToDevide);
 
   return (
     <div className="drone-interceptor-chart" dir="rtl">
@@ -101,7 +105,7 @@ export const DrownsToInterceptor = (
             position: "right",
             scaleType: "linear",
             min: 0,
-            max: 1000000,
+            max: roundedMaxToShow,
             valueFormatter: (value) => `$${value / 1000}K`,
             tickLabelStyle: {
               fill: TEXT_MUTED,
@@ -113,7 +117,7 @@ export const DrownsToInterceptor = (
             position: "left",
             scaleType: "linear",
             min: 0,
-            max: 1000000,
+            max: roundedMaxToShow,
             tickLabelStyle: {
               fill: TEXT_MUTED,
               fontSize: 11,
