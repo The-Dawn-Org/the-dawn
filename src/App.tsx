@@ -204,7 +204,7 @@ const AppRoutes = () => {
     navigate(SCREEN_PATHS[screenId]);
   };
 
-  const { exportStatistics } = useExportStatistics();
+  const { exportStatistics, exportStatisticsHTML } = useExportStatistics();
 
   const { dateRange } = useAppFilters();
 
@@ -213,6 +213,7 @@ const handleExport = async () => {
 
   try {
     const currentUrl = new URL(window.location.href);
+   
 
     currentUrl.searchParams.set("startDate", dateRange.startDate);
     currentUrl.searchParams.set("endDate", dateRange.endDate);

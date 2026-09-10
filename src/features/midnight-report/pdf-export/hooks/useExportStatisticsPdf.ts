@@ -22,7 +22,35 @@ export const useExportStatistics = () => {
     }
   };
 
+   const exportStatisticsHTML = async (
+    html: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<Blob> => {
+    try {
+      const response = await axiosInstance.post<Blob>(
+        "report/pdf",
+        {
+          html,
+          startDate,
+          endDate,
+        },
+        {
+          responseType: "blob",
+        },
+      );
+
+      if (response.status !== 200) {
+        throw new Error("Failed to export statistics");
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to export statistics");
+    }
+  };
+
   return {
-    exportStatistics,
+    exportStatistics,exportStatisticsHTML
   };
 };

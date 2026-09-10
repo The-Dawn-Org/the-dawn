@@ -263,3 +263,4 @@ export const StatisticsEventLogs: FC<StatisticsEventLogsProps> = ({ events }) =>
         </Box>
     );
 };
+
