@@ -26,8 +26,10 @@ import {
 import "./App.css";
 import { InvestigationAnalysisPage } from "./features/operational-performance/InvestigationAnalysisPage";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
+import { EventsFiltersProvider } from "./app/filters/FilterEventsContext";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
+import { useEvents } from "./hooks/useEvents";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -204,6 +206,8 @@ const AppRoutes = () => {
 };
 
 export const App = () => {
+  const { events } = useEvents();
+
   return (
     <ThemeProvider theme={commandRoomTheme}>
       <CssBaseline />
@@ -216,7 +220,9 @@ export const App = () => {
       >
         <BrowserRouter>
           <AppFiltersProvider>
-            <AppRoutes />
+            <EventsFiltersProvider events={events}>
+              <AppRoutes />
+            </EventsFiltersProvider>
           </AppFiltersProvider>
         </BrowserRouter>
       </LocalizationProvider>
