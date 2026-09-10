@@ -7,6 +7,8 @@ import InfoEventsCard from "../../investigation-analysis/components/card/TabCard
 import GenericTable from "../../investigation-analysis/components/Table/GenericTable";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { columns } from "../../investigation-analysis/components/Table/TableColumnDefinition";
+import { useEvents } from "../../../hooks/useEvents";
+import { getEventById } from "../../../api/endpoints/events";
 
 // Mock data TODO: delete in prod
 const events_STUB: InterceptionEvent[] = [
@@ -266,60 +268,65 @@ const events_STUB: InterceptionEvent[] = [
   ];
 
 type StatisticsEventLogsProps = {
-    events: Event[];
+  events: Event[];
 };
 
-export const StatisticsEventLogs: FC<StatisticsEventLogsProps> = ({ events }) => {
-    const [selectedEvent, setSelectedEvent] = useState<InterceptionEvent | null>(null);
+export const StatisticsEventLogs: FC<StatisticsEventLogsProps> = ({
+  events,
+}) => {
+  const [selectedEvent, setSelectedEvent] = useState<InterceptionEvent | null>(
+    null
+  );
 
-    const handleRowClick = (info: InterceptionEvent) => {
-      setSelectedEvent(info);
-    };
-  
-    const handleClosePopup = () => {
-      setSelectedEvent(null);
-    };
+  const handleRowClick = async (info: InterceptionEvent) => {
+    setSelectedEvent(await getEventById(info.eventId));
+  };
 
-    return (
-        <Box
-            dir="rtl"
+  const handleClosePopup = () => {
+    setSelectedEvent(null);
+  };
+
+  // const { events } = useEvents();
+
+  return (
+    <Box
+      dir="rtl"
+      sx={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#0c120c",
+        color: "#fff",
+        p: 1,
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      {/* ================= STATS ================= */}
+
+      <Statistics events={events} />
+
+      {/* ================= EVENTS ================= */}
+
+      <Box
             sx={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "#0c120c",
-                color: "#fff",
-                p: 1,
-                fontFamily: "Arial, sans-serif",
+            width: "100%",
+            minWidth: "430px",
+            display: "flex",
+            // justifyContent: "center",
+            // margin: 0
             }}
         >
-            {/* ================= STATS ================= */}
-
-            <Statistics events={events} />
-
-            {/* ================= EVENTS ================= */}
-
-            <Box
-                sx={{
-                width: "100%",
-                minWidth: "430px",
-                display: "flex",
-                justifyContent: "center",
-                margin: 0
-                }}
-            >
-                <GenericTable
-                targetSubjects={events_STUB}
-                columns={columns}
-                title="יומן אירועים"
-                icon={<ShowChartIcon sx={{ color: "#8ABB4C" }} />}
-                onRowClick={handleRowClick}
-                />
-            </Box>
-
-            {selectedEvent && (
-                <InfoEventsCard event={selectedEvent} onClose={handleClosePopup} />
-            )}
-
+            <GenericTable
+            targetSubjects={events_STUB}
+            columns={columns}
+            title="יומן אירועים"
+            icon={<ShowChartIcon sx={{ color: "#8ABB4C" }} />}
+            onRowClick={handleRowClick}
+            />
         </Box>
-    );
+
+      {selectedEvent && (
+        <InfoEventsCard event={selectedEvent} onClose={handleClosePopup} />
+      )}
+    </Box>
+  );
 };

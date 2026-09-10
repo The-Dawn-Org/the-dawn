@@ -23,6 +23,7 @@ import "./App.css";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
+import { getEventById } from "./api/endpoints/events";
 
 declare module "@mui/material/styles" {
   interface Palette {

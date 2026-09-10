@@ -15,8 +15,6 @@ const GenericTableRow = <T,>({
     textColor,
     onRowClick,
 }: GenericTableRowProps<T>) => {
-    console.log(targetSubject);
-
     return (
         <TableRow 
         onClick={() => onRowClick?.(targetSubject)}
