@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { sumCasualtiesBySector } from "../data/droneEvents";
-import { useFilteredEvents } from "../data/useFilteredEvents";
 import { ChartCard } from "./ChartCard";
 import {
   CATEGORY_AXIS_HEIGHT,
@@ -12,17 +11,31 @@ import {
   SHOW_EVERY_CATEGORY_TICK,
   VALUE_TICK_STYLE,
 } from "./chartTheme";
+import type { DroneEvent } from "../dataMock";
 
-export const CasualtiesBySectorChart = () => {
-  const events = useFilteredEvents();
-  const casualtiesBySector = useMemo(() => sumCasualtiesBySector(events), [events]);
+export type CasualtiesBySectorChartProps = {
+  events: DroneEvent[];
+};
 
-  const totalCasualties = casualtiesBySector.reduce((total, sector) => total + sector.total, 0);
+export const CasualtiesBySectorChart = ({
+  events,
+}: CasualtiesBySectorChartProps) => {
+  const casualtiesBySector = useMemo(
+    () => sumCasualtiesBySector(events),
+    [events]
+  );
+
+  const totalCasualties = casualtiesBySector.reduce(
+    (total, sector) => total + sector.total,
+    0
+  );
 
   return (
     <ChartCard
       title="נפגעים לפי גזרה"
-      subtitle={`${NUMBER_FORMATTER.format(totalCasualties)} נפגעים בטווח הזמן הנבחר`}
+      subtitle={`${NUMBER_FORMATTER.format(
+        totalCasualties
+      )} נפגעים בטווח הזמן הנבחר`}
     >
       <BarChart
         dataset={casualtiesBySector}
@@ -38,7 +51,8 @@ export const CasualtiesBySectorChart = () => {
             color: CHART_COLORS.casualties,
             barLabel: "value",
             barLabelPlacement: "outside",
-            valueFormatter: (value) => `${NUMBER_FORMATTER.format(value ?? 0)} נפגעים`,
+            valueFormatter: (value) =>
+              `${NUMBER_FORMATTER.format(value ?? 0)} נפגעים`,
           },
         ]}
         xAxis={[

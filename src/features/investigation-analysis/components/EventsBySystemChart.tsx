@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { countEventsBySystem } from "../data/droneEvents";
-import { useFilteredEvents } from "../data/useFilteredEvents";
 import { ChartCard } from "./ChartCard";
 import {
   CATEGORY_AXIS_HEIGHT,
@@ -12,15 +11,21 @@ import {
   SHOW_EVERY_CATEGORY_TICK,
   VALUE_TICK_STYLE,
 } from "./chartTheme";
+import type { DroneEvent } from "../dataMock";
 
-export const EventsBySystemChart = () => {
-  const events = useFilteredEvents();
+export type EventsBySystemChartProps = {
+  events: DroneEvent[];
+};
+
+export const EventsBySystemChart = ({ events }: EventsBySystemChartProps) => {
   const eventsBySystem = useMemo(() => countEventsBySystem(events), [events]);
 
   return (
     <ChartCard
       title="סך האירועים בכל מערכת"
-      subtitle={`${NUMBER_FORMATTER.format(events.length)} אירועים בטווח הזמן הנבחר`}
+      subtitle={`${NUMBER_FORMATTER.format(
+        events.length
+      )} אירועים בטווח הזמן הנבחר`}
     >
       <BarChart
         dataset={eventsBySystem}
@@ -36,7 +41,8 @@ export const EventsBySystemChart = () => {
             color: CHART_COLORS.events,
             barLabel: "value",
             barLabelPlacement: "outside",
-            valueFormatter: (value) => `${NUMBER_FORMATTER.format(value ?? 0)} אירועים`,
+            valueFormatter: (value) =>
+              `${NUMBER_FORMATTER.format(value ?? 0)} אירועים`,
           },
         ]}
         xAxis={[
