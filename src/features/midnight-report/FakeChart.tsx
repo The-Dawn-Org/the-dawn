@@ -26,6 +26,24 @@ const statusData = [
   { id: 2, value: 8, label: "Failed" },
 ];
 
+const launchDetails = [
+  { id: 1, name: "Investigation Alpha", status: "Completed", value: 42 },
+  { id: 2, name: "Investigation Bravo", status: "Active", value: 18 },
+  { id: 3, name: "Investigation Charlie", status: "Failed", value: 8 },
+  { id: 4, name: "Investigation Delta", status: "Completed", value: 31 },
+  { id: 5, name: "Investigation Echo", status: "Active", value: 24 },
+  { id: 6, name: "Investigation Foxtrot", status: "Completed", value: 19 },
+  { id: 7, name: "Investigation Golf", status: "Completed", value: 27 },
+  { id: 8, name: "Investigation Hotel", status: "Active", value: 14 },
+  { id: 9, name: "Investigation India", status: "Completed", value: 36 },
+  { id: 10, name: "Investigation Juliet", status: "Failed", value: 6 },
+  { id: 11, name: "Investigation Kilo", status: "Completed", value: 21 },
+  { id: 12, name: "Investigation Lima", status: "Active", value: 16 },
+  { id: 13, name: "Investigation Mike", status: "Completed", value: 29 },
+  { id: 14, name: "Investigation November", status: "Completed", value: 33 },
+  { id: 15, name: "Investigation Oscar", status: "Active", value: 11 },
+];
+
 export const StatisticsPage = () => {
   return (
     <Box
@@ -69,6 +87,7 @@ export const StatisticsPage = () => {
           </Paper>
         </Grid>
 
+        {/* Active investigations */}
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Paper sx={{ p: 3 }}>
             <Typography color="text.secondary">
@@ -87,6 +106,7 @@ export const StatisticsPage = () => {
           </Paper>
         </Grid>
 
+        {/* Completed */}
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Paper sx={{ p: 3 }}>
             <Typography color="text.secondary">
@@ -105,6 +125,7 @@ export const StatisticsPage = () => {
           </Paper>
         </Grid>
 
+        {/* Failed */}
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Paper sx={{ p: 3 }}>
             <Typography color="text.secondary">
@@ -123,6 +144,7 @@ export const StatisticsPage = () => {
           </Paper>
         </Grid>
 
+        {/* Launches by day */}
         <Grid size={{ xs: 12, md: 7 }}>
           <Paper sx={{ p: 3 }}>
             <Typography
@@ -159,6 +181,7 @@ export const StatisticsPage = () => {
           </Paper>
         </Grid>
 
+        {/* Investigation status */}
         <Grid size={{ xs: 12, md: 5 }}>
           <Paper sx={{ p: 3 }}>
             <Typography
@@ -185,6 +208,7 @@ export const StatisticsPage = () => {
           </Paper>
         </Grid>
 
+        {/* Activity by hour */}
         <Grid size={{ xs: 12 }}>
           <Paper sx={{ p: 3 }}>
             <Typography
@@ -219,6 +243,64 @@ export const StatisticsPage = () => {
                 bottom: 40,
               }}
             />
+          </Paper>
+        </Grid>
+
+        {/* Scrollable statistics */}
+        <Grid size={{ xs: 12 }}>
+          <Paper sx={{ p: 3 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                fontWeight: 600,
+              }}
+            >
+              Launch details
+            </Typography>
+
+            <Box
+              sx={{
+                height: 250,
+                overflowY: "auto",
+                pr: 1,
+              }}
+            >
+              <Stack spacing={2}>
+                {launchDetails.map((launch) => (
+                  <Box
+                    key={launch.id}
+                    sx={{
+                      p: 2,
+                      border: 1,
+                      borderColor: "divider",
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ fontWeight: 600 }}
+                    >
+                      {launch.name}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Status: {launch.status}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      Launches: {launch.value}
+                    </Typography>
+                  </Box>
+                ))}
+              </Stack>
+            </Box>
           </Paper>
         </Grid>
       </Grid>
