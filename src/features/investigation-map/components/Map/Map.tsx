@@ -1,4 +1,4 @@
-import { useState, useMemo, FC } from "react";
+import { useState, useMemo, type FC } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -40,7 +40,11 @@ const createCustomIcon = (label: string, className: string) => {
   });
 };
 
-export const Map: FC = () => {
+interface MapProps {
+  isFullscreen: Boolean,
+}
+
+export const Map: FC<MapProps> = () => {
   const defaultCenter: [number, number] = [31.5, 34.85];
   const [zoomLevel, setZoomLevel] = useState<number>(8);
 

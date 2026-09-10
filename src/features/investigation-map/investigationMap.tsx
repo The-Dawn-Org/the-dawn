@@ -1,4 +1,4 @@
-import { useState, useEffect, FC } from "react";
+import { useState, useEffect, type FC } from "react";
 import { Box, Button } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import { Map } from "./components/Map";
