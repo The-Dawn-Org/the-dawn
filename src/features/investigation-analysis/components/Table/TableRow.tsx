@@ -15,8 +15,6 @@ const GenericTableRow = <T,>({
     textColor,
     onRowClick,
 }: GenericTableRowProps<T>) => {
-    console.log(targetSubject);
-
     return (
         <TableRow 
         onClick={() => onRowClick?.(targetSubject)}
@@ -28,21 +26,19 @@ const GenericTableRow = <T,>({
             },
             "&:hover": {
               backgroundColor: HIGHLIGHT_GREEN,
-              // cursor: onRowClick ? "pointer" : "default",
             },
           }}>
-        {columns.map((column) => (
+          {columns.map((column) => (
                 <TableCell 
                 key={column.key}
                 sx={{
                     color: column.color?.(targetSubject) ?? textColor,
                   }}
-                align="right"
+                align="center"
                   >
                     {column.render(targetSubject)}
                 </TableCell>
             ))}
-
         </TableRow>
     );
 }

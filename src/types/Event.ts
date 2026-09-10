@@ -8,7 +8,7 @@ export interface Event {
   time: string;
   eventLocation: Location;
   interceptionStatus: string;
-  eventStatus: string;
+  // eventStatus: string;
   attackingBody: string;
   drone: Pick<DroneType, "type" | "price">;
   droneInjuryCount: number;

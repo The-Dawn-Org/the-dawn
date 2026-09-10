@@ -50,9 +50,11 @@ export const StatisticsEventLogs: FC<StatisticsEventLogsProps> = ({
 
       <Box
         sx={{
-          width: "30%",
-          minWidth: "450px",
-          marginLeft: "auto",
+          width: "100%",
+          minWidth: "430px",
+          display: "flex",
+          // justifyContent: "center",
+          // margin: 0
         }}
       >
         <GenericTable
