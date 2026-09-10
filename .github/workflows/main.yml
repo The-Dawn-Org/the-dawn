@@ -13,4 +13,5 @@ jobs:
     with:
       TAG: "latest"
       MADOR: "the-dawn"
-    secrets: inherit
+    secrets:
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
