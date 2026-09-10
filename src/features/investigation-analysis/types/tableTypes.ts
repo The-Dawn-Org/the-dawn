@@ -76,7 +76,6 @@ export interface InterceptionEvent {
   eventLocation: EventLocation;
   interceptionStatus: string;
   droneInjuryCount: number;
-  eventStatus: string;
   attackingBody: string;
   drone: DroneInfo;
 }
