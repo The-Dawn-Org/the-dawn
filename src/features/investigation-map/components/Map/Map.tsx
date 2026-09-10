@@ -1,53 +1,96 @@
-import { type FC } from "react";
+import { useState, useMemo, FC } from "react";
 import {
   MapContainer,
   TileLayer,
+  GeoJSON,
   Marker,
-  LayerGroup,
+  useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
+import centroid from "@turf/centroid";
 import "leaflet/dist/leaflet.css";
 import "./Map.css";
 
-interface RegionData {
-  id: string;
-  name: string;
-  center: [number, number];
+import geoData from "./Areas/CITIES.json";
+import type { FeatureCollection, Geometry, Feature } from "geojson";
+
+interface CityProperties {
+  CITY_NAME?: string;
+  DIST_NAME?: string;
 }
 
-const ISRAEL_REGIONS: RegionData[] = [
-  {
-    id: "western_galilee",
-    name: "גליל מערבי",
-    center: [32.98, 35.16],
-  },
-  {
-    id: "north",
-    name: "צפון",
-    center: [32.85, 35.55],
-  },
-  {
-    id: "center",
-    name: "מרכז",
-    center: [32.05, 34.88],
-  },
-  {
-    id: "south",
-    name: "דרום",
-    center: [30.8, 34.8],
-  },
-];
+const regionData = geoData as FeatureCollection<Geometry, CityProperties>;
 
-const createLayerLabelIcon = (text: string) =>
-  L.divIcon({
-    className: "tactical-layer-label-container",
-    html: `<p class="tactical-layer-label-text">${text}</p>`,
-    iconSize: [0, 0],
-    iconAnchor: [0, 0],
+const ZoomTracker: FC<{ onZoomChange: (zoom: number) => void }> = ({
+  onZoomChange,
+}) => {
+  useMapEvents({
+    zoomend: (e) => {
+      onZoomChange(e.target.getZoom());
+    },
   });
+  return null;
+};
+
+const createCustomIcon = (label: string, className: string) => {
+  return L.divIcon({
+    className: className,
+    html: label,
+    iconSize: undefined,
+  });
+};
 
 export const Map: FC = () => {
   const defaultCenter: [number, number] = [31.5, 34.85];
+  const [zoomLevel, setZoomLevel] = useState<number>(8);
+
+  const { cityLabels, districtLabels } = useMemo(() => {
+    const cities: Array<{ id: string; name: string; pos: [number, number] }> =
+      [];
+    const districtCentroids: Record<
+      string,
+      { latSum: number; lngSum: number; count: number }
+    > = {};
+
+    regionData.features.forEach(
+      (feature: Feature<Geometry, CityProperties>, idx) => {
+        const { CITY_NAME, DIST_NAME } = feature.properties || {};
+
+        const center = centroid(feature).geometry.coordinates;
+        const latLng: [number, number] = [center[1], center[0]];
+
+        if (CITY_NAME) {
+          cities.push({
+            id: `${CITY_NAME}-${idx}`,
+            name: CITY_NAME,
+            pos: latLng,
+          });
+        }
+
+        if (DIST_NAME) {
+          if (!districtCentroids[DIST_NAME]) {
+            districtCentroids[DIST_NAME] = { latSum: 0, lngSum: 0, count: 0 };
+          }
+          districtCentroids[DIST_NAME].latSum += latLng[0];
+          districtCentroids[DIST_NAME].lngSum += latLng[1];
+          districtCentroids[DIST_NAME].count += 1;
+        }
+      }
+    );
+
+    const districts = Object.keys(districtCentroids).map((distName) => {
+      const group = districtCentroids[distName];
+      return {
+        name: distName,
+        pos: [group.latSum / group.count, group.lngSum / group.count] as [
+          number,
+          number
+        ],
+      };
+    });
+
+    return { cityLabels: cities, districtLabels: districts };
+  }, []);
 
   return (
     <div className="tactical-map-wrapper">
@@ -58,22 +101,44 @@ export const Map: FC = () => {
           zoomControl={true}
           style={{ width: "100%", height: "100%" }}
         >
+          <ZoomTracker onZoomChange={setZoomLevel} />
+
           <TileLayer
             className="tactical-tiles"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png?key=cb1_33l3_1_47d528b2bd2a06effd75bbbf"
             maxZoom={19}
           />
-          <LayerGroup>
-            {ISRAEL_REGIONS.map((region) => (
+
+          <GeoJSON
+            data={regionData}
+            style={{
+              stroke: false, 
+              fillOpacity: 0,
+            }}
+          />
+
+         
+          {zoomLevel >= 12 &&
+            cityLabels.map((city) => (
               <Marker
-                key={region.id}
-                position={region.center}
-                icon={createLayerLabelIcon(region.name)}
+                key={city.id}
+                position={city.pos}
+                icon={createCustomIcon(city.name, "city-label")}
                 interactive={false}
               />
             ))}
-          </LayerGroup>
+
+          {zoomLevel >= 4 &&
+            zoomLevel < 12 &&
+            districtLabels.map((district) => (
+              <Marker
+                key={district.name}
+                position={district.pos}
+                icon={createCustomIcon(district.name, "district-label")}
+                interactive={false}
+              />
+            ))}
         </MapContainer>
       </div>
     </div>
