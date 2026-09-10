@@ -17,10 +17,6 @@ export const InvestigationMap: FC = () => {
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
   });
-  console.log("dateRange.startDate");
-  console.log(dateRange.startDate);
-  console.log("new Date(dateRange.startDate)");
-  console.log(new Date(dateRange.startDate));
 
   const toggleFullscreen = (): void => {
     setIsFullscreen((prev) => !prev);

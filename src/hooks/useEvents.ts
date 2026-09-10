@@ -23,8 +23,6 @@ export const useEvents = (filters: FilterEventsDto = {}) => {
       setError(null);
       
       try {
-        console.log("filters")
-        console.log(filters)
         const response = await axiosInstance.post<Event[]>('/events/all-events', filters);
         setEvents(response.data);
       } catch (err: any) {
