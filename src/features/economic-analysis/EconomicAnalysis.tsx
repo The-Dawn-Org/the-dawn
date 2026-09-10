@@ -97,12 +97,10 @@ export const EconomicAnalysis = () => {
       .then((nextDamage) => setDamageBySector(nextDamage))
       .catch((error: unknown) => {
         if (!axios.isCancel(error)) {
-          setDamageError(false);
+          setDamageError(true);
         }
       })
       .finally(() => setIsLoadingDamage(false));
-
-    setDamageBySector(mockEconomicDamage);
 
     return () => abortController.abort();
   }, [dateRange]);
