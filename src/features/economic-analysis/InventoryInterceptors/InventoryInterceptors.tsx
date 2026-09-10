@@ -56,18 +56,6 @@ const StockLevelRow = ({
 }) => {
   const currentPercent = toPercent(item.current, item.total);
 
-  /*
-   * The minimum amount is calculated relative to the total stock.
-   *
-   * Example:
-   * total = 5000
-   * minimum = 1000
-   *
-   * minimumPercent = 20%
-   *
-   * Since the chart is RTL, "right" is the beginning of the
-   * filled area, so the marker is positioned using `right`.
-   */
   const minimumPercent = toPercent(item.minimum, item.total);
 
   return (
@@ -78,16 +66,6 @@ const StockLevelRow = ({
         direction: "rtl",
       }}
     >
-      {/* -----------------------------------------------------------------
-          Header
-
-          RIGHT:
-          System name + detail
-
-          LEFT:
-          Percentage + current / total
-          ----------------------------------------------------------------- */}
-
       <div
         style={{
           display: "flex",
@@ -129,8 +107,6 @@ const StockLevelRow = ({
           )}
         </div>
 
-        {/* LEFT SIDE - percentage + numbers */}
-
         <div
           style={{
             display: "flex",
@@ -159,10 +135,6 @@ const StockLevelRow = ({
           </span>
         </div>
       </div>
-
-      {/* -----------------------------------------------------------------
-          Stock bar
-          ----------------------------------------------------------------- */}
 
       <div
         style={{
@@ -193,20 +165,6 @@ const StockLevelRow = ({
           }}
         />
 
-        {/* -----------------------------------------------------------------
-            Minimum amount marker
-
-            This is the RED vertical line.
-
-            For example:
-            total = 5000
-            minimum = 1000
-
-            1000 / 5000 = 20%
-
-            Therefore the red line appears at 20% from the right side.
-            ----------------------------------------------------------------- */}
-
         <div
           style={{
             position: "absolute",
@@ -222,10 +180,6 @@ const StockLevelRow = ({
         />
       </div>
 
-      {/* -----------------------------------------------------------------
-          Minimum amount label
-          ----------------------------------------------------------------- */}
-
       <div
         style={{
           marginTop: 5,
@@ -240,10 +194,6 @@ const StockLevelRow = ({
     </div>
   );
 };
-
-// -----------------------------------------------------------------------------
-// Inventory chart
-// -----------------------------------------------------------------------------
 
 export const StockLevels = ({
   items,
@@ -285,10 +235,6 @@ export const StockLevels = ({
     </div>
   );
 };
-
-// -----------------------------------------------------------------------------
-// Example data
-// -----------------------------------------------------------------------------
 
 export const stockLevelsData: StockLevelItem[] = [
   {
