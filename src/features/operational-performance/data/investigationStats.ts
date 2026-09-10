@@ -24,9 +24,9 @@ export interface RegionSummary {
 }
 
 const droneDamageCost: Record<string, number> = {
-  "SkyMite-C7": 10000,
-  "LoadBee-M2": 25000,
-  "Falcon-Long X4": 40000,
+  "SkyMite C7": 10000,
+  "LoadBee M2": 25000,
+  "Falcon Long X4": 40000,
   "NanoSwarm-Q9": 3000,
 };
 
@@ -73,7 +73,7 @@ export const summarizeByRegion = (events: ReadonlyArray<Event>): RegionSummary[]
       casualties: regionEvents.reduce((sum, event) => sum + event.droneInjuryCount, 0),
       damageK: Math.round(
         regionEvents.reduce(
-          (sum, event) => sum + (isMissed(event) ? 0 : damageCostFor(event.drone.type)),
+          (sum, event) => sum + (isMissed(event) ? damageCostFor(event.drone.type) : 0),
           0,
         ) / 1000,
       ),
