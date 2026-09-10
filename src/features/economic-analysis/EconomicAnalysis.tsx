@@ -266,7 +266,23 @@ export const EconomicAnalysis = () => {
           )}
         </GraphContainer>
 
-        
+        <GraphContainer
+          icon={<LocalAtmRoundedIcon />}
+          title="סטיית תקציב לאורך זמן"
+          subtitle="סך ההוצאה בפועל לפי תאריך"
+        >
+          {isLoadingAccumulativeExpenses ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : accumulativeExpensesError ? (
+            <Box className="economic-graph__empty">
+              <Typography>לא ניתן לטעון את נתוני סטיית התקציב</Typography>
+            </Box>
+          ) : (
+            <AccumulativeExpensesChart data={accumulativeExpenses} />
+          )}
+        </GraphContainer>
 
         <GraphContainer
           icon={<Inventory2Outlined />}
