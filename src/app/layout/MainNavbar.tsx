@@ -50,7 +50,10 @@ const useCurrentDateTime = () => {
   const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => setCurrentDateTime(new Date()), 60_000);
+    const intervalId = window.setInterval(
+      () => setCurrentDateTime(new Date()),
+      60_000
+    );
 
     return () => window.clearInterval(intervalId);
   }, []);
@@ -81,7 +84,10 @@ const Brand = () => {
 const DateRangeControls = () => {
   const { dateRange, setDateRange } = useAppFilters();
 
-  const updateDateRange = (field: keyof DateRangeFilter, value: Dayjs | null) => {
+  const updateDateRange = (
+    field: keyof DateRangeFilter,
+    value: Dayjs | null
+  ) => {
     if (!value?.isValid()) {
       return;
     }
@@ -186,7 +192,9 @@ export const MainNavbar = ({ activeItemId = "investigation-map", onNavigate }: M
               startIcon={<ItemIcon aria-hidden="true" className="navbar__navigation-icon" />}
               aria-current={isActive ? "page" : undefined}
               onClick={() => handleNavigate(id)}
-              className={`navbar__navigation-item${isActive ? " navbar__navigation-item--active" : ""}`}
+              className={`navbar__navigation-item${
+                isActive ? " navbar__navigation-item--active" : ""
+              }`}
             >
               {label}
             </Button>
