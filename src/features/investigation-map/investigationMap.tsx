@@ -1,15 +1,23 @@
 import { useState, useEffect, type FC } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import { Map } from "./components/Map";
-import { OpenInFull, CloseFullscreen } from "@mui/icons-material";
-import { useEvents } from "../../hooks/useEvents";
+import { OpenInFull, CloseFullscreen, LocationOn } from "@mui/icons-material";
+import { useEvents, type FilterEventsDto } from "../../hooks/useEvents";
 import { StatisticsEventLogs } from "./Componants/EventsAndStatistics";
+import L from "leaflet";
+import { Marker, Popup } from "react-leaflet";
+import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { FiltersNavbar } from "./components/FilterNavbar/FilterNavbar";
 
 export const InvestigationMap: FC = () => {
     const [isFullscreen, setIsFullscreen] = useState<Boolean>(false);
-    const { events } = useEvents();
+
+    const { dateRange } = useAppFilters();
+    const { events } = useEvents({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+    });
 
     const toggleFullscreen = (): void => {
         setIsFullscreen((prev) => !prev);
@@ -22,6 +30,12 @@ export const InvestigationMap: FC = () => {
 
         return () => clearTimeout(timer);
     }, [isFullscreen]);
+
+    const legendItems = [
+        { label: "יוורט", color: "#00b894" },
+        { label: "לא יוורט", color: "#d63031" },
+        { label: "נפגעים", color: "#fdcb6e" },
+    ];
 
     return (
         <>
@@ -90,35 +104,77 @@ export const InvestigationMap: FC = () => {
                             backgroundColor: "#161e1a",
                             position: "relative",
                             zIndex: 10,
+                            dir: "rtl",
                         }}
                     >
-                        <Button
-                            onClick={toggleFullscreen}
-                            sx={{
-                                backgroundColor: "#192019",
-                                color: "#a3b1b0",
-                                textTransform: "none",
-                                fontSize: "0.9rem",
-                                fontWeight: 600,
-                                padding: "6px 12px",
-                                borderRadius: "4px",
-                                dir: "rtl",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                                "&:hover": {
-                                    backgroundColor: "#232b23",
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <LocationOn sx={{ color: "#706fd3", fontSize: "1.3rem" }} />
+                            <Typography
+                                sx={{
                                     color: "#ffffff",
-                                },
-                            }}
-                        >
-                            {isFullscreen ? "יציאה  ממסך מלא" : "מסך מלא"}
-                            {isFullscreen ? (
-                                <CloseFullscreen sx={{ fontSize: "1.1rem" }} />
-                            ) : (
-                                <OpenInFull sx={{ fontSize: "1.1rem" }} />
-                            )}
-                        </Button>
+                                    fontWeight: 600,
+                                    fontSize: "0.95rem",
+                                }}
+                            >
+                                תחקיר גיאוגרפי – {events?.length || 0} אירועים
+                            </Typography>
+                        </Box>
+
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                                {legendItems.map((item) => (
+                                    <Box
+                                        key={item.label}
+                                        sx={{ display: "flex", alignItems: "center", gap: 0.8 }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                width: 8,
+                                                height: 8,
+                                                borderRadius: "50%",
+                                                backgroundColor: item.color,
+                                            }}
+                                        />
+                                        <Typography
+                                            sx={{
+                                                color: "#a3b1b0",
+                                                fontSize: "0.85rem",
+                                                fontWeight: 500,
+                                            }}
+                                        >
+                                            {item.label}
+                                        </Typography>
+                                    </Box>
+                                ))}
+                            </Box>
+
+                            <Button
+                                onClick={toggleFullscreen}
+                                sx={{
+                                    backgroundColor: "#192019",
+                                    color: "#a3b1b0",
+                                    textTransform: "none",
+                                    fontSize: "0.9rem",
+                                    fontWeight: 600,
+                                    padding: "6px 12px",
+                                    borderRadius: "4px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    "&:hover": {
+                                        backgroundColor: "#232b23",
+                                        color: "#ffffff",
+                                    },
+                                }}
+                            >
+                                {isFullscreen ? "יציאה ממסך מלא" : "מסך מלא"}
+                                {isFullscreen ? (
+                                    <CloseFullscreen sx={{ fontSize: "1.1rem" }} />
+                                ) : (
+                                    <OpenInFull sx={{ fontSize: "1.1rem" }} />
+                                )}
+                            </Button>
+                        </Box>
                     </Box>
 
                     {/* Map View */}
@@ -142,7 +198,7 @@ export const InvestigationMap: FC = () => {
                                 },
                             }}
                         >
-                            <Map isFullscreen={isFullscreen} />
+                            <Map isFullscreen={isFullscreen} events={events} />
                         </Box>
                     </Box>
                 </Box>
