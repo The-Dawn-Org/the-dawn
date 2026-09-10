@@ -9,8 +9,3 @@ export const getEventById = async (id: number): Promise<Event> => {
     return(response.data);
 };
 
-export const getAIEventAnalysisById = async (id: number): Promise<AIResponse> => {
-    const response = await axiosInstance.get<AIResponse>(`/events/${id}/ai-analysis`);
-
-    return(response.data);
-};

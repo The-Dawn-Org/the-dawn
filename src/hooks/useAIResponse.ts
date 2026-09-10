@@ -17,7 +17,7 @@ export const useAIResponse = (event: InterceptionEvent) => {
       setError(null);
       
       try {
-        const analysis: AxiosResponse<AIResponse> = await axiosInstance.post<AIResponse>(`/ai-analysis`, { params: event });
+        const analysis: AxiosResponse<AIResponse> = await axiosInstance.post<AIResponse>(`/ai-analysis`, JSON.stringify(event) );
         setAnalysis(analysis.data);
       } catch (err: any) {
         setError(err.response?.data?.message || err.message);
