@@ -1,20 +1,9 @@
-import { EventStatus, type DroneEvent } from "./dataMock";
-
-/**
- * The events carry no region, so regions are derived from the launcher latitude.
- * Both the threshold and the names are placeholders until the data carries a real region.
- */
-const REGION_LATITUDE_THRESHOLD = 32;
-const REGION_NORTH = "צפון";
-const REGION_SOUTH = "דרום";
-
-export const resolveRegion = (event: DroneEvent) =>
-  event.launcher.latitude >= REGION_LATITUDE_THRESHOLD ? REGION_NORTH : REGION_SOUTH;
+import type { Event } from "../../../types";
 
 /** Only a confirmed interception counts as a hit, and only a confirmed strike as a miss. */
-const isIntercepted = (event: DroneEvent) => event.status === EventStatus.INTERCEPTED;
+const isIntercepted = (event: Event) => event.eventStatus === "הושלם בהצלחה";
 
-const isMissed = (event: DroneEvent) => event.status === EventStatus.HIT_TARGET;
+const isMissed = (event: Event) => event.eventStatus === "נכשל";
 
 export interface InterceptionSummary {
   /** Interceptor type name, used as the chart title */
@@ -47,8 +36,8 @@ const groupBy = <T>(items: ReadonlyArray<T>, toKey: (item: T) => string) =>
     return groups;
   }, {});
 
-export const summarizeByInterceptor = (events: ReadonlyArray<DroneEvent>): InterceptionSummary[] =>
-  Object.entries(groupBy(events, (event) => event.interceptor.name)).map(
+export const summarizeByInterceptor = (events: ReadonlyArray<Event>): InterceptionSummary[] =>
+  Object.entries(groupBy(events, (event) => event.interceptor.type)).map(
     ([title, interceptorEvents]) => ({
       title,
       intercepted: interceptorEvents.filter(isIntercepted).length,
@@ -56,14 +45,16 @@ export const summarizeByInterceptor = (events: ReadonlyArray<DroneEvent>): Inter
     }),
   );
 
-export const summarizeByRegion = (events: ReadonlyArray<DroneEvent>): RegionSummary[] =>
-  Object.entries(groupBy(events, resolveRegion))
+export const summarizeByRegion = (events: ReadonlyArray<Event>): RegionSummary[] =>
+
+  Object.entries(groupBy(events, (event) => event.region))
     .map(([region, regionEvents]) => ({
       region,
       intercepted: regionEvents.filter(isIntercepted).length,
       missed: regionEvents.filter(isMissed).length,
-      casualties: regionEvents.reduce((sum, event) => sum + event.casualtyCount, 0),
+      casualties: regionEvents.reduce((sum, event) => sum + event.droneInjuryCount, 0),
       damageK: Math.round(regionEvents.reduce((sum, event) => sum + event.damageCostIls, 0) / 1000),
+      // TODO
       eventCount: regionEvents.length,
     }))
     .sort((first, second) => second.eventCount - first.eventCount);

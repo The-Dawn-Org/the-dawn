@@ -1,6 +1,5 @@
 import type { DateRangeFilter } from "../../../app/filters/AppFiltersContext";
-import { Sector, droneEventsMock, interceptorTypesMock, type DroneEvent } from "../dataMock";
-
+import type { Event } from "../../../types";
 /**
  * Declared as a type alias rather than an interface so it keeps the implicit
  * index signature that the MUI charts `dataset` prop requires.
@@ -39,29 +38,27 @@ const INTERCEPTOR_ORDER = interceptorTypesMock.map((interceptor) => interceptor.
 
 const SECTOR_ORDER: string[] = [Sector.GAZA, Sector.LEBANON];
 
-export const DRONE_EVENTS: ReadonlyArray<DroneEvent> = droneEventsMock;
-
 export const filterEventsByDateRange = (
-  events: ReadonlyArray<DroneEvent>,
+  events: ReadonlyArray<Event>,
   { startDate, endDate }: DateRangeFilter,
-): DroneEvent[] => {
+): Event[] => {
   const startTime = new Date(startDate).getTime();
   const endTime = new Date(endDate).getTime();
 
   return events.filter((event) => {
     // `occurredAt` is a Unix timestamp in seconds, the filter works in millis.
-    const eventTime = event.occurredAt * 1000;
+    const eventTime = +event.time * 1000;
 
     return eventTime >= startTime && eventTime <= endTime;
   });
 };
 
 const totalByCategory = (
-  events: ReadonlyArray<DroneEvent>,
+  events: ReadonlyArray<Event>,
   order: ReadonlyArray<string>,
   hebrewLabels: Record<string, string>,
-  getCode: (event: DroneEvent) => string,
-  getValue: (event: DroneEvent) => number,
+  getCode: (event: Event) => string,
+  getValue: (event: Event) => number,
 ): CategoryTotal[] => {
   const orderedCodes = [...order];
   const totals = new Map<string, number>();
@@ -89,20 +86,20 @@ const totalByCategory = (
   }));
 };
 
-export const countEventsBySystem = (events: ReadonlyArray<DroneEvent>): CategoryTotal[] =>
+export const countEventsBySystem = (events: ReadonlyArray<Event>): CategoryTotal[] =>
   totalByCategory(
     events,
     INTERCEPTOR_ORDER,
     InterceptorToHebrewMapper,
-    (event) => event.interceptor.name,
+    (event) => event.interceptor.type,
     () => 1,
   );
 
-export const sumCasualtiesBySector = (events: ReadonlyArray<DroneEvent>): CategoryTotal[] =>
+export const sumCasualtiesBySector = (events: ReadonlyArray<Event>): CategoryTotal[] =>
   totalByCategory(
     events,
     SECTOR_ORDER,
     SectorToHebrewMapper,
-    (event) => event.sector,
-    (event) => event.casualtyCount,
+    (event) => event.region,
+    (event) => event.droneInjuryCount,
   );

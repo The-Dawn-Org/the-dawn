@@ -1,12 +1,12 @@
-import type { DroneEvent } from "../dataMock";
+import type { Event } from "../../../types";
 import { ChartCard } from "./ChartCard";
 import { useMemo } from "react";
-import { summarizeByInterceptor } from "../investigationStats";
+import { summarizeByInterceptor } from "../data/investigationStats";
 import { Box, Stack } from "@mui/material";
 import { InterceptionStats } from ".";
 
 export type InrerceptorStatisticsChartProps = {
-  events: DroneEvent[];
+  events: Event[];
 };
 
 export const InrerceptorStatisticsChart = ({
