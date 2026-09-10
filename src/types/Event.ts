@@ -1,5 +1,4 @@
 import type { DroneType, InterceptorType, Launcher, Location } from ".";
-
 export interface Event {
   eventId: number;
   interceptor: Omit<InterceptorType, "maxRange">;

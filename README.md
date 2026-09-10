@@ -25,7 +25,13 @@ These are the frontend's variables only. The API's variables (`DB_*`, `PORT`,
 
 | Variable | Default | Notes |
 | --- | --- | --- |
-| `VITE_FINANCE_API_URL` | `""` (empty) | Base URL for the finance API in `src/api/economicAnalysisAPI.ts`. Empty means same-origin relative requests (`/finance/...`), which the vite proxy handles in dev and nginx handles in the image. Set it to an absolute URL only to bypass the proxy. |
+| `VITE_API_URL` | `/` | Base URL for the main axios instance in `src/api/axios.ts` (`/events`, `/ai-analysis`, `/report`). Relative by default so requests stay same-origin. |
+| `VITE_FINANCE_API_URL` | `""` (empty) | Base URL for the finance API in `src/api/economicAnalysisAPI.ts`. Empty means same-origin relative requests (`/finance/...`). |
+
+Both default to same-origin, which is deliberate: the browser calls the page's
+own origin, nginx forwards to the API, and no cross-origin request is ever made
+- so the server's CORS allowlist never comes into it. Override them only to
+bypass the proxy and call an API host directly, which does reintroduce CORS.
 
 Because Vite inlines these at build time, changing one requires a **rebuild** -
 setting it on a running container has no effect.
@@ -34,7 +40,7 @@ setting it on a running container has no effect.
 
 | Variable | Default | Notes |
 | --- | --- | --- |
-| `API_URL` | `http://localhost:3000` | Where nginx forwards `/finance/` requests. The default is wrong anywhere but your own machine. Running the container against a server on your Mac, use `http://host.docker.internal:3000`. In GKE, the server's Service URL, e.g. `http://the-dawn-server:3000`. **This is the only variable the deployment has to set.** |
+| `API_URL` | `http://localhost:3000` | Where nginx forwards every API prefix (`/finance`, `/events`, `/ai-analysis`, `/report`). The default is wrong anywhere but your own machine. Running the container against a server on your Mac, use `http://host.docker.internal:3000`. In GKE, the server's Service URL, e.g. `http://the-dawn-server:3000`. **This is the only variable the deployment has to set.** |
 
 ### The listen port is not a variable
 
@@ -44,13 +50,6 @@ would do nothing - the Service just needs `targetPort: 8080`. Making it
 configurable means templating the `listen` directive. Note that `EXPOSE`
 publishes nothing on its own; `-p` locally and `containerPort` in GKE are what
 actually route traffic.
-
-### Known gap
-
-`src/api/axios.ts` hard-codes `baseURL: "http://localhost:3000/"`. That
-instance is **not configurable** and will break once deployed - it needs to move
-to a relative base (so the nginx proxy covers it) or read a `VITE_` variable
-before the app ships to GKE.
 
 ## Docker
 
