@@ -3,7 +3,7 @@ import GenericTableRow from "./TableRow";
 import type { Column } from "../../types/tableTypes";
 import { Box } from "@mui/system";
 import type { ReactElement } from "react";
-import { BACKGROUND_GREEN, HIGHLIGHT_WHITE, SOFT_GREEN } from "./consts";
+import { BACKGROUND_GREEN, DEFAULT_TEXT_COLOR, HIGHLIGHT_WHITE, SOFT_GREEN } from "./consts";
 
 interface GenericTableProps<T> {
     targetSubjects: T[];
@@ -21,7 +21,7 @@ const GenericTable = <T,>({
     title,
     icon,
     onRowClick,
-    textColor = "#CDD6CD",
+    textColor = DEFAULT_TEXT_COLOR,
     contentHeight = "calc(50vh - 43px)",
 }: GenericTableProps<T>) => {
     return (
@@ -56,10 +56,12 @@ const GenericTable = <T,>({
                 </Box>
             </Box>
 
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} >
                     <Table sx={{
                         minWidth: 400,
-                        }} aria-label="table">
+                        width: "100%",
+                        tableLayout: "fixed",
+                        }}>
                         <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
@@ -94,7 +96,10 @@ const GenericTable = <T,>({
                                 background: HIGHLIGHT_WHITE,
                               },
                         }}>
-                    <Table>
+                    <Table sx={{
+                        width: "100%",
+                        tableLayout: "fixed",
+                    }}>
                         <TableBody>
                         {targetSubjects.map((subject, index) => (
                                 <GenericTableRow

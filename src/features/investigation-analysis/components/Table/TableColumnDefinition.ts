@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import type { Column, InterceptionEvent } from "../../types/tableTypes";
-import { GREEN, RED, YELLOW } from "./consts";
+import { DEFAULT_TEXT_COLOR, GREEN, RED, YELLOW } from "./consts";
 
 export const columns: Column<InterceptionEvent>[] = [
     {
@@ -20,7 +20,7 @@ export const columns: Column<InterceptionEvent>[] = [
           ? GREEN
           : subject.interceptionStatus === "לא יורט"
             ? RED
-            : YELLOW,
+            : DEFAULT_TEXT_COLOR,
     },
   
     {
@@ -32,7 +32,7 @@ export const columns: Column<InterceptionEvent>[] = [
       color: (subject) =>
       subject.droneInjuryCount === 0
         ? GREEN
-        : YELLOW,
+        : RED,
     },
   
     {
@@ -59,12 +59,6 @@ export const columns: Column<InterceptionEvent>[] = [
     
         return `${damage.toLocaleString()} ₪`;
       },
-      // render: (subject) => {
-      //   const damage =
-      //     subject.interceptor.price - subject.drone.price;
-  
-      //   return `${damage.toLocaleString()} ₪`;
-      // },
     },
     {
       key: "interceptor.type",
