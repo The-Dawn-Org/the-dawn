@@ -1,7 +1,0 @@
-[
-  { "interceptorTypeId": 0, "type": "תמיר", "price": 50000, "maxRange": 70 },
-  { "interceptorTypeId": 1, "type": "פק-3", "price": 4000000, "maxRange": 160 },
-  { "interceptorTypeId": 2, "type": "סטאנר", "price": 1000000, "maxRange": 300 },
-  { "interceptorTypeId": 3, "type": "סי-רם ראונד", "price": 15000, "maxRange": 2 },
-  { "interceptorTypeId": 4, "type": "חץ 3 יירוט", "price": 3500000, "maxRange": 2400 }
-]

@@ -1,9 +1,10 @@
-import { useState, useMemo, type FC } from "react";
+import { useState, useMemo, useEffect, type FC } from "react";
 import {
   MapContainer,
   TileLayer,
   GeoJSON,
   Marker,
+  useMap,
   useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
@@ -13,6 +14,7 @@ import "./Map.css";
 
 import geoData from "./Areas/CITIES.json";
 import type { FeatureCollection, Geometry, Feature } from "geojson";
+import type { Event } from "../../../../types";
 
 interface CityProperties {
   CITY_NAME?: string;
@@ -32,6 +34,24 @@ const ZoomTracker: FC<{ onZoomChange: (zoom: number) => void }> = ({
   return null;
 };
 
+const EVENT_FOCUS_ZOOM = 14;
+
+const MapFocus: FC<{ focus: { pos: [number, number]; nonce: number } | null }> = ({
+  focus,
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (focus) {
+      map.flyTo(focus.pos, Math.max(map.getZoom(), EVENT_FOCUS_ZOOM), {
+        duration: 1,
+      });
+    }
+  }, [focus, map]);
+
+  return null;
+};
+
 const createCustomIcon = (label: string, className: string) => {
   return L.divIcon({
     className: className,
@@ -41,12 +61,18 @@ const createCustomIcon = (label: string, className: string) => {
 };
 
 interface MapProps {
-  isFullscreen: Boolean,
+  isFullscreen: Boolean;
+  events: Event[];
+  onEventClick?: (eventId: number) => void;
 }
 
-export const Map: FC<MapProps> = () => {
+export const Map: FC<MapProps> = ({ events, onEventClick }) => {
   const defaultCenter: [number, number] = [31.5, 34.85];
   const [zoomLevel, setZoomLevel] = useState<number>(8);
+  const [focus, setFocus] = useState<{
+    pos: [number, number];
+    nonce: number;
+  } | null>(null);
 
   const { cityLabels, districtLabels } = useMemo(() => {
     const cities: Array<{ id: string; name: string; pos: [number, number] }> =
@@ -96,6 +122,39 @@ export const Map: FC<MapProps> = () => {
     return { cityLabels: cities, districtLabels: districts };
   }, []);
 
+  const createEventIcon = (
+    interceptionStatus: string,
+    droneInjuryCount: number
+  ) => {
+    const isIntercepted = interceptionStatus === "יורט";
+    const hasInjuries = droneInjuryCount > 0;
+
+    const bgColor = hasInjuries
+      ? "#f97316"
+      : isIntercepted
+      ? "#10b981"
+      : "#ef4444";
+
+    return L.divIcon({
+      className: "custom-event-marker",
+      html: `<div style="
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: ${bgColor};
+        border: 1.5px solid #18181b;
+        box-shadow: 0 0 10px ${bgColor}88, 0 2px 4px rgba(0,0,0,0.4);
+      "></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+    });
+  };
+
+  const handleEventClick = (eventId: number, pos: [number, number]) => {
+    setFocus({ pos, nonce: Date.now() });
+    onEventClick?.(eventId);
+  };
+
   return (
     <div className="tactical-map-wrapper">
       <div className="tactical-map-container">
@@ -106,6 +165,7 @@ export const Map: FC<MapProps> = () => {
           style={{ width: "100%", height: "100%" }}
         >
           <ZoomTracker onZoomChange={setZoomLevel} />
+          <MapFocus focus={focus} />
 
           <TileLayer
             className="tactical-tiles"
@@ -117,12 +177,11 @@ export const Map: FC<MapProps> = () => {
           <GeoJSON
             data={regionData}
             style={{
-              stroke: false, 
+              stroke: false,
               fillOpacity: 0,
             }}
           />
 
-         
           {zoomLevel >= 12 &&
             cityLabels.map((city) => (
               <Marker
@@ -143,6 +202,24 @@ export const Map: FC<MapProps> = () => {
                 interactive={false}
               />
             ))}
+          {events.map((event, index) => {
+            const lat = event.eventLocation?.lat ?? 31.0461;
+            const lng = event.eventLocation?.lng ?? 34.8516;
+
+            return (
+              <Marker
+                key={event.eventId || index}
+                position={[lat, lng]}
+                icon={createEventIcon(
+                  event.interceptionStatus,
+                  event.droneInjuryCount
+                )}
+                eventHandlers={{
+                  click: () => handleEventClick(event.eventId, [lat, lng]),
+                }}
+              ></Marker>
+            );
+          })}
         </MapContainer>
       </div>
     </div>

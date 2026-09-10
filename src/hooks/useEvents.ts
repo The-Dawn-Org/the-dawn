@@ -8,6 +8,8 @@ export interface FilterEventsDto {
   type?: string[];
   launchRegion?: string[];
   status?: string[];
+  endDate?: string;
+  startDate?: string;
 }
 
 export const useEvents = (filters: FilterEventsDto = {}) => {

@@ -15,7 +15,7 @@ const AppFiltersContext = createContext<AppFiltersContextValue | null>(null);
 const toLocalDateTimeValue = (date: Date) => {
   const timezoneOffset = date.getTimezoneOffset() * 60_000;
 
-  return new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
+  return new Date(date.getTime() - timezoneOffset).toISOString();
 };
 
 const createInitialDateRange = (): DateRangeFilter => {
