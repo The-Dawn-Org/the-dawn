@@ -1,4 +1,5 @@
 import type { DroneEvent } from "../dataMock";
+import { InterceptorToHebrewMapper } from "../data/droneEvents";
 import { ChartCard } from "./ChartCard";
 import { useMemo } from "react";
 import { summarizeByInterceptor } from "../investigationStats";
@@ -9,13 +10,8 @@ export type InrerceptorStatisticsChartProps = {
   events: DroneEvent[];
 };
 
-export const InrerceptorStatisticsChart = ({
-  events,
-}: InrerceptorStatisticsChartProps) => {
-  const interceptionStats = useMemo(
-    () => summarizeByInterceptor(events),
-    [events]
-  );
+export const InrerceptorStatisticsChart = ({ events }: InrerceptorStatisticsChartProps) => {
+  const interceptionStats = useMemo(() => summarizeByInterceptor(events), [events]);
 
   return (
     <ChartCard title="אחוזי פגיעה בכל מערכת" spacing={4} dir="row">
@@ -33,7 +29,7 @@ export const InrerceptorStatisticsChart = ({
         {interceptionStats.map((stat) => (
           <Box key={stat.title} sx={{ width: "100%" }}>
             <InterceptionStats
-              title={stat.title}
+              title={InterceptorToHebrewMapper[stat.title] ?? stat.title}
               intercepted={stat.intercepted}
               missed={stat.missed}
             />
