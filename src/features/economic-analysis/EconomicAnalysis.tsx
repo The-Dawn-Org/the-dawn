@@ -8,14 +8,17 @@ import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import PaidIcon from "@mui/icons-material/Paid";
 import RadarIcon from "@mui/icons-material/Radar";
+import LocalAtmRoundedIcon from "@mui/icons-material/LocalAtmRounded";
 import { InfoCard } from "./info-cards/InfoCard";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/ExpensesByAmmunitionChart";
 import { GraphContainer } from "./GraphContainer";
 import { DronesToInterceptor } from "./DroneToInterceptor/DroneToInterceptor";
 import { getDrownToInterceptor } from "./economicAnalysis.service";
+import { AccumulativeExpensesChart } from "./AccumulativeExpensesChart/AccumulativeExpensesChart";
 import {
   getCardsInfoItem,
+  getBudgetByDate,
   getCostBySystem,
 } from "../../api/economicAnalysisAPI";
 import type {
@@ -28,6 +31,7 @@ import {
   stockLevelsData,
 } from "./InventoryInterceptors/InventoryInterceptors";
 import { Inventory2Outlined } from "@mui/icons-material";
+import type { AccumulativeExpensePoint } from "./types";
 
 export const EconomicAnalysis = () => {
   const theme = useTheme();
@@ -40,6 +44,13 @@ export const EconomicAnalysis = () => {
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
   const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
   const [isLoadingDrownToInter, setIsLoadingDrownToInter] = useState(true);
+  const [accumulativeExpenses, setAccumulativeExpenses] = useState<
+    AccumulativeExpensePoint[]
+  >([]);
+  const [isLoadingAccumulativeExpenses, setIsLoadingAccumulativeExpenses] =
+    useState(true);
+  const [accumulativeExpensesError, setAccumulativeExpensesError] =
+    useState(false);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
@@ -48,6 +59,8 @@ export const EconomicAnalysis = () => {
     const abortController = new AbortController();
 
     setIsLoadingExpenses(true);
+    setIsLoadingAccumulativeExpenses(true);
+    setAccumulativeExpensesError(false);
 
     getCostBySystem(dateRange, abortController.signal)
       .then((nextExpenses) => setExpenses(nextExpenses))
@@ -57,6 +70,17 @@ export const EconomicAnalysis = () => {
         }
       })
       .finally(() => setIsLoadingExpenses(false));
+
+    getBudgetByDate(dateRange, abortController.signal)
+      .then((nextAccumulativeExpenses) =>
+        setAccumulativeExpenses(nextAccumulativeExpenses)
+      )
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setAccumulativeExpensesError(true);
+        }
+      })
+      .finally(() => setIsLoadingAccumulativeExpenses(false));
 
     getDrownToInterceptor(dateRange, abortController.signal)
       .then((nextDrownToInterceptor) => {
@@ -229,7 +253,17 @@ export const EconomicAnalysis = () => {
           title="מלאי במערכות היירוט"
           subtitle="רמות מלאי נוכחיות"
         >
-          <StockLevels items={stockLevelsData} />
+          {isLoadingAccumulativeExpenses ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : accumulativeExpensesError ? (
+            <Box className="economic-graph__empty">
+              <Typography>לא ניתן לטעון את נתוני סטיית התקציב</Typography>
+            </Box>
+          ) : (
+            <StockLevels items={stockLevelsData} />
+          )}
         </GraphContainer>
       </Box>
     </Box>
