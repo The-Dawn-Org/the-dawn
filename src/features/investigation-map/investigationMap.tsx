@@ -3,10 +3,8 @@ import { Box, Button, Typography } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import { Map } from "./components/Map";
 import { OpenInFull, CloseFullscreen, LocationOn } from "@mui/icons-material";
-import { useEvents, type FilterEventsDto } from "../../hooks/useEvents";
+import { useEvents } from "../../hooks/useEvents";
 import { StatisticsEventLogs } from "./Componants/EventsAndStatistics";
-import L from "leaflet";
-import { Marker, Popup } from "react-leaflet";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import InfoEventsCard from "../investigation-analysis/components/card/TabCard";
 import type { InterceptionEvent } from "../investigation-analysis/types/tableTypes";
@@ -15,7 +13,7 @@ import { getEventById } from "../../api/endpoints/events";
 export const InvestigationMap: FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<Boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<InterceptionEvent | null>(
-    null
+    null,
   );
 
   const { dateRange } = useAppFilters();
