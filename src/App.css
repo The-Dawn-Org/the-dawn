@@ -7,9 +7,15 @@
 
 .economic-analysis {
   display: grid;
-  grid-template-columns: minmax(620px, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
   padding: 24px;
+}
+
+@media (max-width: 1100px) {
+  .economic-analysis {
+    grid-template-columns: 1fr;
+  }
 }
 
 .economic-graph {
@@ -105,4 +111,81 @@
   color: #91a0b4;
   font-size: clamp(2rem, 6vw, 4rem);
   font-weight: 600;
+}
+
+
+.drone-interceptor-chart {
+  width: 100%;
+}
+
+.drone-interceptor-chart__legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 4px;
+  color: #8a9482;
+  font-size: 12px;
+}
+
+.drone-interceptor-chart__legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drone-interceptor-chart__legend-mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.drone-interceptor-chart__legend-mark--circle {
+  border-radius: 50%;
+}
+
+.accumulative-expenses-chart {
+  width: 100%;
+}
+
+.accumulative-expenses-chart__legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  color: #8a9482;
+  font-size: 12px;
+}
+
+.accumulative-expenses-chart__legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.accumulative-expenses-chart__legend-mark {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 10px;
+}
+
+.accumulative-expenses-chart__legend-mark::before {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: #8bae5a;
+  content: "";
+}
+
+.accumulative-expenses-chart__legend-mark::after {
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #8bae5a;
+  border-radius: 50%;
+  background: #121d13;
+  content: "";
 }

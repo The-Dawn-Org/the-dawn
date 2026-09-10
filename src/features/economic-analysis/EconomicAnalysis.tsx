@@ -7,22 +7,45 @@ import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import PaidIcon from "@mui/icons-material/Paid";
+import RadarIcon from "@mui/icons-material/Radar";
+import LocalAtmRoundedIcon from "@mui/icons-material/LocalAtmRounded";
 import { InfoCard } from "./info-cards/InfoCard";
 import { useAppFilters } from "../../app/filters/AppFiltersContext";
 import { ExpensesByAmmunitionChart } from "./ExpensesByAmmunitionCharts/ExpensesByAmmunitionChart";
 import { GraphContainer } from "./GraphContainer";
+import { DronesToInterceptor } from "./DroneToInterceptor/DroneToInterceptor";
+import { getDrownToInterceptor } from "./economicAnalysis.service";
+import { AccumulativeExpensesChart } from "./AccumulativeExpensesChart/AccumulativeExpensesChart";
 import {
   getCardsInfoItem,
+  getBudgetByDate,
   getCostBySystem,
 } from "../../api/economicAnalysisAPI";
-import type { SystemCost, CardsInfoItem } from "./types";
+import type {
+  DroneToInterceptorType,
+  SystemCost,
+  CardsInfoItem,
+} from "./types";
+import type { AccumulativeExpensePoint } from "./types";
 
 export const EconomicAnalysis = () => {
   const theme = useTheme();
   const { dateRange } = useAppFilters();
+  const [drownToInterceptor, setDrownToInterceptor] = useState<
+    DroneToInterceptorType[]
+  >([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<SystemCost[]>([]);
   const [cardsInfo, setCardsInfo] = useState<CardsInfoItem | null>(null);
   const [isLoadingExpenses, setIsLoadingExpenses] = useState(true);
+  const [isLoadingDrownToInter, setIsLoadingDrownToInter] = useState(true);
+  const [accumulativeExpenses, setAccumulativeExpenses] = useState<
+    AccumulativeExpensePoint[]
+  >([]);
+  const [isLoadingAccumulativeExpenses, setIsLoadingAccumulativeExpenses] =
+    useState(true);
+  const [accumulativeExpensesError, setAccumulativeExpensesError] =
+    useState(false);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
   const [infoCardsError, setInfoCardsError] = useState<boolean>(false);
   const [expensesError, setExpensesError] = useState<boolean>(false);
@@ -31,6 +54,8 @@ export const EconomicAnalysis = () => {
     const abortController = new AbortController();
 
     setIsLoadingExpenses(true);
+    setIsLoadingAccumulativeExpenses(true);
+    setAccumulativeExpensesError(false);
 
     getCostBySystem(dateRange, abortController.signal)
       .then((nextExpenses) => setExpenses(nextExpenses))
@@ -40,6 +65,29 @@ export const EconomicAnalysis = () => {
         }
       })
       .finally(() => setIsLoadingExpenses(false));
+
+    getBudgetByDate(dateRange, abortController.signal)
+      .then((nextAccumulativeExpenses) =>
+        setAccumulativeExpenses(nextAccumulativeExpenses),
+      )
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setAccumulativeExpensesError(true);
+        }
+      })
+      .finally(() => setIsLoadingAccumulativeExpenses(false));
+
+    getDrownToInterceptor(dateRange, abortController.signal)
+      .then((nextDrownToInterceptor) => {
+        console.log(nextDrownToInterceptor);
+        setDrownToInterceptor(nextDrownToInterceptor);
+      })
+      .catch((error: unknown) => {
+        if (!axios.isCancel(error)) {
+          setErrorMessage("לא ניתן לטעון נתוני הרחפים ומחירי המיירטים.");
+        }
+      })
+      .finally(() => setIsLoadingDrownToInter(false));
 
     return () => abortController.abort();
   }, [dateRange]);
@@ -74,7 +122,7 @@ export const EconomicAnalysis = () => {
     <Box
       component="main"
       className="economic-analysis"
-      sx={{ width: "99%", justifySelf: "center" }}
+      sx={{ width: "99%", justifySelf: "center", display: "block" }}
       dir="rtl"
     >
       {/* Info Cards */}
@@ -125,7 +173,9 @@ export const EconomicAnalysis = () => {
           />
           <InfoCard
             label="סטיית תקציב"
-            value={`${cardsInfo.budgetVariance}%${cardsInfo.budgetVariance > 0 ? "  +" : "  -"}`}
+            value={`${Math.abs(cardsInfo.budgetVariance)}%${
+              cardsInfo.budgetVariance > 0 ? "  +" : "  -"
+            }`}
             icon={TrendingUpRoundedIcon}
             accentColor={
               cardsInfo.budgetVariance > 0
@@ -136,24 +186,81 @@ export const EconomicAnalysis = () => {
         </Box>
       )}
 
-      {/* Cost by System Graph */}
-      <GraphContainer
-        icon={<PaidIcon />}
-        title="עלות לפי מערכת"
-        subtitle="עלות לפי סוג התחמושת ששוגר"
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: "repeat(2, minmax(0, 1fr))",
+          },
+          gap: 2,
+          marginTop: 2,
+          "& > *": {
+            minWidth: 0,
+            width: "100%",
+          },
+          "& > :last-child:nth-child(odd)": {
+            gridColumn: {
+              xs: "auto",
+              md: "1 / -1",
+            },
+          },
+        }}
       >
-        {isLoadingExpenses ? (
-          <Box className="economic-graph__loading">
-            <CircularProgress size={28} />
-          </Box>
-        ) : expensesError ? (
-          <Box className="economic-graph__empty">
-            <Typography>לא ניתן לטעון את נתוני העלות</Typography>
-          </Box>
-        ) : (
-          <ExpensesByAmmunitionChart data={expenses} />
-        )}
-      </GraphContainer>
+        <GraphContainer
+          icon={<PaidIcon />}
+          title="עלות לפי מערכת"
+          subtitle="עלות לפי סוג התחמושת ששוגר"
+        >
+          {isLoadingExpenses ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : expensesError ? (
+            <Box className="economic-graph__empty">
+              <Typography>לא ניתן לטעון את נתוני העלות</Typography>
+            </Box>
+          ) : (
+            <ExpensesByAmmunitionChart data={expenses} />
+          )}
+        </GraphContainer>
+
+        <GraphContainer
+          icon={<RadarIcon />}
+          title="יחס עלות אסימטרי"
+          subtitle="עלות מיירט מול שווי רחפן"
+        >
+          {isLoadingDrownToInter ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : errorMessage ? (
+            <Box className="economic-graph__empty">
+              <Typography>{errorMessage}</Typography>
+            </Box>
+          ) : (
+            <DronesToInterceptor data={drownToInterceptor} />
+          )}
+        </GraphContainer>
+
+        <GraphContainer
+          icon={<LocalAtmRoundedIcon />}
+          title="סטיית תקציב לאורך זמן"
+          subtitle="סך ההוצאה בפועל לפי תאריך"
+        >
+          {isLoadingAccumulativeExpenses ? (
+            <Box className="economic-graph__loading">
+              <CircularProgress size={28} />
+            </Box>
+          ) : accumulativeExpensesError ? (
+            <Box className="economic-graph__empty">
+              <Typography>לא ניתן לטעון את נתוני סטיית התקציב</Typography>
+            </Box>
+          ) : (
+            <AccumulativeExpensesChart data={accumulativeExpenses} />
+          )}
+        </GraphContainer>
+      </Box>
     </Box>
   );
 };
