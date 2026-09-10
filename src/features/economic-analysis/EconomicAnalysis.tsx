@@ -23,6 +23,11 @@ import type {
   SystemCost,
   CardsInfoItem,
 } from "./types";
+import {
+  StockLevels,
+  stockLevelsData,
+} from "./InventoryInterceptors/InventoryInterceptors";
+import { Inventory2Outlined } from "@mui/icons-material";
 
 export const EconomicAnalysis = () => {
   const theme = useTheme();
@@ -217,6 +222,14 @@ export const EconomicAnalysis = () => {
           ) : (
             <DronesToInterceptor data={drownToInterceptor} />
           )}
+        </GraphContainer>
+
+        <GraphContainer
+          icon={<Inventory2Outlined />}
+          title="מלאי במערכות היירוט"
+          subtitle="רמות מלאי נוכחיות"
+        >
+          <StockLevels items={stockLevelsData} />
         </GraphContainer>
       </Box>
     </Box>
