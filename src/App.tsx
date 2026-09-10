@@ -24,7 +24,6 @@ import "./App.css";
 import { InvestigationMap } from "./features/investigation-map/investigationMap";
 import { EconomicAnalysis } from "./features/economic-analysis/EconomicAnalysis";
 import "@mui/material/styles";
-import StatisticsPage from "./features/midnight-report/FakeChart";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -112,7 +111,6 @@ const UnderDevelopmentScreen = () => {
     <Typography component="h1" className="development-screen__title">
       בפיתוח
     </Typography>
-    {/* <StatisticsPage /> */}
     <button
      className="export-to-pdf-button"
      onClick={handleExport}>
