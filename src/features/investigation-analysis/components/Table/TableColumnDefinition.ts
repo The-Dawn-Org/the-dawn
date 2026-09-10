@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import type { Column, InterceptionEvent } from "../../types/tableTypes";
-import { DEFAULT_TEXT_COLOR, GREEN, RED, YELLOW } from "./consts";
+import { DEFAULT_TEXT_COLOR, GREEN, RED } from "./consts";
 
 export const columns: Column<InterceptionEvent>[] = [
     {

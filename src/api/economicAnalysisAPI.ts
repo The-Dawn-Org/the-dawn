@@ -1,4 +1,3 @@
-import axios from "axios";
 import type { DateRangeFilter } from "../app/filters/AppFiltersContext";
 import type { SystemCost, CardsInfoItem } from "../features/economic-analysis/types";
 import { axiosInstance } from "./axios";
