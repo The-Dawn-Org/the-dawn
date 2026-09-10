@@ -18,10 +18,7 @@ export default function MetricCard({
   fullWidth,
   status = "success",
 }: MetricCardProps) {
-  const accentColor =
-    status === "success"
-      ? "success.main"
-      : "error.main";
+  const accentColor = status === "success" ? "success.main" : "error.main";
 
   return (
     <Paper
@@ -33,8 +30,8 @@ export default function MetricCard({
 
         gap: 1.5,
 
-        px: 2,
-        py: 1,
+        px: 2.5,
+        py: 1.5,
 
         borderRadius: 5,
 
