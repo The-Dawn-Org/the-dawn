@@ -124,6 +124,15 @@ export const AccumulativeExpensesChart = ({
         <ChartsYAxis axisId="accumulative-expenses-axis" />
         <ChartsTooltip trigger="axis" />
       </ChartsContainer>
+      <Box className="accumulative-expenses-chart__legend">
+        <Box component="span">
+          <Box
+            component="span"
+            className="accumulative-expenses-chart__legend-mark"
+          />
+          הוצאה בפועל
+        </Box>
+      </Box>
     </Box>
   );
 };

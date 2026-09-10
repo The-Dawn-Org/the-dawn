@@ -146,3 +146,24 @@
 .accumulative-expenses-chart {
   width: 100%;
 }
+
+.accumulative-expenses-chart__legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  color: #8a9482;
+  font-size: 12px;
+}
+
+.accumulative-expenses-chart__legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.accumulative-expenses-chart__legend-mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #8bae5a;
+}
