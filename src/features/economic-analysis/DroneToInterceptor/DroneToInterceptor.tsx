@@ -79,7 +79,9 @@ export const DronesToInterceptor = ({ data }: DronesToInterceptorProps) => {
   const roundedMaxToShow =
     maxCostToShow === 0
       ? 1
-      : Math.round(maxCostToShow / numberToDevide) * numberToDevide;
+      :  (maxCostToShow / numberToDevide > 0.5) ?
+           Math.round(maxCostToShow / numberToDevide) * numberToDevide 
+           : Math.round(maxCostToShow / numberToDevide + 0.5) * numberToDevide;
 
   return (
     <div className="drone-interceptor-chart" dir="rtl">
