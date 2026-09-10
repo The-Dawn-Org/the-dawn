@@ -72,13 +72,18 @@ export default function EventDetailsCard({ event }: EventDetailsCardProps) {
   const outcome = getEventOutcome(event.interceptionStatus);
   const accentColor = outcome === "success" ? "success.main" : "error.main";
 
-  // הנתונים לוידג'טים - מרוכזים במערך אחד כדי לפרוש בגריד אחיד
-  const metrics: { label: string; value: string }[] = [
+  // הנתונים לוידג'טים - מרוכזים במערך אחד כדי לפרוש בגריד אחיד.
+  // status אופציונלי: כשלא מוגדר, הוידג'ט נשאר ירוק כברירת מחדל (ראו widget.tsx).
+  const metrics: { label: string; value: string; status?: EventOutcome }[] = [
     { label: "סטטוס אירוע", value: event.eventStatus },
     { label: "מזהה אירוע", value: String(event.eventId) },
     { label: "נזק כספי", value: formatCurrency(event.interceptor.price - event.drone.price) },
     { label: "מערכת הגנה", value: event.interceptor.type },
-    { label: "נפגעים מהרחפן", value: String(event.droneInjuryCount) },
+    {
+      label: "נפגעים מהרחפן",
+      value: String(event.droneInjuryCount),
+      status: event.droneInjuryCount > 0 ? "error" : "success",
+    },
     { label: "גזרה", value: event.region },
     { label: "זמן אירוע", value: formatDateTime(event.time) },
     { label: "סוג רחפן", value: event.drone.type },
@@ -136,7 +141,7 @@ export default function EventDetailsCard({ event }: EventDetailsCardProps) {
               key={metric.label}
               sx={{ gridColumn: isDanglingLast ? "1 / -1" : undefined }}
             >
-              <MetricCard fullWidth label={metric.label} value={metric.value} />
+              <MetricCard fullWidth label={metric.label} value={metric.value} status={metric.status} />
             </Box>
           );
         })}
@@ -145,22 +150,3 @@ export default function EventDetailsCard({ event }: EventDetailsCardProps) {
   );
 }
 
-/*
-דוגמת שימוש:
-
-const event: DefenseEvent = {
-  eventId: 1,
-  interceptor: { interceptorTypeId: 1, type: 'PAC-3', price: 4000000 },
-  launcher: { launcherId: 1, location: { lat: 31.7683, lng: 35.2137 } },
-  region: 'מחוז ירושלים',
-  time: '2026-09-08T18:05:44Z',
-  eventLocation: { lat: 31.775, lng: 35.22 },
-  interceptionStatus: 'לא יורט',
-  droneInjuryCount: 3,
-  eventStatus: 'נסגר',
-  attackingBody: 'גורם מדינתי לא ידוע',
-  drone: { type: 'LoadBee-M2', price: 8300 },
-};
-
-<EventDetailsCard event={event} />
-*/
