@@ -32,7 +32,6 @@ export const EventDetailsCard: FC<EventDetailsCardProps> = ({ event }) => {
   // הנתונים לוידג'טים - מרוכזים במערך אחד כדי לפרוש בגריד אחיד.
   // status אופציונלי: כשלא מוגדר, הוידג'ט נשאר ירוק כברירת מחדל (ראו widget.tsx).
   const metrics: { label: string; value: string; status?: EventOutcome }[] = [
-    { label: "סטטוס אירוע", value: event.eventStatus },
     { label: "מזהה אירוע", value: String(event.eventId) },
     {
       label: "נזק כספי",
