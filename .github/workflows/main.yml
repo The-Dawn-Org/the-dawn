@@ -1,0 +1,16 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+jobs:
+  pipeline:
+    uses: Devops-Had-Hatzot/ci-template/.github/workflows/main.yml@main
+    with:
+      TAG: "latest"
+      MADOR: "the-dawn"
+    secrets: inherit
