@@ -14,12 +14,12 @@ export type EventsBySystemChartProps = {
 };
 
 /** Matches the DB's Hebrew status strings, same convention as investigationStats.ts. */
-const INTERCEPTED_STATUS = "הושלם בהצלחה";
+const INTERCEPTED_STATUS = "יורט";
 
 export const SummaryStatisticsCard = ({ events }: EventsBySystemChartProps) => {
   const eventCount = events.length;
   const totalIntercepted = events.filter(
-    (event) => event.eventStatus === INTERCEPTED_STATUS
+    (event) => event.interceptionStatus === INTERCEPTED_STATUS
   ).length;
   const interceptedPercent = eventCount > 0 ? (totalIntercepted / eventCount) * 100 : 0;
   const totalCasualtyCount = events.reduce(
@@ -31,7 +31,6 @@ export const SummaryStatisticsCard = ({ events }: EventsBySystemChartProps) => {
     compactDisplay: "short",
   }).format(
     events.reduce((sum, event) => sum + event.interceptor.price - event.drone.price , 0)
-    // TODO
   );
 
   console.log("[SummaryStatisticsCard] events:", eventCount, "intercepted:", totalIntercepted, "percent:", interceptedPercent, "casualties:", totalCasualtyCount);
@@ -65,7 +64,7 @@ export const SummaryStatisticsCard = ({ events }: EventsBySystemChartProps) => {
       <StatSumCard
         icon={<AttachMoneyIcon />}
         title="עלות מבצעית"
-        value={`$${totalDamageCostIls}`}
+        value={`₪${totalDamageCostIls}`}
         accent = "#D4A843"
       />
     </Stack>

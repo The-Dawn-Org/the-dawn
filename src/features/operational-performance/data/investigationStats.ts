@@ -1,9 +1,9 @@
 import type { Event } from "../../../types";
 
 /** Only a confirmed interception counts as a hit, and only a confirmed strike as a miss. */
-const isIntercepted = (event: Event) => event.eventStatus === "הושלם בהצלחה";
+const isIntercepted = (event: Event) => event.interceptionStatus === "יורט";
 
-const isMissed = (event: Event) => event.eventStatus === "נכשל";
+const isMissed = (event: Event) => event.interceptionStatus === "לא יורט";
 
 export interface InterceptionSummary {
   /** Interceptor type name, used as the chart title */
@@ -24,9 +24,9 @@ export interface RegionSummary {
 }
 
 const droneDamageCost: Record<string, number> = {
-  "SkyMite-C7": 10000,
-  "LoadBee-M2": 25000,
-  "Falcon-Long X4": 40000,
+  "SkyMite C7": 10000,
+  "LoadBee M2": 25000,
+  "Falcon Long X4": 40000,
   "NanoSwarm-Q9": 3000,
 };
 
@@ -65,14 +65,18 @@ export const summarizeByInterceptor = (events: ReadonlyArray<Event>): Intercepti
   );
 
 export const summarizeByRegion = (events: ReadonlyArray<Event>): RegionSummary[] =>
-
   Object.entries(groupBy(events, (event) => event.region))
     .map(([region, regionEvents]) => ({
       region,
       intercepted: regionEvents.filter(isIntercepted).length,
       missed: regionEvents.filter(isMissed).length,
       casualties: regionEvents.reduce((sum, event) => sum + event.droneInjuryCount, 0),
-      damageK: Math.round(regionEvents.reduce((sum, event) => sum + (isMissed(event) ? 0:damageCostFor(event.drone.type)), 0) / 1000),
+      damageK: Math.round(
+        regionEvents.reduce(
+          (sum, event) => sum + (isMissed(event) ? damageCostFor(event.drone.type) : 0),
+          0,
+        ) / 1000,
+      ),
       eventCount: regionEvents.length,
     }))
     .sort((first, second) => second.eventCount - first.eventCount);
